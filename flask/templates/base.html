@@ -1,0 +1,88 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}选课系统{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="shortcut icon" href="{{ url_for('static', filename='UESTC-logo.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='UESTC-logo.png') }}" type="image/x-icon">
+{% endblock %}
+
+{% block navbar %}
+    <div class="navbar navbar-inverse " role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <img alt="Brand" src="../static/logo-mini.png" class="navbar-brand">
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="{{ url_for('index') }}">
+                        <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+                    </a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">学生系统 <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ url_for('select') }}">选课</a></li>
+                            <li><a href="{{ url_for('quit') }}">退课</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">选课记录</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">教师系统 <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ url_for('teachcourse') }}">课程</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">其他</a></li>
+                        </ul>
+                    </li>
+                     <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">管理系统 <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ url_for('courseinfo') }}">课程信息</a></li>
+                            <li><a href="{{ url_for('quit') }}">教师信息</a></li>
+                            <li><a href="{{ url_for('quit') }}">学生信息</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">其他</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="https://www.uestc.edu.cn/">学校主页</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    {#                {% if current_user.is_authenticated %}#}
+                    {#                <li><a href="{{ url_for('logout') }}">Log Out</a></li>#}
+                    {#                {% else %}#}
+                    <li><a href="{{ url_for('login') }}">Log In</a></li>
+                    {#                {% endif %}#}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% for message in get_flashed_messages() %}
+            <div class="alert alert-warning">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {% block page_content %}{% endblock %}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    {{ moment.include_moment() }}
+{% endblock %}

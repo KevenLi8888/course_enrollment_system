@@ -10,13 +10,21 @@ app.config['SECRET_KEY'] = 'hard to guess string'
 
 bootstrap = Bootstrap(app)
 moment = Moment(app)
-lists = [{'id': '1', 'name': 'math', 'teacher': 'you', 'time': 'Tuesday'}, {
-    'id': '2', 'name': 'math', 'teacher': 'you', 'time': 'Tuesday'},
-         {'id': '3', 'name': 'math', 'teacher': 'you', 'time': 'Tuesday'}, {
-             'id': '4', 'name': 'math', 'teacher': 'you', 'time': 'Tuesday'}, {
-             'id': '5', 'name': 'math', 'teacher': 'you', 'time': 'Tuesday'}
-         ]
-courses = [
+courseLists = [{'id': 1, 'name': 'math', 'credit': 1, 'teacher': 'liJin', 'current': 5, 'max': 40, 'time': 'Tuesday',
+                'place': 'A110'},
+               {'id': 2, 'name': 'math', 'credit': 1, 'teacher': 'liJin', 'current': 5, 'max': 40, 'time': 'Tuesday',
+                'place': 'A110'},
+               {'id': 3, 'name': 'math', 'credit': 1, 'teacher': 'liJin', 'current': 5, 'max': 40, 'time': 'Tuesday',
+                'place': 'A110'},
+               {'id': 4, 'name': 'math', 'credit': 1, 'teacher': 'liJin', 'current': 5, 'max': 40, 'time': 'Tuesday',
+                'place': 'A110'},
+               {'id': 5, 'name': 'math', 'credit': 1, 'teacher': 'liJin', 'current': 5, 'max': 40, 'time': 'Tuesday',
+                'place': 'A110'}]
+studentLists = [{'id': 2018022, 'name': 'keven', 'school': 'cs', 'grade': 2018, 'email': '@email'},
+                {'id': 2018023, 'name': 'keven', 'school': 'cs', 'grade': 2018, 'email': '@email'},
+                {'id': 2018024, 'name': 'keven', 'school': 'cs', 'grade': 2018, 'email': '@email'},
+                {'id': 2018025, 'name': 'keven', 'school': 'cs', 'grade': 2018, 'email': '@email'}]
+courseTable = [
     ['微积分', '', '', '', '', '', ''],
     ['微积分', '', '', '', '', '', ''],
     ['', '', '', '', '', '', ''],
@@ -141,9 +149,10 @@ def register():
 def select():
     if len(request.args):
         # TODO:数据库添加课程
-        print(request.args['courseid'])
+        print(request.args['courseId'])
+        flash('xxx课程选课成功')
         return redirect(url_for('select'))
-    return render_template('select.html', lists=lists, courses=courses)
+    return render_template('select.html', courseLists=courseLists, courseTable=courseTable)
 
 
 # 退课
@@ -151,35 +160,36 @@ def select():
 def quit():
     if len(request.args):
         # TODO:数据库删除课程
-        print(request.args['courseid'])
+        print(request.args['courseId'])
+        flash('xxx课程退课成功')
         return redirect(url_for('quit'))
-    return render_template('quit.html', lists=lists, courses=courses)
+    return render_template('quit.html', courseLists=courseLists, courseTable=courseTable)
 
 
 # 老师课程
-@app.route('/teachcourese', methods=['GET', 'POST'])
-def teachcourse():
-    return render_template('teach_course.html', lists=lists, courses=courses)
-
-
-# 课程信息
-@app.route('/courseinfo', methods=['GET', 'POST'])
-def courseinfo():
-    return render_template('course_info.html', lists=lists)
+@app.route('/teach', methods=['GET', 'POST'])
+def teach():
+    return render_template('teach.html', courseLists=courseLists, courseTable=courseTable)
 
 
 # 学生花名册
-@app.route('/coursestd', methods=['GET', 'POST'])
-def coursestd():
+@app.route('/student', methods=['GET', 'POST'])
+def student():
     if len(request.args):
-        print(request.args['courseid'])
-        return redirect(url_for('coursestd'))
-    return render_template('teach_std.html', lists=lists)
+        print(request.args['courseId'])
+        return redirect(url_for('student'))
+    return render_template('student.html', studentLists=studentLists)
+
+
+# 课程信息
+@app.route('/courseInfo', methods=['GET', 'POST'])
+def courseInfo():
+    return render_template('courseInfo.html', courseLists=courseLists)
 
 
 # 添加课程
-@app.route('/addcourse', methods=['GET', 'POST'])
-def addcourse():
+@app.route('/courseAdd', methods=['GET', 'POST'])
+def courseAdd():
     form = CourseForm()
     if form.validate_on_submit():
         # TODO:提交数据库
@@ -189,5 +199,5 @@ def addcourse():
         # db.session.add(user)
         # db.session.commit()
         flash('添加成功')
-        return redirect(url_for('courseinfo'))
-    return render_template('add_course.html', form=form)
+        return redirect(url_for('courseInfo'))
+    return render_template('courseAdd.html', form=form)

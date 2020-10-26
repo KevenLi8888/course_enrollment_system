@@ -1,15 +1,14 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-{% block title %}Flasky{% endblock %}
+{% block title %}退课{% endblock %}
 {% block head %}
     {{ super() }}
     <script>
-        function selectcourse(id) {
+        function quitCourse(id) {
             r = window.confirm('你确认退课吗?');
-            {#TODO:判断课程是否已经满、判断课程是否冲突#}
             if (r) {
-                 window.location.replace(window.location.href+"?courseid=" + id);
+                window.location.replace(window.location.href + "?courseId=" + id);
             }
         }
     </script>
@@ -23,7 +22,7 @@
         <div>
             <div style="border-bottom: 1px solid grey">
                 <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
-                <span>我的课表</span>
+                <span>时间表</span>
             </div>
             <table class="table table-bordered table-striped" style="margin-top: 20px;text-align: center">
                 <thead>
@@ -39,7 +38,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for class in courses %}
+                {% for class in courseTable %}
                     <tr>
                         <td>第{{ loop.index }}节</td>
                         <td>{{ class[0] }}</td>
@@ -57,27 +56,31 @@
         <div>
             <div style="border-bottom: 1px solid grey">
                 <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
-                <span>我的课程</span>
+                <span>课表</span>
             </div>
             <table class="table table-hover table table-striped" style="margin-top: 20px;text-align: center">
                 <thead>
                 <tr class="active">
-                    <th style="text-align: center">id</th>
-                    <th style="text-align: center">name</th>
-                    <th style="text-align: center">teacher</th>
-                    <th style="text-align: center">time</th>
-                    <th style="text-align: center">select</th>
+                    <th style="text-align: center">课程序号</th>
+                    <th style="text-align: center">课程名称</th>
+                    <th style="text-align: center">学分</th>
+                    <th style="text-align: center">老师</th>
+                    <th style="text-align: center">上课时间</th>
+                    <th style="text-align: center">上课地点</th>
+                    <th style="text-align: center">退课</th>
                 </tr>
                 </thead>
                 <tbody>
-                {% for li in lists %}
+                {% for li in courseLists %}
                     <tr>
                         <td>{{ li['id'] }}</td>
                         <td>{{ li['name'] }}</td>
+                        <td>{{ li['credit'] }}</td>
                         <td>{{ li['teacher'] }}</td>
                         <td>{{ li['time'] }}</td>
+                        <td>{{ li['place'] }}</td>
                         <td>
-                            <button type="button" class="btn btn-link" onclick="selectcourse({{ li['id'] }})">退课
+                            <button type="button" class="btn btn-link" onclick="quitCourse({{ li['id'] }})">退课
                             </button>
                         </td>
                     </tr>

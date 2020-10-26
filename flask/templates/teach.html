@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-{% block title %}Flasky{% endblock %}
+{% block title %}教授的课程{% endblock %}
 {% block page_content %}
     <div class="page-header">
         <h1>教授的课程</h1>
@@ -27,7 +27,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for class in courses %}
+                {% for class in courseTable %}
                     <tr>
                         <td>第{{ loop.index }}节</td>
                         <td>{{ class[0] }}</td>
@@ -50,23 +50,29 @@
             <table class="table table-hover table table-striped" style="margin-top: 20px;text-align: center">
                 <thead>
                 <tr class="active">
-                    <th style="text-align: center">id</th>
-                    <th style="text-align: center">name</th>
-                    <th style="text-align: center">teacher</th>
-                    <th style="text-align: center">time</th>
-                    <th style="text-align: center">student</th>
+                    <th style="text-align: center">课程序号</th>
+                    <th style="text-align: center">课程名称</th>
+                    <th style="text-align: center">学分</th>
+                    <th style="text-align: center">已选人数</th>
+                    <th style="text-align: center">最大容量</th>
+                    <th style="text-align: center">上课时间</th>
+                    <th style="text-align: center">上课地点</th>
+                    <th style="text-align: center">花名册</th>
                 </tr>
                 </thead>
                 <tbody>
-                {% for li in lists %}
+                {% for li in courseLists %}
                     <tr>
                         <td>{{ li['id'] }}</td>
                         <td>{{ li['name'] }}</td>
-                        <td>{{ li['teacher'] }}</td>
+                        <td>{{ li['credit'] }}</td>
+                        <td>{{ li['current'] }}</td>
+                        <td>{{ li['max'] }}</td>
                         <td>{{ li['time'] }}</td>
+                        <td>{{ li['place'] }}</td>
                         <td>
                             <a type="button" class="btn btn-link"
-                               href="{{ url_for('coursestd',courseid= li['id']) }}">花名册
+                               href="{{ url_for('student',courseId= li['id']) }}">花名册
                             </a>
                         </td>
                     </tr>

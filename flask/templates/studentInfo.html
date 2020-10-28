@@ -1,58 +1,54 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-{% block title %}课程信息{% endblock %}
+{% block title %}学生信息{% endblock %}
 {% block head %}
     {{ super() }}
     <script>
-        function quitCourse(id) {
-            r = window.confirm('你确认删除课程吗?');
+        function quitStudent(id) {
+            r = window.confirm('你确认删除吗?');
             if (r) {
-                window.location.replace(window.location.href + "?courseId=" + id);
+                window.location.replace(window.location.href + "?studentId=" + id);
             }
         }
     </script>
 {% endblock %}
 {% block page_content %}
+    {{ super() }}
     <div class="page-header">
-        <h1>课程信息</h1>
+        <h1>学生信息</h1>
     </div>
     <div>
         <div class="btn-group" role="group" aria-label="..." style="margin-bottom: 20px">
-            <a type="button" class="btn btn-default" href="{{ url_for('courseAdd') }}">添加课程</a>
+            <a type="button" class="btn btn-default" href="{{ url_for('studentAdd') }}">添加学生</a>
         </div>
         <div>
             <div style="border-bottom: 1px solid grey">
                 <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
-                <span>所有课程</span>
+                <span>所有学生</span>
             </div>
             <table class="table table-hover table table-striped" style="margin-top: 20px;text-align: center">
                 <thead>
                 <tr class="active">
-                    <th style="text-align: center">课程序号</th>
-                    <th style="text-align: center">课程名称</th>
-                    <th style="text-align: center">学分</th>
-                    <th style="text-align: center">老师</th>
-                    <th style="text-align: center">已选人数</th>
-                    <th style="text-align: center">最大容量</th>
-                    <th style="text-align: center">上课时间</th>
-                    <th style="text-align: center">上课地点</th>
+                    <th style="text-align: center">学号</th>
+                    <th style="text-align: center">姓名</th>
+                    <th style="text-align: center">学院</th>
+                    <th style="text-align: center">年级</th>
+                    <th style="text-align: center">邮箱</th>
                     <th style="text-align: center">操作</th>
                 </tr>
                 </thead>
                 <tbody>
-                {% for li in courseLists %}
+                {% for li in studentLists %}
                     <tr>
                         <td>{{ li['id'] }}</td>
                         <td>{{ li['name'] }}</td>
-                        <td>{{ li['credit'] }}</td>
-                        <td>{{ li['teacher'] }}</td>
-                        <td>{{ li['current'] }}</td>
-                        <td>{{ li['max'] }}</td>
-                        <td>{{ li['time'] }}</td>
-                        <td>{{ li['place'] }}</td>
+                        <td>{{ li['school'] }}</td>
+                        <td>{{ li['grade'] }}</td>
                         <td>
-
+                            <a href="mailto:{{ li['email'] }}">{{ li['email'] }}</a>
+                        </td>
+                        <td>
                             <div class="dropdown">
                                 <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
                                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -60,14 +56,9 @@
                                     <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                    <li>
-                                        <a onclick="quitCourse({{ li['id'] }})">
-                                            删课
-                                        </a>
-                                    </li>
-                                    <li><a href="{{ url_for('courseEdit',courseId= li['id']) }}">
-                                        编辑
-                                    </a></li>
+                                    <li><a onclick="quitStudent({{ li['id'] }})">删除</a></li>
+                                    <li><a href="{{ url_for('studentEdit',studentId= li['id']) }}">编辑</a></li>
+                                    <li><a href="{{ url_for('passwordEdit',studentId= li['id']) }}">修改密码</a></li>
                                 </ul>
                             </div>
                         </td>

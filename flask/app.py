@@ -2,7 +2,7 @@ from flask import Flask, render_template, session, redirect, url_for, request, f
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, BooleanField
+from wtforms import StringField, SubmitField, PasswordField, BooleanField, IntegerField, DateField
 from wtforms.validators import DataRequired, Length, Email, Regexp, EqualTo
 
 app = Flask(__name__)
@@ -24,6 +24,10 @@ studentLists = [{'id': 2018022, 'name': 'keven', 'school': 'cs', 'grade': 2018, 
                 {'id': 2018023, 'name': 'keven', 'school': 'cs', 'grade': 2018, 'email': '@email'},
                 {'id': 2018024, 'name': 'keven', 'school': 'cs', 'grade': 2018, 'email': '@email'},
                 {'id': 2018025, 'name': 'keven', 'school': 'cs', 'grade': 2018, 'email': '@email'}]
+teacherLists = [{'id': 2018022, 'name': 'keven', 'school': 'cs', 'title': 'teach', 'email': '@email'},
+                {'id': 2018023, 'name': 'keven', 'school': 'cs', 'title': 'teach', 'email': '@email'},
+                {'id': 2018024, 'name': 'keven', 'school': 'cs', 'title': 'teach', 'email': '@email'},
+                {'id': 2018025, 'name': 'keven', 'school': 'cs', 'title': 'teach', 'email': '@email'}]
 courseTable = [
     ['微积分', '', '', '', '', '', ''],
     ['微积分', '', '', '', '', '', ''],
@@ -42,41 +46,62 @@ courseTable = [
 
 # 登录表单
 class LoginForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Length(1, 64),
-                                             Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
+    id = StringField('帐号', validators=[DataRequired()])
+    password = PasswordField('密码', validators=[DataRequired()])
     remember_me = BooleanField('Keep me logged in')
-    submit = SubmitField('Log In')
+    submit = SubmitField('登录')
 
 
-# 注册表单
-class RegistrationForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Length(1, 64),
-                                             Email()])
-    username = StringField('Username', validators=[
-        DataRequired(), Length(1, 64),
-        Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
-               'Usernames must have only letters, numbers, dots or '
-               'underscores')])
-    password = PasswordField('Password', validators=[
-        DataRequired(), EqualTo('password2', message='Passwords must match.')])
-    password2 = PasswordField('Confirm password', validators=[DataRequired()])
-    submit = SubmitField('Register')
-
-
-# 课表表单
+# 课程表单
 class CourseForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Length(1, 64),
-                                             Email()])
-    username = StringField('Username', validators=[
-        DataRequired(), Length(1, 64),
-        Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
-               'Usernames must have only letters, numbers, dots or '
-               'underscores')])
-    password = PasswordField('Password', validators=[
+    # TODO:进一步的验证函数
+    id = StringField('课程序号', validators=[DataRequired()])
+    name = StringField('课程名称', validators=[DataRequired()])
+    credit = StringField('学分', validators=[DataRequired()])
+    teacher = StringField('老师', validators=[DataRequired()])
+    capacity = IntegerField('容量', validators=[DataRequired()])
+    time = StringField('上课时间', validators=[DataRequired()])
+    place = StringField('上课地点', validators=[DataRequired()])
+    submit = SubmitField('添加')
+
+
+# 教师表单
+class TeacherForm(FlaskForm):
+    # TODO:进一步的验证函数
+    id = StringField('工号', validators=[DataRequired()])
+    name = StringField('姓名', validators=[DataRequired()])
+    password = PasswordField('密码', validators=[
         DataRequired(), EqualTo('password2', message='Passwords must match.')])
-    password2 = PasswordField('Confirm password', validators=[DataRequired()])
-    submit = SubmitField('Register')
+    password2 = PasswordField('确认密码', validators=[DataRequired()])
+    school = StringField('学院', validators=[DataRequired()])
+    title = StringField('职称', validators=[DataRequired()])
+    email = StringField('邮箱', validators=[DataRequired(), Length(1, 64),
+                                          Email()])
+    submit = SubmitField('添加')
+
+
+# 学生表单
+class StudentForm(FlaskForm):
+    # TODO:进一步的验证函数
+    id = StringField('学号', validators=[DataRequired()])
+    name = StringField('姓名', validators=[DataRequired()])
+    password = PasswordField('密码', validators=[
+        DataRequired(), EqualTo('password2', message='Passwords must match.')])
+    password2 = PasswordField('确认密码', validators=[DataRequired()])
+    school = StringField('学院', validators=[DataRequired()])
+    title = StringField('年级', validators=[DataRequired()])
+    email = StringField('邮箱', validators=[DataRequired(), Length(1, 64),
+                                          Email()])
+    submit = SubmitField('添加')
+
+
+# 密码表单
+class PasswordForm(FlaskForm):
+    # TODO:进一步的验证函数
+    password = PasswordField('新的密码', validators=[
+        DataRequired(), EqualTo('password2', message='Passwords must match.')])
+    password2 = PasswordField('确认密码', validators=[DataRequired()])
+    submit = SubmitField('修改')
 
 
 @app.errorhandler(404)
@@ -128,22 +153,6 @@ def logout():
     return redirect(url_for('index'))
 
 
-# 注册
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        # TODO:提交数据库
-        # user = User(email=form.email.data.lower(),
-        #             username=form.username.data,
-        #             password=form.password.data)
-        # db.session.add(user)
-        # db.session.commit()
-        flash('You can now login.')
-        return redirect(url_for('login'))
-    return render_template('register.html', form=form)
-
-
 # 选课
 @app.route('/select', methods=['GET', 'POST'])
 def select():
@@ -184,6 +193,11 @@ def student():
 # 课程信息
 @app.route('/courseInfo', methods=['GET', 'POST'])
 def courseInfo():
+    if len(request.args):
+        # TODO:数据库删除课程
+        print(request.args['courseId'])
+        flash('xxx课程删除成功')
+        return redirect(url_for('courseInfo'))
     return render_template('courseInfo.html', courseLists=courseLists)
 
 
@@ -201,3 +215,139 @@ def courseAdd():
         flash('添加成功')
         return redirect(url_for('courseInfo'))
     return render_template('courseAdd.html', form=form)
+
+
+# 编辑课程
+@app.route('/courseEdit', methods=['GET', 'POST'])
+def courseEdit():
+    form = CourseForm()
+    if len(request.args):
+        # TODO:数据库删除课程
+        print(request.args['courseId'])
+    if form.validate_on_submit():
+        # TODO:提交数据库
+        # user = User(email=form.email.data.lower(),
+        #             username=form.username.data,
+        #             password=form.password.data)
+        # db.session.add(user)
+        # db.session.commit()
+        flash('修改成功')
+        return redirect(url_for('courseInfo'))
+    return render_template('courseEdit.html', form=form)
+
+
+# 教师信息
+@app.route('/teacherInfo', methods=['GET', 'POST'])
+def teacherInfo():
+    if len(request.args):
+        # TODO:数据库删除课程
+        print(request.args['teacherId'])
+        flash('xx老师删除成功')
+        return redirect(url_for('teacherInfo'))
+    return render_template('teacherInfo.html', teacherLists=teacherLists)
+
+
+# 添加老师
+@app.route('/teacherAdd', methods=['GET', 'POST'])
+def teacherAdd():
+    form = TeacherForm()
+    if form.validate_on_submit():
+        # TODO:提交数据库
+        # user = User(email=form.email.data.lower(),
+        #             username=form.username.data,
+        #             password=form.password.data)
+        # db.session.add(user)
+        # db.session.commit()
+        flash('添加成功')
+        return redirect(url_for('teacherInfo'))
+    return render_template('teacherAdd.html', form=form)
+
+
+# 编辑教师
+@app.route('/teacherEdit', methods=['GET', 'POST'])
+def teacherEdit():
+    form = TeacherForm()
+    if len(request.args):
+        # TODO:数据库删除课程
+        print(request.args['teacherId'])
+    if form.validate_on_submit():
+        # TODO:提交数据库
+        # user = User(email=form.email.data.lower(),
+        #             username=form.username.data,
+        #             password=form.password.data)
+        # db.session.add(user)
+        # db.session.commit()
+        flash('修改成功')
+        return redirect(url_for('teacherInfo'))
+    return render_template('teacherEdit.html', form=form)
+
+
+# 学生信息
+@app.route('/studentInfo', methods=['GET', 'POST'])
+def studentInfo():
+    if len(request.args):
+        # TODO:数据库删除课程
+        print(request.args['studentId'])
+        flash('xx学生删除成功')
+        return redirect(url_for('studentInfo'))
+    return render_template('studentInfo.html', studentLists=studentLists)
+
+
+# 添加学生
+@app.route('/studentAdd', methods=['GET', 'POST'])
+def studentAdd():
+    form = StudentForm()
+    if form.validate_on_submit():
+        # TODO:提交数据库
+        # user = User(email=form.email.data.lower(),
+        #             username=form.username.data,
+        #             password=form.password.data)
+        # db.session.add(user)
+        # db.session.commit()
+        flash('添加成功')
+        return redirect(url_for('studentInfo'))
+    return render_template('studentAdd.html', form=form)
+
+
+# 编辑学生
+@app.route('/studentEdit', methods=['GET', 'POST'])
+def studentEdit():
+    form = StudentForm()
+    if len(request.args):
+        # TODO:数据库删除课程
+        print(request.args['studentId'])
+    if form.validate_on_submit():
+        # TODO:提交数据库
+        # user = User(email=form.email.data.lower(),
+        #             username=form.username.data,
+        #             password=form.password.data)
+        # db.session.add(user)
+        # db.session.commit()
+        flash('修改成功')
+        return redirect(url_for('studentInfo'))
+    return render_template('studentEdit.html', form=form)
+
+
+# 修改密码
+@app.route('/passwordEdit', methods=['GET', 'POST'])
+def passwordEdit():
+    form = PasswordForm()
+    if 'studentId' in request.args:
+        session['type'] = 'student'
+        session['id'] = request.args['studentId']
+    elif 'teacherId' in request.args:
+        session['type'] = 'teacher'
+        session['id'] = request.args['teacherId']
+        return redirect(url_for('passwordEdit'))
+    if form.validate_on_submit():
+        # TODO:提交数据库
+        flash('修改成功')
+        if session['type'] == 'student':
+            print('std')
+            print(form.password.data)
+            return redirect(url_for('studentInfo'))
+        elif session['type'] == 'teacher':
+            print('tec')
+            print(form.password.data)
+            return redirect(url_for('teacherInfo'))
+    return render_template('passwordEdit.html', form=form)

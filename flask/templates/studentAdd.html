@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}添加学生{% endblock %}
+
+{% block page_content %}
+    <div class="page-header">
+        <h1>添加学生</h1>
+    </div>
+    <div>
+
+        <div class="btn-group" role="group" aria-label="..." style="margin-bottom: 20px">
+            <a type="button" class="btn btn-default" href="{{ url_for('studentInfo') }}">返回</a>
+        </div>
+        <div>
+            <div class="col-md-4">
+                {{ wtf.quick_form(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

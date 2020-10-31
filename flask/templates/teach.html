@@ -17,26 +17,26 @@
                 <thead>
                 <tr class="active">
                     <th></th>
-                    <th style="text-align: center">星期一</th>
-                    <th style="text-align: center">星期二</th>
-                    <th style="text-align: center">星期三</th>
-                    <th style="text-align: center">星期四</th>
-                    <th style="text-align: center">星期五</th>
-                    <th style="text-align: center">星期六</th>
-                    <th style="text-align: center">星期日</th>
+                    <th class="center-format">星期一</th>
+                    <th class="center-format">星期二</th>
+                    <th class="center-format">星期三</th>
+                    <th class="center-format">星期四</th>
+                    <th class="center-format">星期五</th>
+                    <th class="center-format">星期六</th>
+                    <th class="center-format">星期日</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for class in courseTable %}
                     <tr>
-                        <td>第{{ loop.index }}节</td>
-                        <td>{{ class[0] }}</td>
-                        <td>{{ class[1] }}</td>
-                        <td>{{ class[2] }}</td>
-                        <td>{{ class[3] }}</td>
-                        <td>{{ class[4] }}</td>
-                        <td>{{ class[5] }}</td>
-                        <td>{{ class[6] }}</td>
+                        <td class="center-format">第{{ loop.index }}节</td>
+                        <td class="center-format">{{ class[0] }}</td>
+                        <td class="center-format">{{ class[1] }}</td>
+                        <td class="center-format">{{ class[2] }}</td>
+                        <td class="center-format">{{ class[3] }}</td>
+                        <td class="center-format">{{ class[4] }}</td>
+                        <td class="center-format">{{ class[5] }}</td>
+                        <td class="center-format">{{ class[6] }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -50,31 +50,32 @@
             <table class="table table-hover table table-striped" style="margin-top: 20px;text-align: center">
                 <thead>
                 <tr class="active">
-                    <th style="text-align: center">课程序号</th>
-                    <th style="text-align: center">课程名称</th>
-                    <th style="text-align: center">学分</th>
-                    <th style="text-align: center">已选人数</th>
-                    <th style="text-align: center">最大容量</th>
-                    <th style="text-align: center">上课时间</th>
-                    <th style="text-align: center">上课地点</th>
-                    <th style="text-align: center">花名册</th>
+                    <th class="center-format">课程序号</th>
+                    <th class="center-format">课程名称</th>
+                    <th class="center-format">学分</th>
+                    <th class="center-format">已选人数</th>
+                    <th class="center-format">最大容量</th>
+                    <th class="center-format">上课时间</th>
+                    <th class="center-format">上课地点</th>
+                    <th class="center-format">花名册</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for li in courseLists %}
                     <tr>
-                        <td>{{ li['id'] }}</td>
-                        <td>{{ li['name'] }}</td>
-                        <td>{{ li['credit'] }}</td>
-                        <td>{{ li['current'] }}</td>
-                        <td>{{ li['max'] }}</td>
-                        <td>{{ li['time'] }}</td>
-                        <td>{{ li['place'] }}</td>
-                        <td>
+                        <td class="center-format">{{ li['id'] }}</td>
+                        <td class="center-format">{{ li['name'] }}</td>
+                        <td class="center-format">{{ li['credit'] }}</td>
+                        <td class="center-format">{{ li['current'] }}</td>
+                        <td class="center-format">{{ li['max'] }}</td>
+                        <td class="center-format">{{ li['time'] }}</td>
+                        <td class="center-format">{{ li['place'] }}</td>
+                        <td class="center-format">
                             <a type="button" class="btn btn-default" aria-label="Left Align"
                                href="{{ url_for('student',courseId= li['id']) }}">
-                                <img src="../static/icomoon/115-users.svg" class="img-responsive" alt="Responsive image">
-{#                                <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>#}
+                                <img src="../static/icomoon/115-users.svg" class="img-responsive"
+                                     alt="Responsive image">
+                                {#                                <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>#}
                             </a>
                         </td>
                     </tr>

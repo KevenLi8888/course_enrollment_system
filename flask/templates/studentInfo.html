@@ -44,22 +44,22 @@
             <table class="table table-hover table-striped table-responsive center-format" style="margin-top: 20px">
                 <thead>
                 <tr class="active">
-                    <th style="text-align: center">学号</th>
-                    <th style="text-align: center">姓名</th>
-                    <th style="text-align: center">学院</th>
-                    <th style="text-align: center">年级</th>
-                    <th style="text-align: center">邮箱</th>
-                    <th style="text-align: center">操作</th>
+                    <th class="center-format">姓名</th>
+                    <th class="center-format">学院</th>
+                    <th class="center-format">学号</th>
+                    <th class="center-format">年级</th>
+                    <th class="center-format">邮箱</th>
+                    <th class="center-format">操作</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for li in studentLists %}
                     <tr>
-                        <td>{{ li['id'] }}</td>
-                        <td>{{ li['name'] }}</td>
-                        <td>{{ li['school'] }}</td>
-                        <td>{{ li['grade'] }}</td>
-                        <td>
+                        <td class="center-format" >{{ li['id'] }}</td>
+                        <td class="center-format" >{{ li['name'] }}</td>
+                        <td class="center-format" >{{ li['school'] }}</td>
+                        <td class="center-format" >{{ li['grade'] }}</td>
+                        <td class="center-format" >
                             <a href="mailto:{{ li['email'] }}">{{ li['email'] }}</a>
                         </td>
                         <td class="col-lg-2 col-md-2 col-sm-3 col-xs-3">

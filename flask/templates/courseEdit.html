@@ -8,14 +8,23 @@
         <h1>编辑课程信息</h1>
     </div>
     <div>
-
-        <div class="btn-group" role="group" aria-label="..." style="margin-bottom: 20px">
-            <a type="button" class="btn btn-default" href="{{ url_for('courseInfo') }}">返回</a>
-        </div>
-        <div>
-            <div class="col-md-4">
-                {{ wtf.quick_form(form) }}
+        <form class="col-md-4" method="POST">
+            {{ wtf.form_field(form.id) }}
+            {{ wtf.form_field(form.name) }}
+            {{ wtf.form_field(form.credit) }}
+            {{ wtf.form_field(form.teacher) }}
+            {{ wtf.form_field(form.capacity) }}
+            {{ wtf.form_field(form.time) }}
+            {{ wtf.form_field(form.place) }}
+            {{ form.csrf_token }}
+            <div>
+                <div style="float: right;margin: 5px">
+                    {{ form.submit(class="btn black-btn") }}
+                </div>
+                <div class="btn-group" role="group" style="float:right;margin: 5px">
+                    <a type="button" class="btn btn-default" href="{{ url_for('courseInfo') }}">取消</a>
+                </div>
             </div>
-        </div>
+        </form>
     </div>
 {% endblock %}

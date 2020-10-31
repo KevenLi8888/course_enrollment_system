@@ -8,48 +8,23 @@
         <h1>添加课程</h1>
     </div>
     <div>
-
-        <div class="btn-group" role="group" aria-label="..." style="margin-bottom: 20px">
-            <a type="button" class="btn btn-default" href="{{ url_for('courseInfo') }}">返回</a>
-        </div>
-        <div>
-{#            <form class=" form-inline">#}
-{#                <div class="form-group">#}
-{#                    {{ form.id.label(for="name") }}#}
-{#                    {{ form.id(type="text",class="form-control",id="name") }}#}
-{#                </div>#}
-{#                <div class="form-group">#}
-{#                    {{ form.name.label(for="id") }}#}
-{#                    {{ form.name(type="text",class="form-control",id="id") }}#}
-{#                </div>#}
-{#                <div class="form-group">#}
-{#                    {{ form.credit.label(for="credit") }}#}
-{#                    {{ form.credit(type="text",class="form-control",id="credit") }}#}
-{#                </div>#}
-{#                <div class="form-group">#}
-{#                    {{ form.teacher.label(for="teacher") }}#}
-{#                    {{ form.teacher(type="text",class="form-control",id="teacher") }}#}
-{#                </div>#}
-{#                <div class="form-group">#}
-{#                    {{ form.capacity.label(for="capacity") }}#}
-{#                    {{ form.capacity(type="text",class="form-control",id="capacity") }}#}
-{#                </div>#}
-{#                <div class="form-group">#}
-{#                    {{ form.time.label(for="time") }}#}
-{#                    {{ form.time(type="text",class="form-control",id="time") }}#}
-{#                </div>#}
-{#                <div class="form-group">#}
-{#                    {{ form.place.label(for="time") }}#}
-{#                    {{ form.place(type="text",class="form-control",id="place") }}#}
-{#                </div>#}
-{#                <div>#}
-{#                    {{ form.submit(type="submit",class="btn btn-default") }}#}
-{#                </div>#}
-{#            </form>#}
-
-            <div class="col-md-4">
-                {{ wtf.quick_form(form) }}
+        <form class="col-md-4" method="POST">
+            {{ wtf.form_field(form.id) }}
+            {{ wtf.form_field(form.name) }}
+            {{ wtf.form_field(form.credit) }}
+            {{ wtf.form_field(form.teacher) }}
+            {{ wtf.form_field(form.capacity) }}
+            {{ wtf.form_field(form.time) }}
+            {{ wtf.form_field(form.place) }}
+            {{ form.csrf_token }}
+            <div>
+                <div style="float: right;margin: 5px">
+                    {{ form.submit(class="btn black-btn") }}
+                </div>
+                <div class="btn-group" role="group" style="float:right;margin: 5px">
+                    <a type="button" class="btn btn-default" href="{{ url_for('courseInfo') }}">取消</a>
+                </div>
             </div>
-        </div>
+        </form>
     </div>
 {% endblock %}

@@ -8,14 +8,23 @@
         <h1>编辑学生信息</h1>
     </div>
     <div>
-
-        <div class="btn-group" role="group" aria-label="..." style="margin-bottom: 20px">
-            <a type="button" class="btn btn-default" href="{{ url_for('studentInfo') }}">返回</a>
-        </div>
-        <div>
-            <div class="col-md-4">
-                {{ wtf.quick_form(form) }}
+        <form class="col-md-4" method="POST">
+            {{ wtf.form_field(form.id) }}
+            {{ wtf.form_field(form.name) }}
+            {{ wtf.form_field(form.school) }}
+            {{ wtf.form_field(form.grade) }}
+            {{ wtf.form_field(form.email) }}
+            {{ wtf.form_field(form.password) }}
+            {{ wtf.form_field(form.password2) }}
+            {{ form.csrf_token }}
+            <div>
+                <div style="float: right;margin: 5px">
+                    {{ form.submit(class="btn black-btn") }}
+                </div>
+                <div class="btn-group" role="group" style="float:right;margin: 5px">
+                    <a type="button" class="btn btn-default" href="{{ url_for('studentInfo') }}">取消</a>
+                </div>
             </div>
-        </div>
+        </form>
     </div>
 {% endblock %}

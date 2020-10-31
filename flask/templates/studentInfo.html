@@ -19,15 +19,29 @@
         <h1>学生信息</h1>
     </div>
     <div>
-        <div class="btn-group" role="group" aria-label="..." style="margin-bottom: 20px">
-            <a type="button" class="btn btn-default" href="{{ url_for('studentAdd') }}">添加学生</a>
+        <div class="row" style="margin-bottom:20px ">
+            <div class="col-lg-1 col-md-2 col-sm-3 col-xs-12" style="margin-bottom: 20px">
+                <a type="button" class="btn btn-default" aria-label="Add" href="{{ url_for('studentAdd') }}">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    <span>添加学生</span>
+                </a>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-6" style="float:right">
+                <form method="post" class="form-inline">
+                    <div class="form-group">
+                        {{ form.search(class="form-control",placeholder="请输入学号") }}
+                    </div>
+                    {{ form.submit(type="submit",class="btn black-btn") }}
+
+                </form>
+            </div>
         </div>
         <div>
             <div style="border-bottom: 1px solid grey">
                 <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
-                <span>所有学生</span>
+                <span>学生列表</span>
             </div>
-            <table class="table table-hover table table-striped" style="margin-top: 20px;text-align: center">
+            <table class="table table-hover table-striped table-responsive center-format" style="margin-top: 20px">
                 <thead>
                 <tr class="active">
                     <th style="text-align: center">学号</th>
@@ -48,18 +62,16 @@
                         <td>
                             <a href="mailto:{{ li['email'] }}">{{ li['email'] }}</a>
                         </td>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
-                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                    操作
-                                    <span class="caret"></span>
+                        <td class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
+                            <div class="btn-group" role="group" aria-label="...">
+                                <a type="button" class="btn btn-default" aria-label="edit"
+                                   href="{{ url_for('studentEdit',studentId= li['id']) }}">
+                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                </a>
+                                <button type="button" class="btn btn-default" aria-label="delete"
+                                        onclick="quitStudent({{ li['id'] }})">
+                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                                 </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                    <li><a onclick="quitStudent({{ li['id'] }})">删除</a></li>
-                                    <li><a href="{{ url_for('studentEdit',studentId= li['id']) }}">编辑</a></li>
-                                    <li><a href="{{ url_for('passwordEdit',studentId= li['id']) }}">修改密码</a></li>
-                                </ul>
                             </div>
                         </td>
 

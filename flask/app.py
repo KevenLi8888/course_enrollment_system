@@ -62,7 +62,7 @@ class CourseForm(FlaskForm):
     capacity = IntegerField('容量', validators=[DataRequired()])
     time = StringField('上课时间', validators=[DataRequired()])
     place = StringField('上课地点', validators=[DataRequired()])
-    submit = SubmitField('添加')
+    submit = SubmitField('确定')
 
 
 # 教师表单
@@ -89,10 +89,10 @@ class StudentForm(FlaskForm):
         DataRequired(), EqualTo('password2', message='Passwords must match.')])
     password2 = PasswordField('确认密码', validators=[DataRequired()])
     school = StringField('学院', validators=[DataRequired()])
-    title = StringField('年级', validators=[DataRequired()])
+    grade = StringField('年级', validators=[DataRequired()])
     email = StringField('邮箱', validators=[DataRequired(), Length(1, 64),
                                           Email()])
-    submit = SubmitField('添加')
+    submit = SubmitField('确定')
 
 
 # 密码表单
@@ -102,6 +102,13 @@ class PasswordForm(FlaskForm):
         DataRequired(), EqualTo('password2', message='Passwords must match.')])
     password2 = PasswordField('确认密码', validators=[DataRequired()])
     submit = SubmitField('修改')
+
+
+# 搜索表单
+class SearchForm(FlaskForm):
+    # TODO:进一步的验证函数
+    search = StringField('搜索', validators=[DataRequired()])
+    submit = SubmitField('查找')
 
 
 @app.errorhandler(404)
@@ -193,12 +200,13 @@ def student():
 # 课程信息
 @app.route('/courseInfo', methods=['GET', 'POST'])
 def courseInfo():
+    form = SearchForm()
     if len(request.args):
         # TODO:数据库删除课程
         print(request.args['courseId'])
         flash('xxx课程删除成功')
         return redirect(url_for('courseInfo'))
-    return render_template('courseInfo.html', courseLists=courseLists)
+    return render_template('courseInfo.html', courseLists=courseLists, form=form)
 
 
 # 添加课程
@@ -239,12 +247,13 @@ def courseEdit():
 # 教师信息
 @app.route('/teacherInfo', methods=['GET', 'POST'])
 def teacherInfo():
+    form = SearchForm()
     if len(request.args):
         # TODO:数据库删除课程
         print(request.args['teacherId'])
         flash('xx老师删除成功')
         return redirect(url_for('teacherInfo'))
-    return render_template('teacherInfo.html', teacherLists=teacherLists)
+    return render_template('teacherInfo.html', teacherLists=teacherLists, form=form)
 
 
 # 添加老师
@@ -285,12 +294,13 @@ def teacherEdit():
 # 学生信息
 @app.route('/studentInfo', methods=['GET', 'POST'])
 def studentInfo():
+    form = SearchForm()
     if len(request.args):
         # TODO:数据库删除课程
         print(request.args['studentId'])
         flash('xx学生删除成功')
         return redirect(url_for('studentInfo'))
-    return render_template('studentInfo.html', studentLists=studentLists)
+    return render_template('studentInfo.html', studentLists=studentLists, form=form)
 
 
 # 添加学生
@@ -329,25 +339,25 @@ def studentEdit():
 
 
 # 修改密码
-@app.route('/passwordEdit', methods=['GET', 'POST'])
-def passwordEdit():
-    form = PasswordForm()
-    if 'studentId' in request.args:
-        session['type'] = 'student'
-        session['id'] = request.args['studentId']
-    elif 'teacherId' in request.args:
-        session['type'] = 'teacher'
-        session['id'] = request.args['teacherId']
-        return redirect(url_for('passwordEdit'))
-    if form.validate_on_submit():
-        # TODO:提交数据库
-        flash('修改成功')
-        if session['type'] == 'student':
-            print('std')
-            print(form.password.data)
-            return redirect(url_for('studentInfo'))
-        elif session['type'] == 'teacher':
-            print('tec')
-            print(form.password.data)
-            return redirect(url_for('teacherInfo'))
-    return render_template('passwordEdit.html', form=form)
+# @app.route('/passwordEdit', methods=['GET', 'POST'])
+# def passwordEdit():
+#     form = PasswordForm()
+#     if 'studentId' in request.args:
+#         session['type'] = 'student'
+#         session['id'] = request.args['studentId']
+#     elif 'teacherId' in request.args:
+#         session['type'] = 'teacher'
+#         session['id'] = request.args['teacherId']
+#         return redirect(url_for('passwordEdit'))
+#     if form.validate_on_submit():
+#         # TODO:提交数据库
+#         flash('修改成功')
+#         if session['type'] == 'student':
+#             print('std')
+#             print(form.password.data)
+#             return redirect(url_for('studentInfo'))
+#         elif session['type'] == 'teacher':
+#             print('tec')
+#             print(form.password.data)
+#             return redirect(url_for('teacherInfo'))
+#     return render_template('passwordEdit.html', form=form)

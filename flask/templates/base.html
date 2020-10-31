@@ -10,8 +10,24 @@
     <script src="../static/js/remodal.js"></script>
     <link rel="shortcut icon" href="{{ url_for('static', filename='UESTC-logo.png') }}" type="image/x-icon">
     <link rel="icon" href="{{ url_for('static', filename='UESTC-logo.png') }}" type="image/x-icon">
-{% endblock %}
+    <style>
+        .black-btn {
+            background-color: black;
+            color: white
+        }
 
+        .lightgray-btn {
+            background-color: lightgrey;
+            color: black;
+            border:1px black solid;
+        }
+
+        .center-format {
+            text-align: center;
+            vertical-align: middle
+        }
+    </style>
+{% endblock %}
 {% block navbar %}
     <div class="navbar navbar-inverse " role="navigation">
         <div class="container-fluid">

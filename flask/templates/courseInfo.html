@@ -18,8 +18,26 @@
         <h1>课程信息</h1>
     </div>
     <div>
-        <div class="btn-group" role="group" aria-label="..." style="margin-bottom: 20px">
-            <a type="button" class="btn btn-default" href="{{ url_for('courseAdd') }}">添加课程</a>
+    {#    <div class="btn-group" role="group" aria-label="..." style="margin-bottom: 20px">#}
+    {#        <a type="button" class="btn btn-default" href="{{ url_for('courseAdd') }}">添加课程</a>#}
+    {#    </div>#}
+    <div>
+        <div class="row" style="margin-bottom:20px ">
+            <div class="col-lg-1 col-md-2 col-sm-3 col-xs-3" style="margin-bottom: 20px">
+                <a type="button" class="btn btn-default" aria-label="Add" href="{{ url_for('courseAdd') }}">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    <span>添加课程</span>
+                </a>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-6" style="float:right">
+                <form method="post" class="form-inline">
+                    <div class="form-group">
+                        {{ form.search(class="form-control",placeholder="请输入课程序号") }}
+                    </div>
+                    {{ form.submit(type="submit",class="btn black-btn") }}
+
+                </form>
+            </div>
         </div>
         <div>
             <div style="border-bottom: 1px solid grey">
@@ -29,49 +47,40 @@
             <table class="table table-hover table table-striped" style="margin-top: 20px;text-align: center">
                 <thead>
                 <tr class="active">
-                    <th style="text-align: center">课程序号</th>
-                    <th style="text-align: center">课程名称</th>
-                    <th style="text-align: center">学分</th>
-                    <th style="text-align: center">老师</th>
-                    <th style="text-align: center">已选人数</th>
-                    <th style="text-align: center">最大容量</th>
-                    <th style="text-align: center">上课时间</th>
-                    <th style="text-align: center">上课地点</th>
-                    <th style="text-align: center">操作</th>
+                    <th class="center-format">课程序号</th>
+                    <th class="center-format">课程名称</th>
+                    <th class="center-format">学分</th>
+                    <th class="center-format">老师</th>
+                    <th class="center-format">已选人数</th>
+                    <th class="center-format">最大容量</th>
+                    <th class="center-format">上课时间</th>
+                    <th class="center-format">上课地点</th>
+                    <th class="center-format">操作</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for li in courseLists %}
                     <tr>
-                        <td>{{ li['id'] }}</td>
-                        <td>{{ li['name'] }}</td>
-                        <td>{{ li['credit'] }}</td>
-                        <td>{{ li['teacher'] }}</td>
-                        <td>{{ li['current'] }}</td>
-                        <td>{{ li['max'] }}</td>
-                        <td>{{ li['time'] }}</td>
-                        <td>{{ li['place'] }}</td>
-                        <td>
-
-                            <div class="dropdown">
-                                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
-                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                    操作
-                                    <span class="caret"></span>
+                        <td class="center-format">{{ li['id'] }}</td>
+                        <td class="center-format">{{ li['name'] }}</td>
+                        <td class="center-format">{{ li['credit'] }}</td>
+                        <td class="center-format">{{ li['teacher'] }}</td>
+                        <td class="center-format">{{ li['current'] }}</td>
+                        <td class="center-format">{{ li['max'] }}</td>
+                        <td class="center-format">{{ li['time'] }}</td>
+                        <td class="center-format">{{ li['place'] }}</td>
+                        <td class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
+                            <div class="btn-group" role="group" aria-label="...">
+                                <a type="button" class="btn btn-default" aria-label="edit"
+                                   href="{{ url_for('courseEdit',courseId= li['id']) }}">
+                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                </a>
+                                <button type="button" class="btn btn-default" aria-label="delete"
+                                        onclick="quitCourse({{ li['id'] }})">
+                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                                 </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                    <li>
-                                        <a onclick="quitCourse({{ li['id'] }})">
-                                            删课
-                                        </a>
-                                    </li>
-                                    <li><a href="{{ url_for('courseEdit',courseId= li['id']) }}">
-                                        编辑
-                                    </a></li>
-                                </ul>
                             </div>
                         </td>
-
                     </tr>
                 {% endfor %}
                 </tbody>

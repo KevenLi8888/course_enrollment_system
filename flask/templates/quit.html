@@ -80,7 +80,11 @@
                         <td>{{ li['time'] }}</td>
                         <td>{{ li['place'] }}</td>
                         <td>
-                            <button type="button" class="btn btn-link" onclick="quitCourse({{ li['id'] }})">退课
+{#                            <button type="button" class="btn btn-link" onclick="quitCourse({{ li['id'] }})">退课#}
+{#                            </button>#}
+                            <button type="button" class="btn btn-default" aria-label="Left Align"
+                                    onclick="quitCourse({{ li['id'] }})">
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                             </button>
                         </td>
                     </tr>

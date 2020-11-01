@@ -84,7 +84,7 @@ DROP TABLE IF EXISTS `enroll_record`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `enroll_record` (
-  `enr_rec_id` int NOT NULL,
+  `enr_rec_id` int NOT NULL AUTO_INCREMENT,
   `stu_id` varchar(10) NOT NULL,
   `class_id` varchar(10) NOT NULL,
   PRIMARY KEY (`enr_rec_id`),
@@ -92,7 +92,7 @@ CREATE TABLE `enroll_record` (
   KEY `class_id_idx` (`class_id`),
   CONSTRAINT `class_id_enr_rec` FOREIGN KEY (`class_id`) REFERENCES `class_info` (`class_id`),
   CONSTRAINT `stu_id_enr_rec` FOREIGN KEY (`stu_id`) REFERENCES `student_list` (`stu_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -103,6 +103,58 @@ LOCK TABLES `enroll_record` WRITE;
 /*!40000 ALTER TABLE `enroll_record` DISABLE KEYS */;
 INSERT INTO `enroll_record` VALUES (1,'1001','01'),(2,'1001','02'),(3,'1002','02'),(4,'1003','03');
 /*!40000 ALTER TABLE `enroll_record` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `grade_list`
+--
+
+DROP TABLE IF EXISTS `grade_list`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `grade_list` (
+  `grade_list_id` int NOT NULL AUTO_INCREMENT,
+  `class_id` varchar(10) NOT NULL,
+  `class_target_grade` int NOT NULL,
+  PRIMARY KEY (`grade_list_id`),
+  KEY `class_id` (`class_id`),
+  CONSTRAINT `grade_list_ibfk_1` FOREIGN KEY (`class_id`) REFERENCES `class_info` (`class_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `grade_list`
+--
+
+LOCK TABLES `grade_list` WRITE;
+/*!40000 ALTER TABLE `grade_list` DISABLE KEYS */;
+/*!40000 ALTER TABLE `grade_list` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `school_list`
+--
+
+DROP TABLE IF EXISTS `school_list`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `school_list` (
+  `school_list_id` int NOT NULL AUTO_INCREMENT,
+  `class_id` varchar(10) NOT NULL,
+  `class_target_school` int NOT NULL,
+  PRIMARY KEY (`school_list_id`),
+  KEY `class_id` (`class_id`),
+  CONSTRAINT `school_list_ibfk_1` FOREIGN KEY (`class_id`) REFERENCES `class_info` (`class_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `school_list`
+--
+
+LOCK TABLES `school_list` WRITE;
+/*!40000 ALTER TABLE `school_list` DISABLE KEYS */;
+/*!40000 ALTER TABLE `school_list` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -141,7 +193,7 @@ DROP TABLE IF EXISTS `teach_record`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `teach_record` (
-  `tch_rec_id` int NOT NULL,
+  `tch_rec_id` int NOT NULL AUTO_INCREMENT,
   `tchr_id` varchar(10) NOT NULL,
   `class_id` varchar(10) NOT NULL,
   PRIMARY KEY (`tch_rec_id`),
@@ -149,7 +201,7 @@ CREATE TABLE `teach_record` (
   KEY `class_id_idx` (`class_id`),
   CONSTRAINT `class_id_tch_rec` FOREIGN KEY (`class_id`) REFERENCES `class_info` (`class_id`),
   CONSTRAINT `tchr_id_tch_rec` FOREIGN KEY (`tchr_id`) REFERENCES `teacher_list` (`tchr_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -224,4 +276,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-11-01 20:21:54
+-- Dump completed on 2020-11-01 23:17:17

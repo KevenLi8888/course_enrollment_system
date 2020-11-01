@@ -61,6 +61,7 @@ CREATE TABLE `class_info` (
   `class_target_grade` varchar(10) NOT NULL,
   `class_start_time` int NOT NULL,
   `class_end_time` int NOT NULL,
+  `class_day` int NOT NULL,
   PRIMARY KEY (`class_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -71,7 +72,7 @@ CREATE TABLE `class_info` (
 
 LOCK TABLES `class_info` WRITE;
 /*!40000 ALTER TABLE `class_info` DISABLE KEYS */;
-INSERT INTO `class_info` VALUES ('01','class1',2,'A101',30,1,6,'2018',1,2),('02','class2',3,'B202',20,7,12,'2018',3,4),('03','class3',2,'C303',30,1,12,'2019',5,6);
+INSERT INTO `class_info` VALUES ('01','class1',2,'A101',30,1,6,'2018',1,2,0),('02','class2',3,'B202',20,7,12,'2018',3,4,0),('03','class3',2,'C303',30,1,12,'2019',5,6,0);
 /*!40000 ALTER TABLE `class_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -223,4 +224,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-11-01 15:18:06
+-- Dump completed on 2020-11-01 20:21:54

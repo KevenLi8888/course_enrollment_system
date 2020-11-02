@@ -58,7 +58,6 @@ CREATE TABLE `class_info` (
   `class_capacity` int NOT NULL,
   `class_start_week` int NOT NULL,
   `class_end_week` int NOT NULL,
-  `class_target_grade` varchar(10) NOT NULL,
   `class_start_time` int NOT NULL,
   `class_end_time` int NOT NULL,
   `class_day` int NOT NULL,
@@ -72,7 +71,7 @@ CREATE TABLE `class_info` (
 
 LOCK TABLES `class_info` WRITE;
 /*!40000 ALTER TABLE `class_info` DISABLE KEYS */;
-INSERT INTO `class_info` VALUES ('01','class1',2,'A101',30,1,6,'2018',1,2,0),('02','class2',3,'B202',20,7,12,'2018',3,4,0),('03','class3',2,'C303',30,1,12,'2019',5,6,0);
+INSERT INTO `class_info` VALUES ('01','class1',2,'A101',30,1,6,1,2,0),('02','class2',3,'B202',20,7,12,3,4,0),('03','class3',2,'C303',30,1,12,5,6,0);
 /*!40000 ALTER TABLE `class_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -92,7 +91,7 @@ CREATE TABLE `enroll_record` (
   KEY `class_id_idx` (`class_id`),
   CONSTRAINT `class_id_enr_rec` FOREIGN KEY (`class_id`) REFERENCES `class_info` (`class_id`),
   CONSTRAINT `stu_id_enr_rec` FOREIGN KEY (`stu_id`) REFERENCES `student_list` (`stu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -201,7 +200,7 @@ CREATE TABLE `teach_record` (
   KEY `class_id_idx` (`class_id`),
   CONSTRAINT `class_id_tch_rec` FOREIGN KEY (`class_id`) REFERENCES `class_info` (`class_id`),
   CONSTRAINT `tchr_id_tch_rec` FOREIGN KEY (`tchr_id`) REFERENCES `teacher_list` (`tchr_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -276,4 +275,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-11-01 23:17:17
+-- Dump completed on 2020-11-02 19:37:16

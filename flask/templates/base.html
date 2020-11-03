@@ -8,6 +8,15 @@
     <link rel="stylesheet" href="../static/css/remodal.css">
     <script src="../static/js/jquery.min.js"></script>
     <script src="../static/js/remodal.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
+
+    <!-- (Optional) Latest compiled and minified JavaScript translation files -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/i18n/defaults-*.min.js"></script>
     <link rel="shortcut icon" href="{{ url_for('static', filename='UESTC-logo.png') }}" type="image/x-icon">
     <link rel="icon" href="{{ url_for('static', filename='UESTC-logo.png') }}" type="image/x-icon">
     <style>
@@ -78,11 +87,11 @@
                     <li><a href="https://www.uestc.edu.cn/">学校主页</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    {#                {% if current_user.is_authenticated %}#}
-                    {#                <li><a href="{{ url_for('logout') }}">Log Out</a></li>#}
-                    {#                {% else %}#}
-                    <li><a href="{{ url_for('login') }}">Log In</a></li>
-                    {#                {% endif %}#}
+                    {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('logout') }}">Log Out</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('login') }}">Log In</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

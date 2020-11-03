@@ -1,15 +1,43 @@
-from flask import Flask, render_template, session, redirect, url_for, request, flash
+from flask import Flask, render_template, redirect, url_for, request, flash
+from flask_login import LoginManager, login_user, login_required, current_user,logout_user
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, BooleanField, IntegerField, DateField
-from wtforms.validators import DataRequired, Length, Email, Regexp, EqualTo
+from wtforms import *
+from wtforms.validators import *
+from db import user_dal
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'hard to guess string'
+
+# 项目中设置flask_login
+login_manager = LoginManager()
+login_manager.init_app(app)
+app.config['SECRET_KEY'] = '234rsdf34523rwsf'
 
 bootstrap = Bootstrap(app)
 moment = Moment(app)
+schoolLists = [
+    ('信息与通信工程学院', '信息与通信工程学院'),
+    ('电子科学与工程学院（示范性微电子学院）', '电子科学与工程学院（示范性微电子学院）'),
+    ('材料与能源学院', '材料与能源学院'),
+    ('机械与电气工程学院', '机械与电气工程学院'),
+    ('光电科学与工程学院', '光电科学与工程学院'),
+    ('自动化工程学院', '自动化工程学院'),
+    ('资源与环境学院', '资源与环境学院'),
+    ('计算机科学与工程学院（网络空间安全学院）', '计算机科学与工程学院（网络空间安全学院）'),
+    ('信息与软件工程学院（示范性软件学院）', '信息与软件工程学院（示范性软件学院）'),
+    ('航空航天学院', '航空航天学院'),
+    ('数学科学学院', '数学科学学院'),
+    ('物理学院', '物理学院'),
+    ('医学院', '医学院'),
+    ('生命科学与技术学院', '生命科学与技术学院'),
+    ('经济与管理学院', '经济与管理学院'),
+    ('公共管理学院', '公共管理学院'),
+    ('外国语学院', '外国语学院'),
+    ('马克思主义学院', '马克思主义学院'),
+    ('格拉斯哥学院', '格拉斯哥学院'),
+    ('体育部', '体育部')
+]
 courseLists = [{'id': 1, 'name': 'math', 'credit': 1, 'teacher': 'liJin', 'current': 5, 'max': 40, 'time': 'Tuesday',
                 'place': 'A110'},
                {'id': 2, 'name': 'math', 'credit': 1, 'teacher': 'liJin', 'current': 5, 'max': 40, 'time': 'Tuesday',
@@ -62,10 +90,17 @@ class CourseForm(FlaskForm):
     capacity = IntegerField('容量', validators=[DataRequired()])
     time = StringField('上课时间', validators=[DataRequired()])
     place = StringField('上课地点', validators=[DataRequired()])
+    # grade = StringField('上课年级', validators=[DataRequired()])
+    grade = SelectMultipleField('上课年级', coerce=int,
+                                choices=[(2016, '2016级'), (2017, '2017级'), (2018, '2018级'), (2019, '2019级'),
+                                         (2020, '2020级')], validators=[DataRequired()])
+    school = SelectMultipleField('上课学院', coerce=int,
+                                 choices=schoolLists, validators=[DataRequired()])
     submit = SubmitField('确定')
 
+    # 教师表单
 
-# 教师表单
+
 class TeacherForm(FlaskForm):
     # TODO:进一步的验证函数
     id = StringField('工号', validators=[DataRequired()])
@@ -120,6 +155,10 @@ def page_not_found(e):
 def internal_server_error(e):
     return render_template('500.html'), 500
 
+@app.errorhandler(401)
+def internal_server_error(e):
+    flash('Please login')
+    return redirect(url_for('login'))
 
 # 主页
 @app.route('/', methods=['GET', 'POST'])
@@ -132,40 +171,48 @@ def index():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        # TODO:数据库查询
-        # 如果帐号存在而且密码正确：登录帐号login_user，页面重定向
-
-        if 1:
+        id = form.id.data
+        password = form.password.data
+        result = user_dal.User_Dal.login_auth(id, password)
+        model = result[1]
+        if result[0]['isAuth']:
+            login_user(model,form.remember_me.data)
+            print('登陆成功')
+            print(current_user.id)  # 登录成功之后可以用current_user来取该用户的其他属性，这些属性都是sql语句查来并赋值给对象的。
             return redirect(url_for('index'))
-        # user = User.query.filter_by(email=form.email.data.lower()).first()
-        # if user is not None and user.verify_password(form.password.data):
-        #     login_user(user, form.remember_me.data)
-        #     next = request.args.get('next')
-        #     if next is None or not next.startswith('/'):
-        #         next = url_for('main.index')
-        #     return redirect(next)
-
-        # 显示帐号或密码错误
-        flash('Invalid email or password.')
+        else:
+            print('登陆失败')
+            flash('Invalid id or password.')
     return render_template('login.html', form=form)
+
+
+@login_manager.user_loader
+def load_user(id):
+    return user_dal.User_Dal.load_user_byid(id)
+'''
+load_user是一个flask_login的回调函数，在登陆之后，每访问一个带Login_required装饰的视图函数就要执行一次，
+该函数返回一个用户对象，通过id来用sql语句查到的用户数据，然后实例化一个对象，并返回。
+'''
 
 
 # 登出
 @app.route('/logout')
-# @login_required
+@login_required
 def logout():
     # TODO：退出用户
-    # logout_user()
+    logout_user()
     flash('You have been logged out.')
     return redirect(url_for('index'))
 
 
 # 选课
 @app.route('/select', methods=['GET', 'POST'])
+@login_required
 def select():
     if len(request.args):
         # TODO:数据库添加课程
         print(request.args['courseId'])
+
         flash('xxx课程选课成功')
         return redirect(url_for('select'))
     return render_template('select.html', courseLists=courseLists, courseTable=courseTable)
@@ -214,6 +261,7 @@ def courseInfo():
 def courseAdd():
     form = CourseForm()
     if form.validate_on_submit():
+        print(form.grade.data)  # 返回一个列表
         # TODO:提交数据库
         # user = User(email=form.email.data.lower(),
         #             username=form.username.data,
@@ -336,7 +384,6 @@ def studentEdit():
         flash('修改成功')
         return redirect(url_for('studentInfo'))
     return render_template('studentEdit.html', form=form)
-
 
 # 修改密码
 # @app.route('/passwordEdit', methods=['GET', 'POST'])

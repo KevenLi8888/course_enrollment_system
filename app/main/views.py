@@ -3,7 +3,7 @@ from flask_login import login_required
 from . import main
 from .forms import *
 
-courseLists = [{'id': 1, 'name': 'math', 'credi': 1, 'teacher': 'liJin', 'current': 5, 'max': 40, 'time': 'Tuesday',
+courseLists = [{'id': 1, 'name': 'math', 'credit': 1, 'teacher': 'liJin', 'current': 5, 'max': 40, 'time': 'Tuesday',
                 'place': 'A110'},
                {'id': 2, 'name': 'math', 'credit': 1, 'teacher': 'liJin', 'current': 5, 'max': 40, 'time': 'Tuesday',
                 'place': 'A110'},

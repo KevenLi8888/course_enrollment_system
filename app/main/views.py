@@ -58,6 +58,7 @@ def select():
 
 # 退课
 @main.route('/quit', methods=['GET', 'POST'])
+@login_required
 def quit():
     if len(request.args):
         # TODO:数据库删除课程
@@ -69,12 +70,14 @@ def quit():
 
 # 老师课程
 @main.route('/teach', methods=['GET', 'POST'])
+@login_required
 def teach():
     return render_template('teach.html', courseLists=courseLists, courseTable=courseTable)
 
 
 # 学生花名册
 @main.route('/student', methods=['GET', 'POST'])
+@login_required
 def student():
     if len(request.args):
         print(request.args['courseId'])
@@ -84,6 +87,7 @@ def student():
 
 # 课程信息
 @main.route('/courseInfo', methods=['GET', 'POST'])
+@login_required
 def courseInfo():
     form = SearchForm()
     if len(request.args):
@@ -96,6 +100,7 @@ def courseInfo():
 
 # 添加课程
 @main.route('/courseAdd', methods=['GET', 'POST'])
+@login_required
 def courseAdd():
     form = CourseForm()
     if form.validate_on_submit():
@@ -113,6 +118,7 @@ def courseAdd():
 
 # 编辑课程
 @main.route('/courseEdit', methods=['GET', 'POST'])
+@login_required
 def courseEdit():
     form = CourseForm()
     if len(request.args):
@@ -132,6 +138,7 @@ def courseEdit():
 
 # 教师信息
 @main.route('/teacherInfo', methods=['GET', 'POST'])
+@login_required
 def teacherInfo():
     form = SearchForm()
     if len(request.args):
@@ -144,6 +151,7 @@ def teacherInfo():
 
 # 添加老师
 @main.route('/teacherAdd', methods=['GET', 'POST'])
+@login_required
 def teacherAdd():
     form = TeacherForm()
     if form.validate_on_submit():
@@ -160,6 +168,7 @@ def teacherAdd():
 
 # 编辑教师
 @main.route('/teacherEdit', methods=['GET', 'POST'])
+@login_required
 def teacherEdit():
     form = TeacherForm()
     if len(request.args):
@@ -179,6 +188,7 @@ def teacherEdit():
 
 # 学生信息
 @main.route('/studentInfo', methods=['GET', 'POST'])
+@login_required
 def studentInfo():
     form = SearchForm()
     if len(request.args):
@@ -191,6 +201,7 @@ def studentInfo():
 
 # 添加学生
 @main.route('/studentAdd', methods=['GET', 'POST'])
+@login_required
 def studentAdd():
     form = StudentForm()
     if form.validate_on_submit():
@@ -207,6 +218,7 @@ def studentAdd():
 
 # 编辑学生
 @main.route('/studentEdit', methods=['GET', 'POST'])
+@login_required
 def studentEdit():
     form = StudentForm()
     if len(request.args):

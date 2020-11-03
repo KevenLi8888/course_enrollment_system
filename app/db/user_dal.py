@@ -1,6 +1,6 @@
-from model import user_model
-from db import user_dal
-from db import dal
+from .. import user_model
+from ..db import user_dal
+from ..db import dal
 
 
 class User_Dal:

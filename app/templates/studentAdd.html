@@ -1,30 +1,28 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-{% block title %}编辑课程信息{% endblock %}
+{% block title %}添加学生{% endblock %}
 
 {% block page_content %}
     <div class="page-header">
-        <h1>编辑课程信息</h1>
+        <h1>添加学生</h1>
     </div>
     <div>
         <form class="col-md-4" method="POST">
             {{ wtf.form_field(form.id) }}
             {{ wtf.form_field(form.name) }}
-            {{ wtf.form_field(form.credit) }}
-            {{ wtf.form_field(form.teacher) }}
-            {{ wtf.form_field(form.capacity) }}
-            {{ wtf.form_field(form.time) }}
-            {{ wtf.form_field(form.place) }}
-            {{ wtf.form_field(form.grade) }}
             {{ wtf.form_field(form.school) }}
+            {{ wtf.form_field(form.grade) }}
+            {{ wtf.form_field(form.email) }}
+            {{ wtf.form_field(form.password) }}
+            {{ wtf.form_field(form.password2) }}
             {{ form.csrf_token }}
             <div>
                 <div style="float: right;margin: 5px">
                     {{ form.submit(class="btn black-btn") }}
                 </div>
                 <div class="btn-group" role="group" style="float:right;margin: 5px">
-                    <a type="button" class="btn btn-default" href="{{ url_for('courseInfo') }}">取消</a>
+                    <a type="button" class="btn btn-default" href="{{ url_for('main.studentInfo') }}">取消</a>
                 </div>
             </div>
         </form>

@@ -51,15 +51,15 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="{{ url_for('index') }}">
+                    <li class="active"><a href="{{ url_for('main.index') }}">
                         <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
                     </a></li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                            aria-expanded="false">学生系统 <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="{{ url_for('select') }}">选课</a></li>
-                            <li><a href="{{ url_for('quit') }}">退课</a></li>
+                            <li><a href="{{ url_for('main.select') }}">选课</a></li>
+                            <li><a href="{{ url_for('main.quit') }}">退课</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="#">选课记录</a></li>
                         </ul>
@@ -68,7 +68,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                            aria-expanded="false">教师系统 <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="{{ url_for('teach') }}">课程</a></li>
+                            <li><a href="{{ url_for('main.teach') }}">课程</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="#">其他</a></li>
                         </ul>
@@ -77,9 +77,9 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                            aria-expanded="false">管理系统 <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="{{ url_for('courseInfo') }}">课程信息</a></li>
-                            <li><a href="{{ url_for('teacherInfo') }}">教师信息</a></li>
-                            <li><a href="{{ url_for('studentInfo') }}">学生信息</a></li>
+                            <li><a href="{{ url_for('main.courseInfo') }}">课程信息</a></li>
+                            <li><a href="{{ url_for('main.teacherInfo') }}">教师信息</a></li>
+                            <li><a href="{{ url_for('main.studentInfo') }}">学生信息</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="#">其他</a></li>
                         </ul>
@@ -88,9 +88,9 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if current_user.is_authenticated %}
-                        <li><a href="{{ url_for('logout') }}">Log Out</a></li>
+                        <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
                     {% else %}
-                        <li><a href="{{ url_for('login') }}">Log In</a></li>
+                        <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
                     {% endif %}
                 </ul>
             </div>

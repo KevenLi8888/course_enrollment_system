@@ -1,34 +1,35 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-{% block title %}教师信息{% endblock %}
+{% block title %}学生信息{% endblock %}
 {% block head %}
     {{ super() }}
     <script>
-        function quitTeacher(id) {
+        function quitStudent(id) {
             r = window.confirm('你确认删除吗?');
             if (r) {
-                window.location.replace(window.location.href + "?teacherId=" + id);
+                window.location.replace(window.location.href + "?studentId=" + id);
             }
         }
     </script>
 {% endblock %}
 {% block page_content %}
+    {{ super() }}
     <div class="page-header">
-        <h1>教师信息</h1>
+        <h1>学生信息</h1>
     </div>
     <div>
         <div class="row" style="margin-bottom:20px ">
-            <div class="col-lg-1 col-md-2 col-sm-3 col-xs-3" style="margin-bottom: 20px">
-                <a type="button" class="btn btn-default" aria-label="Add" href="{{ url_for('teacherAdd') }}">
+            <div class="col-lg-1 col-md-2 col-sm-3 col-xs-12" style="margin-bottom: 20px">
+                <a type="button" class="btn btn-default" aria-label="Add" href="{{ url_for('main.studentAdd') }}">
                     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                    <span>添加教师</span>
+                    <span>添加学生</span>
                 </a>
             </div>
             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-6" style="float:right">
                 <form method="post" class="form-inline">
                     <div class="form-group">
-                        {{ form.search(class="form-control",placeholder="请输入工号") }}
+                        {{ form.search(class="form-control",placeholder="请输入学号") }}
                     </div>
                     {{ form.submit(type="submit",class="btn black-btn") }}
 
@@ -38,43 +39,39 @@
         <div>
             <div style="border-bottom: 1px solid grey">
                 <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
-                <span>所有教师</span>
+                <span>学生列表</span>
             </div>
             <table class="table table-hover table-striped table-responsive center-format" style="margin-top: 20px">
                 <thead>
                 <tr class="active">
-                    <th class="center-format">工号</th>
                     <th class="center-format">姓名</th>
                     <th class="center-format">学院</th>
-                    <th class="center-format">职称</th>
+                    <th class="center-format">学号</th>
+                    <th class="center-format">年级</th>
                     <th class="center-format">邮箱</th>
                     <th class="center-format">操作</th>
                 </tr>
                 </thead>
                 <tbody>
-                {% for li in teacherLists %}
+                {% for li in studentLists %}
                     <tr>
-                        <td class="center-format">{{ li['id'] }}</td>
-                        <td class="center-format">{{ li['name'] }}</td>
-                        <td class="center-format">{{ li['school'] }}</td>
-                        <td class="center-format">{{ li['title'] }}</td>
-                        <td class="center-format">
+                        <td class="center-format" >{{ li['id'] }}</td>
+                        <td class="center-format" >{{ li['name'] }}</td>
+                        <td class="center-format" >{{ li['school'] }}</td>
+                        <td class="center-format" >{{ li['grade'] }}</td>
+                        <td class="center-format" >
                             <a href="mailto:{{ li['email'] }}">{{ li['email'] }}</a>
                         </td>
-                        <td class="col-lg-2 col-md-2 col-sm-4 col-xs-4">
+                        <td class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
                             <div class="btn-group" role="group" aria-label="...">
                                 <a type="button" class="btn btn-default" aria-label="edit"
-                                   href="{{ url_for('teacherEdit',teacherId= li['id']) }}">
+                                   href="{{ url_for('main.studentEdit',studentId= li['id']) }}">
                                     <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                                 </a>
                                 <button type="button" class="btn btn-default" aria-label="delete"
-                                        onclick="quitTeacher({{ li['id'] }})">
+                                        onclick="quitStudent({{ li['id'] }})">
                                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                                 </button>
-{#                                <a type="button" class="btn btn-default" aria-label="password"#}
-                                {#                                   href="{{ url_for('passwordEdit',teacherId= li['id']) }}">#}
-                                {#                                    <span class="glyphicon glyphicon-option-horizontal" aria-hidden="true"></span>#}
-                                {#                                </a>#}
                             </div>
                         </td>
 

@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-{% block title %}添加学生{% endblock %}
+{% block title %}编辑学生信息{% endblock %}
 
 {% block page_content %}
     <div class="page-header">
-        <h1>添加学生</h1>
+        <h1>编辑学生信息</h1>
     </div>
     <div>
         <form class="col-md-4" method="POST">
@@ -22,7 +22,7 @@
                     {{ form.submit(class="btn black-btn") }}
                 </div>
                 <div class="btn-group" role="group" style="float:right;margin: 5px">
-                    <a type="button" class="btn btn-default" href="{{ url_for('studentInfo') }}">取消</a>
+                    <a type="button" class="btn btn-default" href="{{ url_for('main.studentInfo') }}">取消</a>
                 </div>
             </div>
         </form>

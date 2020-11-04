@@ -12,8 +12,8 @@
         <form class="col-md-4" method="POST">
             {{ wtf.form_field(form.id) }}
             {{ wtf.form_field(form.name) }}
-            {{ wtf.form_field(form.school) }}
-            {{ wtf.form_field(form.title) }}
+            {{ wtf.form_field(form.school,class="selectpicker show-tick form-control",title="请选择学院") }}
+            {{ wtf.form_field(form.title,class="selectpicker show-tick form-control",title="请选择职称") }}
             {{ wtf.form_field(form.email) }}
             {{ wtf.form_field(form.password) }}
             {{ wtf.form_field(form.password2) }}

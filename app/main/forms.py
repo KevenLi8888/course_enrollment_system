@@ -24,6 +24,10 @@ schoolLists = [
     ('格拉斯哥学院', '格拉斯哥学院'),
     ('体育部', '体育部')
 ]
+gradeLists = [(2016, '2016级'), (2017, '2017级'), (2018, '2018级'), (2019, '2019级'),
+              (2020, '2020级')]
+
+titleLists = [('教授', '教授'), ('副教授', '副教授'), ('讲师', '讲师'), ('研究员', '研究员'), ('副研究员', '副研究员'), ('高级实验师', '高级实验师')]
 
 
 # 课程表单
@@ -36,26 +40,32 @@ class CourseForm(FlaskForm):
     capacity = IntegerField('容量', validators=[DataRequired()])
     time = StringField('上课时间', validators=[DataRequired()])
     place = StringField('上课地点', validators=[DataRequired()])
-    # grade = StringField('上课年级', validators=[DataRequired()])
     grade = SelectMultipleField('上课年级', coerce=int,
-                                choices=[(2016, '2016级'), (2017, '2017级'), (2018, '2018级'), (2019, '2019级'),
-                                         (2020, '2020级')], validators=[DataRequired()])
+                                choices=gradeLists, validators=[DataRequired()],
+                                render_kw={'data-live-search': "true"})
     school = SelectMultipleField('上课学院',
-                                 choices=schoolLists, validators=[DataRequired()])
+                                 choices=schoolLists, validators=[DataRequired()],
+                                 render_kw={'data-live-search': "true"})
     submit = SubmitField('确定')
 
-    # 教师表单
 
-
+# 教师表单
 class TeacherForm(FlaskForm):
     # TODO:进一步的验证函数
-    id = StringField('工号', validators=[DataRequired()])
-    name = StringField('姓名', validators=[DataRequired()])
+    id = StringField('工号', validators=[
+        DataRequired(), Length(1, 20),
+        Regexp('^[0-9]*$', 0,
+               'Id must have only numbers.')])
+    name = StringField('姓名', validators=[DataRequired(), Length(1, 10)])
     password = PasswordField('密码', validators=[
         DataRequired(), EqualTo('password2', message='Passwords must match.')])
     password2 = PasswordField('确认密码', validators=[DataRequired()])
-    school = StringField('学院', validators=[DataRequired()])
-    title = StringField('职称', validators=[DataRequired()])
+    school = SelectField('上课学院',
+                         choices=schoolLists, validators=[DataRequired()],
+                         render_kw={'data-live-search': "true"})
+    title = SelectField('职称',
+                        choices=titleLists, validators=[DataRequired()],
+                        render_kw={'data-live-search': "true"})
     email = StringField('邮箱', validators=[DataRequired(), Length(1, 64),
                                           Email()])
     submit = SubmitField('添加')

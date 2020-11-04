@@ -25,7 +25,7 @@ POOL = PooledDB(
 class SQLHelper(object):
 
     @staticmethod
-    def fetch_one(sql, args):
+    def fetch_one(sql, args=None):
         conn = POOL.connection()  # 通过连接池链接数据库
         cursor = conn.cursor()  # 创建游标
         cursor.execute(sql, args)  # 执行sql语句
@@ -34,10 +34,19 @@ class SQLHelper(object):
         return result
 
     @staticmethod
-    def fetch_all(self, sql, args):
+    def fetch_all(self, sql, args=None):
         conn = POOL.connection()
         cursor = conn.cursor()
         cursor.execute(sql, args)
-        result = cursor.fetchone()
+        result = cursor.fetchall()
         conn.close()
         return result
+
+    @staticmethod
+    def modify(sql, args=None):
+        conn = POOL.connection()  # 通过连接池链接数据库
+        cursor = conn.cursor()  # 创建游标
+        cursor.execute(sql, args)  # 执行sql语句
+        conn.commit()  # 提交修改
+        conn.close()  # 关闭链接
+        return True

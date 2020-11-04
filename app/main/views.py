@@ -2,6 +2,7 @@ from flask import render_template, redirect, flash, url_for, request
 from flask_login import login_required
 from . import main
 from .forms import *
+from ..db import dal
 
 courseLists = [{'id': 1, 'name': 'math', 'credit': 1, 'teacher': 'liJin', 'current': 5, 'max': 40, 'time': 'Tuesday',
                 'place': 'A110'},
@@ -155,14 +156,21 @@ def teacherInfo():
 def teacherAdd():
     form = TeacherForm()
     if form.validate_on_submit():
-        # TODO:提交数据库
-        # user = User(email=form.email.data.lower(),
-        #             username=form.username.data,
-        #             password=form.password.data)
-        # db.session.add(user)
-        # db.session.commit()
-        flash('添加成功')
-        return redirect(url_for('main.teacherInfo'))
+        sql = "select usr_id from user_login_info where usr_id='%s';" % form.id.data
+        rows = dal.SQLHelper.fetch_one(sql)
+        if rows is not None:
+            flash('工号已经存在，请重新填写！')
+        else:
+            sql = "insert into user_login_info(usr_id, usr_pwd, usr_type) values (%s,%s,%d);" % (
+                form.id.data, form.password.data, 1)
+            dal.SQLHelper.modify(sql)
+            sql = "insert into teacher_list(tchr_id, tchr_name, tchr_school, tchr_title, tchr_mail) values ({!r}," \
+                  "{!r},{!r},{!r},{!r});".format(form.id.data, form.name.data, form.school.data, form.title.data,
+                                                 form.email.data)
+            dal.SQLHelper.modify(sql)
+            print(form.id.data, form.name.data, form.school.data, form.title.data, form.email.data)
+            flash('添加成功')
+            return redirect(url_for('main.teacherInfo'))
     return render_template('teacherAdd.html', form=form)
 
 

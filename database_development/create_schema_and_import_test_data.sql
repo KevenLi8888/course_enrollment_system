@@ -29,7 +29,7 @@ CREATE TABLE `admin_list` (
   `adm_name` varchar(10) NOT NULL,
   `adm_school` varchar(45) NOT NULL,
   PRIMARY KEY (`adm_id`),
-  CONSTRAINT `fk_admin_list_user_login_info1` FOREIGN KEY (`adm_id`) REFERENCES `user_login_info` (`usr_id`)
+  CONSTRAINT `fk_admin_list_user_login_info1` FOREIGN KEY (`adm_id`) REFERENCES `user_login_info` (`usr_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -89,9 +89,9 @@ CREATE TABLE `enroll_record` (
   PRIMARY KEY (`enr_rec_id`),
   KEY `stu_id_idx` (`stu_id`),
   KEY `class_id_idx` (`class_id`),
-  CONSTRAINT `class_id_enr_rec` FOREIGN KEY (`class_id`) REFERENCES `class_info` (`class_id`),
+  CONSTRAINT `class_id_enr_rec` FOREIGN KEY (`class_id`) REFERENCES `class_info` (`class_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `stu_id_enr_rec` FOREIGN KEY (`stu_id`) REFERENCES `student_list` (`stu_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -116,8 +116,8 @@ CREATE TABLE `grade_list` (
   `class_id` varchar(10) NOT NULL,
   `class_target_grade` int NOT NULL,
   PRIMARY KEY (`grade_list_id`),
-  KEY `class_id` (`class_id`),
-  CONSTRAINT `grade_list_ibfk_1` FOREIGN KEY (`class_id`) REFERENCES `class_info` (`class_id`)
+  KEY `grade_list_ibfk_1` (`class_id`),
+  CONSTRAINT `grade_list_ibfk_1` FOREIGN KEY (`class_id`) REFERENCES `class_info` (`class_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -142,8 +142,8 @@ CREATE TABLE `school_list` (
   `class_id` varchar(10) NOT NULL,
   `class_target_school` int NOT NULL,
   PRIMARY KEY (`school_list_id`),
-  KEY `class_id` (`class_id`),
-  CONSTRAINT `school_list_ibfk_1` FOREIGN KEY (`class_id`) REFERENCES `class_info` (`class_id`)
+  KEY `school_list_ibfk_1` (`class_id`),
+  CONSTRAINT `school_list_ibfk_1` FOREIGN KEY (`class_id`) REFERENCES `class_info` (`class_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -170,7 +170,7 @@ CREATE TABLE `student_list` (
   `stu_grade` varchar(10) NOT NULL,
   `stu_mail` varchar(45) NOT NULL,
   PRIMARY KEY (`stu_id`),
-  CONSTRAINT `fk_student_list_user_login_info1` FOREIGN KEY (`stu_id`) REFERENCES `user_login_info` (`usr_id`)
+  CONSTRAINT `fk_student_list_user_login_info1` FOREIGN KEY (`stu_id`) REFERENCES `user_login_info` (`usr_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -198,9 +198,9 @@ CREATE TABLE `teach_record` (
   PRIMARY KEY (`tch_rec_id`),
   KEY `tchr_id_idx` (`tchr_id`),
   KEY `class_id_idx` (`class_id`),
-  CONSTRAINT `class_id_tch_rec` FOREIGN KEY (`class_id`) REFERENCES `class_info` (`class_id`),
+  CONSTRAINT `class_id_tch_rec` FOREIGN KEY (`class_id`) REFERENCES `class_info` (`class_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `tchr_id_tch_rec` FOREIGN KEY (`tchr_id`) REFERENCES `teacher_list` (`tchr_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -227,7 +227,7 @@ CREATE TABLE `teacher_list` (
   `tchr_title` varchar(45) NOT NULL,
   `tchr_mail` varchar(45) NOT NULL,
   PRIMARY KEY (`tchr_id`),
-  CONSTRAINT `fk_teacher_list_user_login_info1` FOREIGN KEY (`tchr_id`) REFERENCES `user_login_info` (`usr_id`)
+  CONSTRAINT `fk_teacher_list_user_login_info1` FOREIGN KEY (`tchr_id`) REFERENCES `user_login_info` (`usr_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -275,4 +275,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-11-02 19:37:16
+-- Dump completed on 2020-11-05 11:25:29

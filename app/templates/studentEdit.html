@@ -9,13 +9,11 @@
     </div>
     <div>
         <form class="col-md-4" method="POST">
-            {{ wtf.form_field(form.id) }}
-            {{ wtf.form_field(form.name) }}
+            {{ wtf.form_field(form.id,id="disabledInput",disabled="disabled") }}
+            {{ wtf.form_field(form.name,id="disabledInput",disabled="disabled") }}
             {{ wtf.form_field(form.school) }}
             {{ wtf.form_field(form.grade) }}
             {{ wtf.form_field(form.email) }}
-            {{ wtf.form_field(form.password) }}
-            {{ wtf.form_field(form.password2) }}
             {{ form.csrf_token }}
             <div>
                 <div style="float: right;margin: 5px">

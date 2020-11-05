@@ -44,9 +44,9 @@
             <table class="table table-hover table-striped table-responsive center-format" style="margin-top: 20px">
                 <thead>
                 <tr class="active">
+                    <th class="center-format">学号</th>
                     <th class="center-format">姓名</th>
                     <th class="center-format">学院</th>
-                    <th class="center-format">学号</th>
                     <th class="center-format">年级</th>
                     <th class="center-format">邮箱</th>
                     <th class="center-format">操作</th>
@@ -55,21 +55,21 @@
                 <tbody>
                 {% for li in studentLists %}
                     <tr>
-                        <td class="center-format" >{{ li['id'] }}</td>
-                        <td class="center-format" >{{ li['name'] }}</td>
-                        <td class="center-format" >{{ li['school'] }}</td>
-                        <td class="center-format" >{{ li['grade'] }}</td>
+                        <td class="center-format" >{{ li[0] }}</td>
+                        <td class="center-format" >{{ li[1] }}</td>
+                        <td class="center-format" >{{ li[2] }}</td>
+                        <td class="center-format" >{{ li[3] }}</td>
                         <td class="center-format" >
-                            <a href="mailto:{{ li['email'] }}">{{ li['email'] }}</a>
+                            <a href="mailto:{{ li['email'] }}">{{ li[4] }}</a>
                         </td>
                         <td class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
                             <div class="btn-group" role="group" aria-label="...">
                                 <a type="button" class="btn btn-default" aria-label="edit"
-                                   href="{{ url_for('main.studentEdit',studentId= li['id']) }}">
+                                   href="{{ url_for('main.studentEdit',studentId= li[0]) }}">
                                     <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                                 </a>
                                 <button type="button" class="btn btn-default" aria-label="delete"
-                                        onclick="quitStudent({{ li['id'] }})">
+                                        onclick="quitStudent({{ li[0] }})">
                                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                                 </button>
                             </div>

@@ -9,8 +9,8 @@
     </div>
     <div>
         <form class="col-md-4" method="POST">
-            {{ wtf.form_field(form.id,id="disabledInput",disabled="disabled" ) }}
-            {{ wtf.form_field(form.name) }}
+            {{ wtf.form_field(form.id,id="disabledInput",disabled="disabled") }}
+            {{ wtf.form_field(form.name,id="disabledInput",disabled="disabled") }}
             {{ wtf.form_field(form.school) }}
             {{ wtf.form_field(form.title) }}
             {{ wtf.form_field(form.email) }}

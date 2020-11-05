@@ -143,15 +143,11 @@ def courseEdit():
 def teacherInfo():
     form = SearchForm()
     if 'teacherId' in request.args:
-        # TODO:数据库删除课程
-        sql = "delete from teacher_list where tchr_id={0!r};".format(request.args['teacherId'])
-        dal.SQLHelper.modify(sql)
-        print(sql)
         sql = "delete from user_login_info where usr_id={0!r};".format(request.args['teacherId'])
         dal.SQLHelper.modify(sql)
         print(sql)
         print(request.args['teacherId'])
-        flash('xx老师删除成功')
+        flash('老师删除成功')
         return redirect(url_for('main.teacherInfo'))
     sql = "select t1.usr_id,t2.tchr_name,t2.tchr_school,t2.tchr_title,t2.tchr_mail,t1.usr_pwd  " \
           "from user_login_info t1 " \
@@ -172,7 +168,7 @@ def teacherAdd():
             flash('工号已经存在，请重新填写！')
         else:
             sql = "insert into user_login_info(usr_id, usr_pwd, usr_type) values ({!r},{!r},{!r});".format(
-                form.id.data, form.password.data, 1)
+                form.id.data, form.id.data, 1)
             dal.SQLHelper.modify(sql)
             sql = "insert into teacher_list(tchr_id, tchr_name, tchr_school, tchr_title, tchr_mail) values ({!r}," \
                   "{!r},{!r},{!r},{!r});".format(form.id.data, form.name.data, form.school.data, form.title.data,
@@ -190,10 +186,10 @@ def teacherEdit():
     form = TeacherEditForm()
     if form.validate_on_submit():
         sql = "update teacher_list " \
-              "set tchr_name = {!r}, tchr_school = {!r},tchr_title={!r},tchr_mail={!r} " \
-              "where tchr_id={!r};".format(form.name.data, form.school.data, form.title.data, form.email.data,
+              "set tchr_school = {!r},tchr_title={!r},tchr_mail={!r} " \
+              "where tchr_id={!r};".format(form.school.data, form.title.data, form.email.data,
                                            session['teacherId'])
-        print(form.name.data, form.school.data, form.title.data, form.email.data, session['teacherId'])
+        print(session['name'], form.school.data, form.title.data, form.email.data, session['teacherId'])
         dal.SQLHelper.modify(sql)
         flash('修改成功')
         return redirect(url_for('main.teacherInfo'))
@@ -207,7 +203,6 @@ def teacherEdit():
               "join teacher_list t2 on t1.usr_id=t2.tchr_id and t1.usr_id={!r};".format(session['teacherId'])
         rows = dal.SQLHelper.fetch_one(sql)
         form.id.data = rows[0]
-        form.id.default = rows[0]
         form.name.data = rows[1]
         form.school.data = rows[2]
         form.title.data = rows[3]
@@ -221,35 +216,17 @@ def teacherEdit():
 def studentInfo():
     form = SearchForm()
     if 'studentId' in request.args:
-        # TODO:数据库删除课程
-        sql = "delete from student_list where stu_id={0!r};".format(request.args['studentId'])
-        dal.SQLHelper.modify(sql)
-        print(sql)
         sql = "delete from user_login_info where usr_id={0!r};".format(request.args['studentId'])
         dal.SQLHelper.modify(sql)
         print(sql)
         print(request.args['studentId'])
-        flash('xx学生删除成功')
+        flash('学生删除成功')
         return redirect(url_for('main.studentInfo'))
     sql = "select t1.usr_id,t2.stu_name,t2.stu_school,t2.stu_grade,t2.stu_mail,t1.usr_pwd  " \
           "from user_login_info t1 " \
           "join student_list t2 on t1.usr_id=t2.stu_id;"
     studentLists = dal.SQLHelper.fetch_all(sql)
     return render_template('studentInfo.html', studentLists=studentLists, form=form)
-# def studentInfo():
-#     form = SearchForm()
-#     if len(request.args):
-#         # TODO:数据库删除课程
-#         sql = "delete from student_list where stu_id={0!r};".format(request.args['studentId'])
-#         dal.SQLHelper.modify(sql)
-#         print(sql)
-#         sql = "delete from user_login_info where usr_id={0!r};".format(request.args['studentId'])
-#         dal.SQLHelper.modify(sql)
-#         print(sql)
-#         print(request.args['studentId'])
-#         flash('xx学生删除成功')
-#         return redirect(url_for('main.studentInfo'))
-#     return render_template('studentInfo.html', studentLists=studentLists, form=form)
 
 
 # 添加学生
@@ -261,10 +238,10 @@ def studentAdd():
         sql = "select usr_id from user_login_info where usr_id={!r};".format(form.id.data)
         rows = dal.SQLHelper.fetch_one(sql)
         if rows is not None:
-            flash('工号已经存在，请重新填写！')
+            flash('学号已经存在，请重新填写！')
         else:
             sql = "insert into user_login_info(usr_id, usr_pwd, usr_type) values ({!r},{!r},{!r});".format(
-                form.id.data, form.password.data, 1)
+                form.id.data, form.id.data, 2)
             dal.SQLHelper.modify(sql)
             sql = "insert into student_list(stu_id, stu_name, stu_school, stu_grade, stu_mail) values ({!r}," \
                   "{!r},{!r},{!r},{!r});".format(form.id.data, form.name.data, form.school.data, form.grade.data,
@@ -282,10 +259,10 @@ def studentEdit():
     form = StudentEditForm()
     if form.validate_on_submit():
         sql = "update student_list " \
-              "set stu_name = {!r}, stu_school = {!r},stu_grade={!r},stu_mail={!r} " \
-              "where stu_id={!r};".format(form.name.data, form.school.data, form.grade.data, form.email.data,
-                                           session['studentId'])
-        print(form.name.data, form.school.data, form.title.data, form.email.data, session['studentId'])
+              "set stu_school = {!r},stu_grade={!r},stu_mail={!r} " \
+              "where stu_id={!r};".format(form.school.data, form.grade.data, form.email.data,
+                                          session['studentId'])
+        print(session['name'], form.school.data, form.grade.data, form.email.data, session['studentId'])
         dal.SQLHelper.modify(sql)
         flash('修改成功')
         return redirect(url_for('main.studentInfo'))
@@ -296,10 +273,9 @@ def studentEdit():
         # 原本的数据
         sql = "select t1.usr_id,t2.stu_name,t2.stu_school,t2.stu_grade,t2.stu_mail,t1.usr_pwd  " \
               "from user_login_info t1 " \
-              "join student_list t2 on t1.usr_id=t2.tchr_id and t1.usr_id={!r};".format(session['studentId'])
+              "join student_list t2 on t1.usr_id=t2.stu_id and t1.usr_id={!r};".format(session['studentId'])
         rows = dal.SQLHelper.fetch_one(sql)
         form.id.data = rows[0]
-        form.id.default = rows[0]
         form.name.data = rows[1]
         form.school.data = rows[2]
         form.grade.data = rows[3]

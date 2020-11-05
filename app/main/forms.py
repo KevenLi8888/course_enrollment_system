@@ -56,10 +56,7 @@ class TeacherForm(FlaskForm):
         Regexp('^[0-9]*$', 0,
                'Id must have only numbers.')])
     name = StringField('姓名', validators=[DataRequired(), Length(1, 10)])
-    password = PasswordField('密码', validators=[
-        DataRequired(), EqualTo('password2', message='Passwords must match.')])
-    password2 = PasswordField('确认密码', validators=[DataRequired()])
-    school = SelectField('上课学院',
+    school = SelectField('学院',
                          choices=schoolLists, validators=[DataRequired()],
                          render_kw={'data-live-search': "true"})
     title = SelectField('职称',
@@ -71,18 +68,9 @@ class TeacherForm(FlaskForm):
 
 
 # 教师修改表单
-class TeacherEditForm(FlaskForm):
+class TeacherEditForm(TeacherForm):
     id = StringField('工号')
-    name = StringField('姓名', validators=[DataRequired(), Length(1, 10)])
-    school = SelectField('上课学院',
-                         choices=schoolLists, validators=[DataRequired()],
-                         render_kw={'data-live-search': "true"})
-    title = SelectField('职称',
-                        choices=titleLists, validators=[DataRequired()],
-                        render_kw={'data-live-search': "true"})
-    email = StringField('邮箱', validators=[DataRequired(), Length(1, 64),
-                                          Email()])
-    submit = SubmitField('确定')
+    name = StringField('姓名')
 
 
 # 学生表单
@@ -90,14 +78,21 @@ class StudentForm(FlaskForm):
     # TODO:进一步的验证函数
     id = StringField('学号', validators=[DataRequired()])
     name = StringField('姓名', validators=[DataRequired()])
-    password = PasswordField('密码', validators=[
-        DataRequired(), EqualTo('password2', message='Passwords must match.')])
-    password2 = PasswordField('确认密码', validators=[DataRequired()])
-    school = StringField('学院', validators=[DataRequired()])
-    grade = StringField('年级', validators=[DataRequired()])
+    school = SelectField('学院',
+                         choices=schoolLists, validators=[DataRequired()],
+                         render_kw={'data-live-search': "true"})
+    grade = SelectField('年级',
+                        choices=gradeLists, validators=[DataRequired()],
+                        render_kw={'data-live-search': "true"})
     email = StringField('邮箱', validators=[DataRequired(), Length(1, 64),
                                           Email()])
     submit = SubmitField('确定')
+
+
+# 学生修改表单
+class StudentEditForm(StudentForm):
+    id = StringField('学号')
+    name = StringField('姓名')
 
 
 # 密码表单

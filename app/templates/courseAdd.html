@@ -6,14 +6,16 @@
         <h1>添加课程</h1>
     </div>
     <div>
-        <form class="col-md-4" method="POST">
+        <form class="col-md-4 " method="POST">
             {{ wtf.form_field(form.id) }}
             {{ wtf.form_field(form.name) }}
             {{ wtf.form_field(form.credit) }}
-            {{ wtf.form_field(form.teacher) }}
+            {{ wtf.form_field(form.teacher,class="selectpicker show-tick form-control",title="请选择老师") }}
             {{ wtf.form_field(form.capacity) }}
             {{ wtf.form_field(form.time) }}
-            {{ wtf.form_field(form.place) }}
+            {{ wtf.form_field(form.start) }}
+            {{ wtf.form_field(form.end) }}
+            {{ wtf.form_field(form.place,class="selectpicker show-tick form-control",title="请选择教室") }}
             {{ wtf.form_field(form.grade,class="selectpicker show-tick form-control",title="请选择年级") }}
             {{ wtf.form_field(form.school,class="selectpicker show-tick form-control",title="请选择学院") }}
             {{ form.csrf_token }}

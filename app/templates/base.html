@@ -35,6 +35,10 @@
             text-align: center !important;
             vertical-align: middle !important;
         }
+        .inline-form{
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
     </style>
 {% endblock %}
 {% block navbar %}
@@ -88,9 +92,31 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if current_user.is_authenticated %}
-                        <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+{#                        <li class="dropdown">#}
+{#                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"#}
+{#                               aria-haspopup="true"#}
+{#                               aria-expanded="false">个人中心 <span class="caret"></span></a>#}
+{#                            <ul class="dropdown-menu">#}
+{#                                <li><a href="#">Action</a></li>#}
+{#                                <li><a href="#">Another action</a></li>#}
+{#                                <li><a href="#">Something else here</a></li>#}
+{#                                <li role="separator" class="divider"></li>#}
+{#                                <li><a href="#">Separated link</a></li>#}
+{#                            </ul>#}
+{#                        </li>#}
+                        <li>
+                            <a href="#">
+                                <span class="glyphicon glyphicon-user" aria-hidden="true"></span></a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('auth.logout') }}">
+                                <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span></a>
+                        </li>
                     {% else %}
-                        <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
+                        <li>
+                            <a href="{{ url_for('auth.login') }}">
+                                <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span></a>
+                        </li>
                     {% endif %}
                 </ul>
             </div>

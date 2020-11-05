@@ -5,15 +5,7 @@ from .forms import *
 from ..db import dal
 
 courseLists = [{'id': 1, 'name': 'math', 'credit': 1, 'teacher': 'liJin', 'current': 5, 'max': 40, 'time': 'Tuesday',
-                'place': 'A110'},
-               {'id': 2, 'name': 'math', 'credit': 1, 'teacher': 'liJin', 'current': 5, 'max': 40, 'time': 'Tuesday',
-                'place': 'A110'},
-               {'id': 3, 'name': 'math', 'credit': 1, 'teacher': 'liJin', 'current': 5, 'max': 40, 'time': 'Tuesday',
-                'place': 'A110'},
-               {'id': 4, 'name': 'math', 'credit': 1, 'teacher': 'liJin', 'current': 5, 'max': 40, 'time': 'Tuesday',
-                'place': 'A110'},
-               {'id': 5, 'name': 'math', 'credit': 1, 'teacher': 'liJin', 'current': 5, 'max': 40, 'time': 'Tuesday',
-                'place': 'A110'}]
+                'week': '1-20', 'place': 'A110'}]
 studentLists = [{'id': 2018022, 'name': 'keven', 'school': 'cs', 'grade': 2018, 'email': '@email'},
                 {'id': 2018023, 'name': 'keven', 'school': 'cs', 'grade': 2018, 'email': '@email'},
                 {'id': 2018024, 'name': 'keven', 'school': 'cs', 'grade': 2018, 'email': '@email'},
@@ -105,15 +97,23 @@ def courseInfo():
 def courseAdd():
     form = CourseForm()
     if form.validate_on_submit():
-        print(form.grade.data)  # 返回一个列表
-        # TODO:提交数据库
-        # user = User(email=form.email.data.lower(),
-        #             username=form.username.data,
-        #             password=form.password.data)
-        # db.session.add(user)
-        # db.session.commit()
-        flash('添加成功')
-        return redirect(url_for('main.courseInfo'))
+        sql = "select class_id from class_info where class_id={!r};".format(form.id.data)
+        rows = dal.SQLHelper.fetch_one(sql)
+        if rows is not None:
+            flash('课程序号已经存在，请重新填写！')
+        else:
+            sql = "insert into class_info(class_id, class_name, class_credit, class_room, " \
+                  "class_capacity, class_start_week, class_end_week) " \
+                  "values ({!r},{!r},{!r},{!r},{!r},{!r},{!r});".format(form.id.data, form.name.data, form.credit.data,
+                                                                        form.place.data, form.capacity.data,
+                                                                        form.start.data, form.end.data)
+            dal.SQLHelper.modify(sql)
+            sql = "insert into teacher_list(tchr_id, tchr_name, tchr_school, tchr_title, tchr_mail) values ({!r}," \
+                  "{!r},{!r},{!r},{!r});".format(form.id.data, form.name.data, form.school.data, form.title.data,
+                                                 form.email.data)
+            dal.SQLHelper.modify(sql)
+            flash('添加成功')
+            return redirect(url_for('main.teacherInfo'))
     return render_template('courseAdd.html', form=form)
 
 
@@ -189,7 +189,7 @@ def teacherEdit():
               "set tchr_school = {!r},tchr_title={!r},tchr_mail={!r} " \
               "where tchr_id={!r};".format(form.school.data, form.title.data, form.email.data,
                                            session['teacherId'])
-        print(session['name'], form.school.data, form.title.data, form.email.data, session['teacherId'])
+        print(form.school.data, form.title.data, form.email.data, session['teacherId'])
         dal.SQLHelper.modify(sql)
         flash('修改成功')
         return redirect(url_for('main.teacherInfo'))
@@ -262,7 +262,7 @@ def studentEdit():
               "set stu_school = {!r},stu_grade={!r},stu_mail={!r} " \
               "where stu_id={!r};".format(form.school.data, form.grade.data, form.email.data,
                                           session['studentId'])
-        print(session['name'], form.school.data, form.grade.data, form.email.data, session['studentId'])
+        print(form.school.data, form.grade.data, form.email.data, session['studentId'])
         dal.SQLHelper.modify(sql)
         flash('修改成功')
         return redirect(url_for('main.studentInfo'))

@@ -29,23 +29,34 @@ gradeLists = [(2016, '2016级'), (2017, '2017级'), (2018, '2018级'), (2019, '2
 
 titleLists = [('教授', '教授'), ('副教授', '副教授'), ('讲师', '讲师'), ('研究员', '研究员'), ('副研究员', '副研究员'), ('高级实验师', '高级实验师')]
 
+roomLists = ['A101', 'A102', 'A103', 'A104', 'A105', 'A106', 'A107', 'A108', 'A109', 'A110',
+             'A201', 'A202', 'A203', 'A204', 'A205', 'A206', 'A207', 'A208', 'A209', 'A210',
+             'A301', 'A302', 'A303', 'A304', 'A305', 'A306', 'A307', 'A308', 'A309', 'A310']
+timeLists = [(1, '星期一-第1节')]
+
 
 # 课程表单
 class CourseForm(FlaskForm):
     # TODO:进一步的验证函数
     id = StringField('课程序号', validators=[DataRequired()])
     name = StringField('课程名称', validators=[DataRequired()])
-    credit = StringField('学分', validators=[DataRequired()])
-    teacher = StringField('老师', validators=[DataRequired()])
-    capacity = IntegerField('容量', validators=[DataRequired()])
+    credit = IntegerField('学分', validators=[DataRequired(), number_range(1, 10, '请输入正确的学分数，范围为1~10')])
+    teacher = SelectField('老师',
+                          choices=[], validators=[DataRequired()],
+                          render_kw={'data-live-search': "true"})
+    capacity = IntegerField('容量', validators=[DataRequired(), number_range(1, 120, '请输入正确的容量数，范围为1~120')])
     time = StringField('上课时间', validators=[DataRequired()])
-    place = StringField('上课地点', validators=[DataRequired()])
+    start = IntegerField('开始周数', validators=[DataRequired(), number_range(1, 20, '请输入正确的周数，范围为1~20')])
+    end = IntegerField('结束周数', validators=[DataRequired(), number_range(1, 20, '请输入正确的周数，范围为1~20')])
+    place = SelectField('上课地点',
+                        choices=roomLists, validators=[DataRequired()],
+                        render_kw={'data-live-search': "true"})
     grade = SelectMultipleField('上课年级', coerce=int,
                                 choices=gradeLists, validators=[DataRequired()],
-                                render_kw={'data-live-search': "true"})
+                                render_kw={'data-live-search': "true", 'data-actions-box': 'true'})
     school = SelectMultipleField('上课学院',
                                  choices=schoolLists, validators=[DataRequired()],
-                                 render_kw={'data-live-search': "true"})
+                                 render_kw={'data-live-search': "true", 'data-actions-box': 'true'})
     submit = SubmitField('确定')
 
 

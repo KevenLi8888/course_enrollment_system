@@ -54,24 +54,24 @@
                 <tbody>
                 {% for li in teacherLists %}
                     <tr>
-                        <td class="center-format">{{ li['id'] }}</td>
-                        <td class="center-format">{{ li['name'] }}</td>
-                        <td class="center-format">{{ li['school'] }}</td>
-                        <td class="center-format">{{ li['title'] }}</td>
+                        <td class="center-format">{{ li[0] }}</td>
+                        <td class="center-format">{{ li[1] }}</td>
+                        <td class="center-format">{{ li[2] }}</td>
+                        <td class="center-format">{{ li[3] }}</td>
                         <td class="center-format">
-                            <a href="mailto:{{ li['email'] }}">{{ li['email'] }}</a>
+                            <a href="mailto:{{ li['email'] }}">{{ li[4] }}</a>
                         </td>
                         <td class="col-lg-2 col-md-2 col-sm-4 col-xs-4">
                             <div class="btn-group" role="group" aria-label="...">
                                 <a type="button" class="btn btn-default" aria-label="edit"
-                                   href="{{ url_for('main.teacherEdit',teacherId= li['id']) }}">
+                                   href="{{ url_for('main.teacherEdit',teacherId=li[0]) }}">
                                     <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                                 </a>
                                 <button type="button" class="btn btn-default" aria-label="delete"
-                                        onclick="quitTeacher({{ li['id'] }})">
+                                        onclick="quitTeacher({{ li[0] }})">
                                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                                 </button>
-{#                                <a type="button" class="btn btn-default" aria-label="password"#}
+                                {#                                <a type="button" class="btn btn-default" aria-label="password"#}
                                 {#                                   href="{{ url_for('passwordEdit',teacherId= li['id']) }}">#}
                                 {#                                    <span class="glyphicon glyphicon-option-horizontal" aria-hidden="true"></span>#}
                                 {#                                </a>#}

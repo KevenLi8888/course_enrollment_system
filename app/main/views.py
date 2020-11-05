@@ -1,5 +1,5 @@
-from flask import render_template, redirect, flash, url_for, request
-from flask_login import login_required
+from flask import render_template, redirect, flash, url_for, request, session
+from flask_login import login_required, current_user
 from . import main
 from .forms import *
 from ..db import dal
@@ -18,10 +18,10 @@ studentLists = [{'id': 2018022, 'name': 'keven', 'school': 'cs', 'grade': 2018, 
                 {'id': 2018023, 'name': 'keven', 'school': 'cs', 'grade': 2018, 'email': '@email'},
                 {'id': 2018024, 'name': 'keven', 'school': 'cs', 'grade': 2018, 'email': '@email'},
                 {'id': 2018025, 'name': 'keven', 'school': 'cs', 'grade': 2018, 'email': '@email'}]
-teacherLists = [{'id': 2018022, 'name': 'keven', 'school': 'cs', 'title': 'teach', 'email': '@email'},
-                {'id': 2018023, 'name': 'keven', 'school': 'cs', 'title': 'teach', 'email': '@email'},
-                {'id': 2018024, 'name': 'keven', 'school': 'cs', 'title': 'teach', 'email': '@email'},
-                {'id': 2018025, 'name': 'keven', 'school': 'cs', 'title': 'teach', 'email': '@email'}]
+# teacherLists = [{'id': 2018022, 'name': 'keven', 'school': 'cs', 'title': 'teach', 'email': '@email'},
+#                 {'id': 2018023, 'name': 'keven', 'school': 'cs', 'title': 'teach', 'email': '@email'},
+#                 {'id': 2018024, 'name': 'keven', 'school': 'cs', 'title': 'teach', 'email': '@email'},
+#                 {'id': 2018025, 'name': 'keven', 'school': 'cs', 'title': 'teach', 'email': '@email'}]
 courseTable = [
     ['微积分', '', '', '', '', '', ''],
     ['微积分', '', '', '', '', '', ''],
@@ -142,11 +142,21 @@ def courseEdit():
 @login_required
 def teacherInfo():
     form = SearchForm()
-    if len(request.args):
+    if 'teacherId' in request.args:
         # TODO:数据库删除课程
+        sql = "delete from teacher_list where tchr_id={0!r};".format(request.args['teacherId'])
+        dal.SQLHelper.modify(sql)
+        print(sql)
+        sql = "delete from user_login_info where usr_id={0!r};".format(request.args['teacherId'])
+        dal.SQLHelper.modify(sql)
+        print(sql)
         print(request.args['teacherId'])
         flash('xx老师删除成功')
         return redirect(url_for('main.teacherInfo'))
+    sql = "select t1.usr_id,t2.tchr_name,t2.tchr_school,t2.tchr_title,t2.tchr_mail,t1.usr_pwd  " \
+          "from user_login_info t1 " \
+          "join teacher_list t2 on t1.usr_id=t2.tchr_id;"
+    teacherLists = dal.SQLHelper.fetch_all(sql)
     return render_template('teacherInfo.html', teacherLists=teacherLists, form=form)
 
 
@@ -156,19 +166,18 @@ def teacherInfo():
 def teacherAdd():
     form = TeacherForm()
     if form.validate_on_submit():
-        sql = "select usr_id from user_login_info where usr_id='%s';" % form.id.data
+        sql = "select usr_id from user_login_info where usr_id={!r};".format(form.id.data)
         rows = dal.SQLHelper.fetch_one(sql)
         if rows is not None:
             flash('工号已经存在，请重新填写！')
         else:
-            sql = "insert into user_login_info(usr_id, usr_pwd, usr_type) values (%s,%s,%d);" % (
+            sql = "insert into user_login_info(usr_id, usr_pwd, usr_type) values ({!r},{!r},{!r});".format(
                 form.id.data, form.password.data, 1)
             dal.SQLHelper.modify(sql)
             sql = "insert into teacher_list(tchr_id, tchr_name, tchr_school, tchr_title, tchr_mail) values ({!r}," \
                   "{!r},{!r},{!r},{!r});".format(form.id.data, form.name.data, form.school.data, form.title.data,
                                                  form.email.data)
             dal.SQLHelper.modify(sql)
-            print(form.id.data, form.name.data, form.school.data, form.title.data, form.email.data)
             flash('添加成功')
             return redirect(url_for('main.teacherInfo'))
     return render_template('teacherAdd.html', form=form)
@@ -178,19 +187,31 @@ def teacherAdd():
 @main.route('/teacherEdit', methods=['GET', 'POST'])
 @login_required
 def teacherEdit():
-    form = TeacherForm()
-    if len(request.args):
-        # TODO:数据库删除课程
-        print(request.args['teacherId'])
+    form = TeacherEditForm()
     if form.validate_on_submit():
-        # TODO:提交数据库
-        # user = User(email=form.email.data.lower(),
-        #             username=form.username.data,
-        #             password=form.password.data)
-        # db.session.add(user)
-        # db.session.commit()
+        sql = "update teacher_list " \
+              "set tchr_name = {!r}, tchr_school = {!r},tchr_title={!r},tchr_mail={!r} " \
+              "where tchr_id={!r};".format(form.name.data, form.school.data, form.title.data, form.email.data,
+                                           session['teacherId'])
+        print(form.name.data, form.school.data, form.title.data, form.email.data, session['teacherId'])
+        dal.SQLHelper.modify(sql)
         flash('修改成功')
         return redirect(url_for('main.teacherInfo'))
+    if 'teacherId' in request.args:
+        session['teacherId'] = request.args['teacherId']
+        return redirect(url_for('main.teacherEdit'))
+    if session['teacherId']:
+        # 原本的数据
+        sql = "select t1.usr_id,t2.tchr_name,t2.tchr_school,t2.tchr_title,t2.tchr_mail,t1.usr_pwd  " \
+              "from user_login_info t1 " \
+              "join teacher_list t2 on t1.usr_id=t2.tchr_id and t1.usr_id={!r};".format(session['teacherId'])
+        rows = dal.SQLHelper.fetch_one(sql)
+        form.id.data = rows[0]
+        form.id.default = rows[0]
+        form.name.data = rows[1]
+        form.school.data = rows[2]
+        form.title.data = rows[3]
+        form.email.data = rows[4]
     return render_template('teacherEdit.html', form=form)
 
 

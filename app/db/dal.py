@@ -34,7 +34,7 @@ class SQLHelper(object):
         return result
 
     @staticmethod
-    def fetch_all(self, sql, args=None):
+    def fetch_all(sql, args=None):
         conn = POOL.connection()
         cursor = conn.cursor()
         cursor.execute(sql, args)
@@ -47,6 +47,15 @@ class SQLHelper(object):
         conn = POOL.connection()  # 通过连接池链接数据库
         cursor = conn.cursor()  # 创建游标
         cursor.execute(sql, args)  # 执行sql语句
+        conn.commit()  # 提交修改
+        conn.close()  # 关闭链接
+        return True
+
+    @staticmethod
+    def modify_many(sql, args=None):
+        conn = POOL.connection()  # 通过连接池链接数据库
+        cursor = conn.cursor()  # 创建游标
+        cursor.executemany(sql, args)  # 执行sql语句
         conn.commit()  # 提交修改
         conn.close()  # 关闭链接
         return True

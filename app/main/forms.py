@@ -51,7 +51,6 @@ class CourseForm(FlaskForm):
 
 # 教师表单
 class TeacherForm(FlaskForm):
-    # TODO:进一步的验证函数
     id = StringField('工号', validators=[
         DataRequired(), Length(1, 20),
         Regexp('^[0-9]*$', 0,
@@ -68,7 +67,22 @@ class TeacherForm(FlaskForm):
                         render_kw={'data-live-search': "true"})
     email = StringField('邮箱', validators=[DataRequired(), Length(1, 64),
                                           Email()])
-    submit = SubmitField('添加')
+    submit = SubmitField('确定')
+
+
+# 教师修改表单
+class TeacherEditForm(FlaskForm):
+    id = StringField('工号')
+    name = StringField('姓名', validators=[DataRequired(), Length(1, 10)])
+    school = SelectField('上课学院',
+                         choices=schoolLists, validators=[DataRequired()],
+                         render_kw={'data-live-search': "true"})
+    title = SelectField('职称',
+                        choices=titleLists, validators=[DataRequired()],
+                        render_kw={'data-live-search': "true"})
+    email = StringField('邮箱', validators=[DataRequired(), Length(1, 64),
+                                          Email()])
+    submit = SubmitField('确定')
 
 
 # 学生表单

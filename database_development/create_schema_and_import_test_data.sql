@@ -58,6 +58,7 @@ CREATE TABLE `class_info` (
   `class_capacity` int NOT NULL,
   `class_start_week` int NOT NULL,
   `class_end_week` int NOT NULL,
+  `class_current_enroll_count` int NOT NULL,
   PRIMARY KEY (`class_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -68,7 +69,7 @@ CREATE TABLE `class_info` (
 
 LOCK TABLES `class_info` WRITE;
 /*!40000 ALTER TABLE `class_info` DISABLE KEYS */;
-INSERT INTO `class_info` VALUES ('01','class1',2,'A101',30,1,6),('02','class2',3,'B202',20,7,12),('03','class3',2,'C303',30,1,12);
+INSERT INTO `class_info` VALUES ('01','class1',2,'A101',30,1,6,0),('02','class2',3,'B202',20,7,12,0),('03','class3',2,'C303',30,1,12,0);
 /*!40000 ALTER TABLE `class_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -137,7 +138,7 @@ DROP TABLE IF EXISTS `school_list`;
 CREATE TABLE `school_list` (
   `school_list_id` int NOT NULL AUTO_INCREMENT,
   `class_id` varchar(10) NOT NULL,
-  `class_target_school` int NOT NULL,
+  `class_target_school` varchar(45) NOT NULL,
   PRIMARY KEY (`school_list_id`),
   KEY `school_list_ibfk_1` (`class_id`),
   CONSTRAINT `school_list_ibfk_1` FOREIGN KEY (`class_id`) REFERENCES `class_info` (`class_id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -298,4 +299,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-11-05 19:46:26
+-- Dump completed on 2020-11-05 23:07:48

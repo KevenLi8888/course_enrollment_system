@@ -58,9 +58,6 @@ CREATE TABLE `class_info` (
   `class_capacity` int NOT NULL,
   `class_start_week` int NOT NULL,
   `class_end_week` int NOT NULL,
-  `class_start_time` int NOT NULL,
-  `class_end_time` int NOT NULL,
-  `class_day` int NOT NULL,
   PRIMARY KEY (`class_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -71,7 +68,7 @@ CREATE TABLE `class_info` (
 
 LOCK TABLES `class_info` WRITE;
 /*!40000 ALTER TABLE `class_info` DISABLE KEYS */;
-INSERT INTO `class_info` VALUES ('01','class1',2,'A101',30,1,6,1,2,0),('02','class2',3,'B202',20,7,12,3,4,0),('03','class3',2,'C303',30,1,12,5,6,0);
+INSERT INTO `class_info` VALUES ('01','class1',2,'A101',30,1,6),('02','class2',3,'B202',20,7,12),('03','class3',2,'C303',30,1,12);
 /*!40000 ALTER TABLE `class_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -242,6 +239,32 @@ INSERT INTO `teacher_list` VALUES ('2001','teacher1','school1','professor','tchr
 UNLOCK TABLES;
 
 --
+-- Table structure for table `time_record`
+--
+
+DROP TABLE IF EXISTS `time_record`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `time_record` (
+  `time_rec_id` int NOT NULL AUTO_INCREMENT,
+  `class_id` varchar(10) NOT NULL,
+  `class_time` int NOT NULL,
+  PRIMARY KEY (`time_rec_id`),
+  KEY `class_id_time_rec_idx` (`class_id`),
+  CONSTRAINT `class_id_time_rec` FOREIGN KEY (`class_id`) REFERENCES `class_info` (`class_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `time_record`
+--
+
+LOCK TABLES `time_record` WRITE;
+/*!40000 ALTER TABLE `time_record` DISABLE KEYS */;
+/*!40000 ALTER TABLE `time_record` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `user_login_info`
 --
 
@@ -275,4 +298,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-11-05 15:34:35
+-- Dump completed on 2020-11-05 19:46:26

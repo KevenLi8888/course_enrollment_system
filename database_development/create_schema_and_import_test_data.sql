@@ -90,7 +90,7 @@ CREATE TABLE `enroll_record` (
   KEY `stu_id_idx` (`stu_id`),
   KEY `class_id_idx` (`class_id`),
   CONSTRAINT `class_id_enr_rec` FOREIGN KEY (`class_id`) REFERENCES `class_info` (`class_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `stu_id_enr_rec` FOREIGN KEY (`stu_id`) REFERENCES `student_list` (`stu_id`)
+  CONSTRAINT `stu_id_enr_rec` FOREIGN KEY (`stu_id`) REFERENCES `student_list` (`stu_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -199,7 +199,7 @@ CREATE TABLE `teach_record` (
   KEY `tchr_id_idx` (`tchr_id`),
   KEY `class_id_idx` (`class_id`),
   CONSTRAINT `class_id_tch_rec` FOREIGN KEY (`class_id`) REFERENCES `class_info` (`class_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `tchr_id_tch_rec` FOREIGN KEY (`tchr_id`) REFERENCES `teacher_list` (`tchr_id`)
+  CONSTRAINT `tchr_id_tch_rec` FOREIGN KEY (`tchr_id`) REFERENCES `teacher_list` (`tchr_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -275,4 +275,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-11-05 11:25:29
+-- Dump completed on 2020-11-05 15:34:35

@@ -4,9 +4,7 @@ from . import main
 from .forms import *
 from ..db import dal
 
-courseLists = [{'id': 1, 'name': 'math', 'credit': 1, 'teacher': 'liJin', 'current': 5, 'max': 40,
-                'time': '11111111111111111<br>1111111111111111111111111111111111Tuesday',
-                'week': '1-20', 'place': 'A110'}]
+courseLists = []
 studentLists = [{'id': 2018022, 'name': 'keven', 'school': 'cs', 'grade': 2018, 'email': '@email'},
                 {'id': 2018023, 'name': 'keven', 'school': 'cs', 'grade': 2018, 'email': '@email'},
                 {'id': 2018024, 'name': 'keven', 'school': 'cs', 'grade': 2018, 'email': '@email'},

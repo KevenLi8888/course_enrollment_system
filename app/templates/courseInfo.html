@@ -51,9 +51,10 @@
                     <th class="center-format">课程名称</th>
                     <th class="center-format">学分</th>
                     <th class="center-format">老师</th>
-                    <th class="center-format">已选人数</th>
-                    <th class="center-format">最大容量</th>
+                    <th class="center-format">上课人数</th>
+                    <th class="center-format">课程容量</th>
                     <th class="center-format">上课时间</th>
+                    <th class="center-format">上课周数</th>
                     <th class="center-format">上课地点</th>
                     <th class="center-format">操作</th>
                 </tr>
@@ -64,11 +65,20 @@
                         <td class="center-format">{{ li['id'] }}</td>
                         <td class="center-format">{{ li['name'] }}</td>
                         <td class="center-format">{{ li['credit'] }}</td>
-                        <td class="center-format">{{ li['teacher'] }}</td>
+                        <td class="center-format">
+                            {% for teacher in li['teacher'] %}
+                                {{ teacher }}<br>
+                            {% endfor %}
+                        </td>
                         <td class="center-format">{{ li['current'] }}</td>
-                        <td class="center-format">{{ li['max'] }}</td>
-                        <td class="center-format">{{ li['time'] }}</td>
-                        <td class="center-format">{{ li['place'] }}</td>
+                        <td class="center-format">{{ li['capacity'] }}</td>
+                        <td class="center-format">
+                            {% for time in li['time'] %}
+                                {{ time }}<br>
+                            {% endfor %}
+                        </td>
+                        <td class="center-format">{{ li['week'] }}</td>
+                        <td class="center-format">{{ li['room'] }}</td>
                         <td class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
                             <div class="btn-group" role="group" aria-label="...">
                                 <a type="button" class="btn btn-default" aria-label="edit"

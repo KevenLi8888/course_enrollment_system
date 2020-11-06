@@ -96,24 +96,79 @@ def courseInfo():
 @login_required
 def courseAdd():
     form = CourseForm()
+    sql = "select tchr_id,tchr_name from teacher_list;"
+    rows = dal.SQLHelper.fetch_all(sql)
+    form.teacher.choices += [(row[0], row[1]) for row in rows]
     if form.validate_on_submit():
+
+        # 判断周数非法
+        if form.start.data > form.end.data:
+            flash('课程开始周数不能大于课程结束周数，请重新填写！')
+            return render_template('courseAdd.html', form=form)
+
+        for li in form.time.data:
+            # 判断教室冲突
+            sql = "select t1.class_id, class_name " \
+                  "from class_info t1 " \
+                  "join time_record t2 on t1.class_id = t2.class_id " \
+                  "where class_time = {!r} and class_room = {!r};".format(li, form.place.data)
+            rows = dal.SQLHelper.fetch_one(sql)
+            print("打印1")
+            print(rows)
+            if rows is not None:
+                flash("与课程{}{}教室冲突".format(rows[0], rows[1]))
+                return render_template('courseAdd.html', form=form)
+
+            # 判断老师时间冲突
+            for tli in form.teacher.data:
+                sql = "select t4.tchr_name,t1.class_id, class_name " \
+                      "from class_info t1 " \
+                      "join teach_record t2 on t1.class_id = t2.class_id " \
+                      "join time_record t3 on t1.class_id = t3.class_id " \
+                      "join teacher_list t4 on t2.tchr_id = t4.tchr_id " \
+                      "where t2.tchr_id = {!r} and class_time = {!r};".format(tli, li)
+                rows = dal.SQLHelper.fetch_one(sql)
+                print("打印2")
+                print(rows)
+                if rows is not None:
+                    flash("与{}老师课程{}{}时间冲突".format(rows[0], rows[1], rows[2]))
+                    return render_template('courseAdd.html', form=form)
+
+        # 判断课程序号冲突与
         sql = "select class_id from class_info where class_id={!r};".format(form.id.data)
         rows = dal.SQLHelper.fetch_one(sql)
         if rows is not None:
             flash('课程序号已经存在，请重新填写！')
-        else:
-            sql = "insert into class_info(class_id, class_name, class_credit, class_room, " \
-                  "class_capacity, class_start_week, class_end_week) " \
-                  "values ({!r},{!r},{!r},{!r},{!r},{!r},{!r});".format(form.id.data, form.name.data, form.credit.data,
-                                                                        form.place.data, form.capacity.data,
-                                                                        form.start.data, form.end.data)
+            return render_template('courseAdd.html', form=form)
+        # 添加到数据库
+        sql = "insert into class_info(class_id, class_name, class_credit, class_room, " \
+              "class_capacity, class_start_week, class_end_week,class_current_enroll_count) " \
+              "values ({!r},{!r},{!r},{!r},{!r},{!r},{!r},0);".format(form.id.data, form.name.data, form.credit.data,
+                                                                      form.place.data, form.capacity.data,
+                                                                      form.start.data, form.end.data)
+        dal.SQLHelper.modify(sql)
+
+        for li in form.teacher.data:
+            sql = "insert into teach_record(class_id,tchr_id)" \
+                  "values ({!r},{!r});".format(form.id.data, li)
             dal.SQLHelper.modify(sql)
-            sql = "insert into teacher_list(tchr_id, tchr_name, tchr_school, tchr_title, tchr_mail) values ({!r}," \
-                  "{!r},{!r},{!r},{!r});".format(form.id.data, form.name.data, form.school.data, form.title.data,
-                                                 form.email.data)
+
+        for li in form.time.data:
+            sql = "insert into time_record(class_id, class_time) " \
+                  "values ({!r},{!r});".format(form.id.data, li)
             dal.SQLHelper.modify(sql)
-            flash('添加成功')
-            return redirect(url_for('main.teacherInfo'))
+
+        for li in form.school.data:
+            sql = "insert into school_list(class_id, class_target_school) " \
+                  "values ({!r},{!r});".format(form.id.data, li)
+            dal.SQLHelper.modify(sql)
+
+        for li in form.grade.data:
+            sql = "insert into grade_list(class_id, class_target_grade)" \
+                  "values ({!r},{!r});".format(form.id.data, li)
+            dal.SQLHelper.modify(sql)
+        flash('添加成功')
+        return redirect(url_for('main.courseInfo'))
     return render_template('courseAdd.html', form=form)
 
 

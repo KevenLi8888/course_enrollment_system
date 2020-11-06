@@ -32,18 +32,20 @@ titleLists = [('教授', '教授'), ('副教授', '副教授'), ('讲师', '讲�
 roomLists = ['A101', 'A102', 'A103', 'A104', 'A105', 'A106', 'A107', 'A108', 'A109', 'A110',
              'A201', 'A202', 'A203', 'A204', 'A205', 'A206', 'A207', 'A208', 'A209', 'A210',
              'A301', 'A302', 'A303', 'A304', 'A305', 'A306', 'A307', 'A308', 'A309', 'A310']
-timeLists = [(1, '星期一-第1节')]
-
+timeLists = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
+              29, 30, 31, 32, 33, 34, 35, 36]
 
 # 课程表单
+
+
 class CourseForm(FlaskForm):
     # TODO:进一步的验证函数
     id = StringField('课程序号', validators=[DataRequired()])
     name = StringField('课程名称', validators=[DataRequired()])
     credit = IntegerField('学分', validators=[DataRequired(), number_range(1, 10, '请输入正确的学分数，范围为1~10')])
-    teacher = SelectField('老师',
-                          choices=[], validators=[DataRequired()],
-                          render_kw={'data-live-search': "true"})
+    teacher = SelectMultipleField('老师',
+                                  choices=[], validators=[DataRequired()],
+                                  render_kw={'data-live-search': "true"})
     capacity = IntegerField('容量', validators=[DataRequired(), number_range(1, 120, '请输入正确的容量数，范围为1~120')])
     time = StringField('上课时间', validators=[DataRequired()])
     start = IntegerField('开始周数', validators=[DataRequired(), number_range(1, 20, '请输入正确的周数，范围为1~20')])

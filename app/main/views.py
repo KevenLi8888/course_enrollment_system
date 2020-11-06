@@ -198,12 +198,6 @@ def courseAdd():
             sql = "insert into grade_list(class_id, class_target_grade)" \
                   "values ({!r},{!r});".format(form.id.data, li)
             dal.SQLHelper.modify(sql)
-        sql = "select time_rec_id from class_info ci " \
-              "join time_record tr on ci.class_id = tr.class_id " \
-              "where ci.class_id = {!r};".format(row[0])
-        times = dal.SQLHelper.fetch_all(sql)
-        print('测试')
-        print(times)
         flash('添加成功')
         return redirect(url_for('main.courseInfo'))
     return render_template('courseAdd.html', form=form)

@@ -108,10 +108,12 @@ def courseInfo():
         for teacher in teachers:
             course['teacher'].append(teacher[0])
 
-        sql = "select time_rec_id from class_info ci " \
+        sql = "select class_time from class_info ci " \
               "join time_record tr on ci.class_id = tr.class_id " \
               "where ci.class_id = {!r};".format(row[0])
         times = dal.SQLHelper.fetch_all(sql)
+        print("result:")
+        print(times)
         for time in times:
             course['time'].append(
                 "星期{} {}-{}".format(week_list[time[0] // 6], 2 * (time[0] % 6) + 1, 2 * (time[0] % 6 + 1)))

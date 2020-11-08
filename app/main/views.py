@@ -64,10 +64,21 @@ def quit():
 @main.route('/student', methods=['GET', 'POST'])
 @login_required
 def student():
-    if len(request.args):
-        print(request.args['courseId'])
+    studentLists = [];
+    if 'courseId' in request.args:
+        session['courseId'] = request.args['courseId']
         return redirect(url_for('main.student'))
+    if session['courseId']:
+        sql = "select distinct student_list.stu_id,stu_name,stu_school,stu_grade,stu_mail " \
+              "from student_list " \
+              "join enroll_record,class_info " \
+              "where student_list.stu_id=enroll_record.stu_id " \
+              "and enroll_record.class_id=class_info.class_id " \
+              "and class_info.class_id={};".format(session['courseId'])
+        studentLists = dal.SQLHelper.fetch_all(sql)
+        print(studentLists)
     return render_template('student.html', studentLists=studentLists)
+# 学生空的时候报错
 
 # 老师课程
 @main.route('/teach', methods=['GET', 'POST'])

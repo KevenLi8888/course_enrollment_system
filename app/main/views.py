@@ -60,14 +60,6 @@ def quit():
         return redirect(url_for('main.quit'))
     return render_template('quit.html', courseLists=courseLists, courseTable=courseTable)
 
-
-# 老师课程
-@main.route('/teach', methods=['GET', 'POST'])
-@login_required
-def teach():
-    return render_template('teach.html', courseLists=courseLists, courseTable=courseTable)
-
-
 # 学生花名册
 @main.route('/student', methods=['GET', 'POST'])
 @login_required
@@ -76,6 +68,33 @@ def student():
         print(request.args['courseId'])
         return redirect(url_for('main.student'))
     return render_template('student.html', studentLists=studentLists)
+
+# 老师课程
+@main.route('/teach', methods=['GET', 'POST'])
+@login_required
+def teach():
+    sql="select distinct class_info.class_id," \
+            "class_name,class_credit,class_current_enroll_count," \
+            "class_capacity,class_start_week ,class_end_week," \
+            "class_room from  class_info join teach_record,teacher_list,time_record" \
+            " where teach_record.class_id=class_info.class_id and  teach_record.tchr_id= {!r};".format(current_user.id)
+    rows = dal.SQLHelper.fetch_all(sql)
+    print(rows)
+    courseLists = []
+    for row in rows:
+        course = {'id': row[0], 'name': row[1], 'credit': row[2], 'current': row[3], 'capacity': row[4],
+                  'time': [], 'week': "{}-{}".format(row[5], row[6]), 'room': row[7]}
+        sql = "select class_time from class_info ci " \
+         "join time_record tr on ci.class_id = tr.class_id " \
+         "where ci.class_id = {!r};".format(row[0])
+        times = dal.SQLHelper.fetch_all(sql)
+        print("result:")
+        print(times)
+        for time in times:
+          course['time'].append(
+        "星期{} {}-{}".format(week_list[time[0] // 6], 2 * (time[0] % 6) + 1, 2 * (time[0] % 6 + 1)))
+        courseLists.append(course)
+    return render_template('teach.html', courseLists=courseLists, courseTable=courseTable)
 
 
 # 课程信息

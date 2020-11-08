@@ -58,9 +58,9 @@ class CourseForm(FlaskForm):
                                render_kw={'data-live-search': "true", 'data-max-options': '3', 'data-size': '5'})
     start = IntegerField('开始周数', validators=[DataRequired(), number_range(1, 20, '请输入正确的周数，范围为1~20')])
     end = IntegerField('结束周数', validators=[DataRequired(), number_range(1, 20, '请输入正确的周数，范围为1~20')])
-    place = SelectField('上课地点',
-                        choices=roomLists, validators=[DataRequired()],
-                        render_kw={'data-live-search': "true", 'data-size': '5'})
+    room = SelectField('上课地点',
+                       choices=roomLists, validators=[DataRequired()],
+                       render_kw={'data-live-search': "true", 'data-size': '5'})
     grade = SelectMultipleField('上课年级', coerce=int,
                                 choices=gradeLists, validators=[DataRequired()],
                                 render_kw={'data-live-search': "true", 'data-actions-box': 'true', 'data-size': '5'})
@@ -68,6 +68,11 @@ class CourseForm(FlaskForm):
                                  choices=schoolLists, validators=[DataRequired()],
                                  render_kw={'data-live-search': "true", 'data-actions-box': 'true', 'data-size': '5'})
     submit = SubmitField('确定')
+
+
+# 课程修改
+class CourseEditForm(CourseForm):
+    id = StringField('课程序号')
 
 
 # 教师表单

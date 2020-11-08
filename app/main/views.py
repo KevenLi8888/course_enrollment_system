@@ -1,5 +1,6 @@
 from flask import render_template, redirect, flash, url_for, request, session
 from flask_login import login_required, current_user
+import operator
 from . import main
 from .forms import *
 from ..db import dal
@@ -178,7 +179,7 @@ def courseAdd():
             sql = "select t1.class_id, class_name,class_start_week,class_end_week " \
                   "from class_info t1 " \
                   "join time_record t2 on t1.class_id = t2.class_id " \
-                  "where class_time = {!r} and class_room = {!r};".format(li, form.place.data)
+                  "where class_time = {!r} and class_room = {!r};".format(li, form.room.data)
             rows = dal.SQLHelper.fetch_all(sql)
             print(rows)
             if rows is not None:
@@ -207,7 +208,7 @@ def courseAdd():
         sql = "insert into class_info(class_id, class_name, class_credit, class_room, " \
               "class_capacity, class_start_week, class_end_week,class_current_enroll_count) " \
               "values ({!r},{!r},{!r},{!r},{!r},{!r},{!r},0);".format(form.id.data, form.name.data, form.credit.data,
-                                                                      form.place.data, form.capacity.data,
+                                                                      form.room.data, form.capacity.data,
                                                                       form.start.data, form.end.data)
         dal.SQLHelper.modify(sql)
 
@@ -239,19 +240,163 @@ def courseAdd():
 @main.route('/courseEdit', methods=['GET', 'POST'])
 @login_required
 def courseEdit():
-    form = CourseForm()
-    if len(request.args):
-        # TODO:数据库删除课程
-        print(request.args['courseId'])
+    form = CourseEditForm()
+    sql = "select tchr_id,tchr_name from teacher_list;"
+    rows = dal.SQLHelper.fetch_all(sql)
+    form.teacher.choices += [(row[0], row[1]) for row in rows]
     if form.validate_on_submit():
-        # TODO:提交数据库
-        # user = User(email=form.email.data.lower(),
-        #             username=form.username.data,
-        #             password=form.password.data)
-        # db.session.add(user)
-        # db.session.commit()
+        form.id.data = session['courseId']
+        # 判断周数非法
+        if form.start.data > form.end.data:
+            flash('课程开始周数不能大于课程结束周数，请重新填写！')
+            return render_template('courseEdit.html', form=form)
+
+        for li in form.time.data:
+            # 判断教室冲突
+            sql = "select t1.class_id, class_name,class_start_week,class_end_week " \
+                  "from class_info t1 " \
+                  "join time_record t2 on t1.class_id = t2.class_id " \
+                  "where class_time = {!r} and class_room = {!r};".format(li, form.room.data)
+            rows = dal.SQLHelper.fetch_all(sql)
+            print(rows)
+            if rows is not None:
+                for row in rows:
+                    if row[0] == session['courseId']:
+                        continue
+                    if form.end.data >= row[2] and form.start.data <= row[3]:
+                        flash("与课程{}{}教室冲突".format(row[0], row[1]))
+                        return render_template('courseEdit.html', form=form)
+
+            # 判断老师时间冲突
+            for tli in form.teacher.data:
+                sql = "select t4.tchr_name,t1.class_id, class_name,class_start_week,class_end_week " \
+                      "from class_info t1 " \
+                      "join teach_record t2 on t1.class_id = t2.class_id " \
+                      "join time_record t3 on t1.class_id = t3.class_id " \
+                      "join teacher_list t4 on t2.tchr_id = t4.tchr_id " \
+                      "where t2.tchr_id = {!r} and class_time = {!r};".format(tli, li)
+                rows = dal.SQLHelper.fetch_all(sql)
+                print(rows)
+                if rows is not None:
+                    for row in rows:
+                        if row[1] == session['courseId']:
+                            continue
+                        if form.end.data >= row[3] and form.start.data <= row[4]:
+                            flash("与{}老师课程{}{}时间冲突".format(row[0], row[1], row[2]))
+                            return render_template('courseEdit.html', form=form)
+
+        # 更新数据库
+        sql = "update class_info " \
+              "set class_name={!r},class_credit={!r},class_room={!r}," \
+              "class_capacity={!r},class_start_week={!r},class_end_week={!r} " \
+              "where class_id={!r};".format(form.name.data, form.credit.data, form.room.data,
+                                            form.capacity.data, form.start.data, form.end.data,
+                                            session['courseId'])
+        dal.SQLHelper.modify(sql)
+
+        # 更新老师
+        if not operator.eq(session['teacher'], form.teacher.data):
+            # 删除
+            sql = "delete from teach_record where class_id={!r}".format(session['courseId'])
+            dal.SQLHelper.modify(sql)
+            # 插入
+            for li in form.teacher.data:
+                sql = "insert into teach_record(class_id,tchr_id)" \
+                      "values ({!r},{!r});".format(session['courseId'], li)
+                dal.SQLHelper.modify(sql)
+
+        # 更新上课时间
+        if not operator.eq(session['time'], form.time.data):
+            # 删除
+            sql = "delete from time_record where class_id={!r}".format(session['courseId'])
+            dal.SQLHelper.modify(sql)
+            # 插入
+            for li in form.time.data:
+                sql = "insert into time_record(class_id, class_time) " \
+                      "values ({!r},{!r});".format(session['courseId'], li)
+                dal.SQLHelper.modify(sql)
+
+        # 更新上课学院
+        if not operator.eq(session['school'], form.school.data):
+            # 删除
+            sql = "delete from school_list where class_id={!r}".format(session['courseId'])
+            dal.SQLHelper.modify(sql)
+            # 插入
+            for li in form.school.data:
+                sql = "insert into school_list(class_id, class_target_school) " \
+                      "values ({!r},{!r});".format(session['courseId'], li)
+                dal.SQLHelper.modify(sql)
+
+        # 更新上课年级
+        if not operator.eq(session['grade'], form.grade.data):
+            # 删除
+            sql = "delete from grade_list where class_id={!r}".format(session['courseId'])
+            dal.SQLHelper.modify(sql)
+            # 插入
+            for li in form.grade.data:
+                sql = "insert into grade_list(class_id, class_target_grade)" \
+                      "values ({!r},{!r});".format(session['courseId'], li)
+                dal.SQLHelper.modify(sql)
         flash('修改成功')
         return redirect(url_for('main.courseInfo'))
+
+    # 重定向
+    if 'courseId' in request.args:
+        session['courseId'] = request.args['courseId']
+        return redirect(url_for('main.courseEdit'))
+
+    # 原本的数据
+    if session['courseId']:
+        sql = "select class_name, class_credit, class_room, class_capacity, " \
+              "class_start_week, class_end_week " \
+              "from class_info " \
+              "where class_id={!r}".format(session['courseId'])
+        rows = dal.SQLHelper.fetch_one(sql)
+        form.id.data = session['courseId']
+        form.name.data = rows[0]
+        form.credit.data = rows[1]
+        form.room.data = rows[2]
+        form.capacity.data = rows[3]
+        form.start.data = rows[4]
+        form.end.data = rows[5]
+        session['teacher'] = form.teacher.data = []
+        session['time'] = form.time.data = []
+        session['grade'] = form.grade.data = []
+        session['school'] = form.school.data = []
+
+        # 教师
+        sql = "select tr.tchr_id from class_info ci " \
+              "join teach_record tr on ci.class_id = tr.class_id " \
+              "join teacher_list tl on tr.tchr_id = tl.tchr_id " \
+              "where ci.class_id={!r};".format(session['courseId'])
+        teachers = dal.SQLHelper.fetch_all(sql)
+        for teacher in teachers:
+            form.teacher.data.append(teacher[0])
+
+        # 时间
+        sql = "select class_time from class_info ci " \
+              "join time_record tr on ci.class_id = tr.class_id " \
+              "where ci.class_id = {!r};".format(session['courseId'])
+        times = dal.SQLHelper.fetch_all(sql)
+        for time in times:
+            form.time.data.append(time[0])
+
+        # 学院
+        sql = "select class_target_school from class_info ci " \
+              "join school_list sl on ci.class_id = sl.class_id " \
+              "where ci.class_id={!r};".format(session['courseId'])
+        schools = dal.SQLHelper.fetch_all(sql)
+        for school in schools:
+            form.school.data.append(school[0])
+
+        # 年级
+        sql = "select class_target_grade from class_info ci " \
+              "join grade_list gl on ci.class_id = gl.class_id " \
+              "where ci.class_id = {!r}".format(session['courseId'])
+        grades = dal.SQLHelper.fetch_all(sql)
+        for grade in grades:
+            form.grade.data.append(grade[0])
+
     return render_template('courseEdit.html', form=form)
 
 
@@ -303,6 +448,7 @@ def teacherAdd():
 def teacherEdit():
     form = TeacherEditForm()
     if form.validate_on_submit():
+        form.id.data = session['teacherId']
         sql = "update teacher_list " \
               "set tchr_school = {!r},tchr_title={!r},tchr_mail={!r} " \
               "where tchr_id={!r};".format(form.school.data, form.title.data, form.email.data,
@@ -376,6 +522,7 @@ def studentAdd():
 def studentEdit():
     form = StudentEditForm()
     if form.validate_on_submit():
+        form.id.data = session['studentId']
         sql = "update student_list " \
               "set stu_school = {!r},stu_grade={!r},stu_mail={!r} " \
               "where stu_id={!r};".format(form.school.data, form.grade.data, form.email.data,

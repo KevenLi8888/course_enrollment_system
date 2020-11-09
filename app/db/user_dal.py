@@ -33,6 +33,22 @@ class User_Dal:
             # result = {'isAuth': True}
             model.id = rows[0]
             model.type = rows[1]
+        if model.type == 0:
+            model.name = 'admin'
+        elif model.type == 1:
+            sql = "select tchr_name from user_login_info uli " \
+                  "join teacher_list tl on uli.usr_id = tl.tchr_id " \
+                  "where usr_id={!r};".format(model.id)
+            teacher = user_dal.User_Dal.query(sql)
+            if teacher:
+                model.name = teacher[0]
+        elif model.type == 2:
+            sql = "select stu_name from user_login_info uli " \
+                  "join student_list sl on uli.usr_id = sl.stu_id " \
+                  "where usr_id={!r}".format(model.id)
+            student = user_dal.User_Dal.query(sql)
+            if student:
+                model.name = student[0]
         return model
 
     # 具体执行sql语句的函数

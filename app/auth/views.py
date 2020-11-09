@@ -17,7 +17,8 @@ def login():
         if result[0]['isAuth']:
             login_user(model, form.remember_me.data)
             print('登陆成功')
-            print(current_user.id)  # 登录成功之后可以用current_user来取该用户的其他属性，这些属性都是sql语句查来并赋值给对象的。
+            print(current_user.id)
+            print(current_user.name)# 登录成功之后可以用current_user来取该用户的其他属性，这些属性都是sql语句查来并赋值给对象的。
             return redirect(url_for('main.index'))
         else:
             print('登陆失败')

@@ -15,18 +15,18 @@ studentLists = [{'id': 2018022, 'name': 'keven', 'school': 'cs', 'grade': 2018, 
 #                 {'id': 2018024, 'name': 'keven', 'school': 'cs', 'title': 'teach', 'email': '@email'},
 #                 {'id': 2018025, 'name': 'keven', 'school': 'cs', 'title': 'teach', 'email': '@email'}]
 courseTable = [
-    ['微积分', '', '', '', '', '', ''],
-    ['微积分', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '']
+    [[], [], [], [], [], [], []],
+    [[], [], [], [], [], [], []],
+    [[], [], [], [], [], [], []],
+    [[], [], [], [], [], [], []],
+    [[], [], [], [], [], [], []],
+    [[], [], [], [], [], [], []],
+    [[], [], [], [], [], [], []],
+    [[], [], [], [], [], [], []],
+    [[], [], [], [], [], [], []],
+    [[], [], [], [], [], [], []],
+    [[], [], [], [], [], [], []],
+    [[], [], [], [], [], [], []]
 ]
 week_list = ['一', '二', '三', '四', '五', '六', '日']
 
@@ -35,6 +35,52 @@ week_list = ['一', '二', '三', '四', '五', '六', '日']
 @main.route('/', methods=['GET', 'POST'])
 def index():
     return render_template('home.html')
+
+
+# 学生课程
+@main.route('/study', methods=['GET', 'POST'])
+@login_required
+def study():
+    # sql = "select ci.class_id, ci.class_name, ci.class_credit, ci.class_current_enroll_count," \
+    #       " ci.class_capacity, ci.class_start_week, ci.class_end_week, ci.class_room " \
+    #       "from  class_info ci " \
+    #       "join teach_record tr on ci.class_id = tr.class_id " \
+    #       "where tchr_id={!r}".format(current_user.id)
+    # rows = dal.SQLHelper.fetch_all(sql)
+
+    # 课程列表
+    courseLists = []
+    # 课程表
+    courseTable = [
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []]
+    ]
+
+    # for row in rows:
+    #     course = {'id': row[0], 'name': row[1], 'credit': row[2], 'current': row[3], 'capacity': row[4],
+    #               'time': [], 'week': "{}-{}".format(row[5], row[6]), 'room': row[7]}
+    #     sql = "select class_time from class_info ci " \
+    #           "join time_record tr on ci.class_id = tr.class_id " \
+    #           "where ci.class_id = {!r};".format(row[0])
+    #     times = dal.SQLHelper.fetch_all(sql)
+    #     for time in times:
+    #         course['time'].append(
+    #             "星期{} {}-{}".format(week_list[time[0] // 6], 2 * (time[0] % 6) + 1, 2 * (time[0] % 6 + 1)))
+    #         courseTable[2 * (time[0] % 6)][time[0] // 6].append("{} [{}-{}]".format(row[1], row[5], row[6]))
+    #         courseTable[2 * (time[0] % 6) + 1][time[0] // 6].append("{} [{}-{}]".format(row[1], row[5], row[6]))
+    #     courseLists.append(course)
+    # print(courseTable)
+    return render_template('study.html', courseLists=courseLists, courseTable=courseTable)
 
 
 # 选课
@@ -61,6 +107,7 @@ def quit():
         return redirect(url_for('main.quit'))
     return render_template('quit.html', courseLists=courseLists, courseTable=courseTable)
 
+
 # 学生花名册
 @main.route('/student', methods=['GET', 'POST'])
 @login_required
@@ -70,42 +117,59 @@ def student():
         session['courseId'] = request.args['courseId']
         return redirect(url_for('main.student'))
     if session['courseId']:
-        sql = "select distinct student_list.stu_id,stu_name,stu_school,stu_grade,stu_mail " \
-              "from student_list " \
-              "join enroll_record,class_info " \
-              "where student_list.stu_id=enroll_record.stu_id " \
-              "and enroll_record.class_id=class_info.class_id " \
-              "and class_info.class_id={};".format(session['courseId'])
+        sql = "select sl.stu_id, stu_name, stu_school, stu_grade, stu_mail " \
+              "from student_list sl " \
+              "join enroll_record er on sl.stu_id = er.stu_id " \
+              "where class_id={!r}".format(session['courseId'])
         studentLists = dal.SQLHelper.fetch_all(sql)
         print(studentLists)
     return render_template('student.html', studentLists=studentLists)
-# 学生空的时候报错
+
 
 # 老师课程
 @main.route('/teach', methods=['GET', 'POST'])
 @login_required
 def teach():
-    sql="select distinct class_info.class_id," \
-            "class_name,class_credit,class_current_enroll_count," \
-            "class_capacity,class_start_week ,class_end_week," \
-            "class_room from  class_info join teach_record,teacher_list,time_record" \
-            " where teach_record.class_id=class_info.class_id and  teach_record.tchr_id= {!r};".format(current_user.id)
+    sql = "select ci.class_id, ci.class_name, ci.class_credit, ci.class_current_enroll_count," \
+          " ci.class_capacity, ci.class_start_week, ci.class_end_week, ci.class_room " \
+          "from  class_info ci " \
+          "join teach_record tr on ci.class_id = tr.class_id " \
+          "where tchr_id={!r}".format(current_user.id)
     rows = dal.SQLHelper.fetch_all(sql)
-    print(rows)
+
+    # 课程列表
     courseLists = []
+    # 课程表
+    courseTable = [
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []]
+    ]
+
     for row in rows:
         course = {'id': row[0], 'name': row[1], 'credit': row[2], 'current': row[3], 'capacity': row[4],
                   'time': [], 'week': "{}-{}".format(row[5], row[6]), 'room': row[7]}
         sql = "select class_time from class_info ci " \
-         "join time_record tr on ci.class_id = tr.class_id " \
-         "where ci.class_id = {!r};".format(row[0])
+              "join time_record tr on ci.class_id = tr.class_id " \
+              "where ci.class_id = {!r};".format(row[0])
         times = dal.SQLHelper.fetch_all(sql)
-        print("result:")
-        print(times)
         for time in times:
-          course['time'].append(
-        "星期{} {}-{}".format(week_list[time[0] // 6], 2 * (time[0] % 6) + 1, 2 * (time[0] % 6 + 1)))
+            course['time'].append(
+                "星期{} {}-{}".format(week_list[time[0] // 6], 2 * (time[0] % 6) + 1, 2 * (time[0] % 6 + 1)))
+            courseTable[2 * (time[0] % 6)][time[0] // 6].append("{} [{}-{}]".format(row[1], row[5], row[6]))
+            courseTable[2 * (time[0] % 6) + 1][time[0] // 6].append("{} [{}-{}]".format(row[1], row[5], row[6]))
         courseLists.append(course)
+    print(courseTable)
+
     return render_template('teach.html', courseLists=courseLists, courseTable=courseTable)
 
 

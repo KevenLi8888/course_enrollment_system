@@ -3,6 +3,7 @@ class User_mod():
     def __init__(self):
         self.id = None
         self.type = None
+        self.name=None
 
     def todict(self):
         return self.__dict__

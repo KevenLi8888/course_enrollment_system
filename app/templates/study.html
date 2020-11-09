@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-{% block title %}教授的课程{% endblock %}
+{% block title %}学生课程{% endblock %}
 {% block page_content %}
     <div class="page-header">
         <h1>{{ current_user.name }}的课程</h1>
@@ -81,12 +81,10 @@
                     <th class="center-format">课程序号</th>
                     <th class="center-format">课程名称</th>
                     <th class="center-format">学分</th>
-                    <th class="center-format">目前容量</th>
-                    <th class="center-format">课程容量</th>
+                    <th class="center-format">老师</th>
                     <th class="center-format">上课时间</th>
                     <th class="center-format">上课周数</th>
                     <th class="center-format">上课地点</th>
-                    <th class="center-format">花名册</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -95,8 +93,11 @@
                         <td class="center-format">{{ li['id'] }}</td>
                         <td class="center-format">{{ li['name'] }}</td>
                         <td class="center-format">{{ li['credit'] }}</td>
-                        <td class="center-format">{{ li['current'] }}</td>
-                        <td class="center-format">{{ li['capacity'] }}</td>
+                        <td class="center-format">
+                            {% for teacher in li['teacher'] %}
+                                {{ teacher }}<br>
+                            {% endfor %}
+                        </td>
                         <td class="center-format">
                             {% for time in li['time'] %}
                                 {{ time }}<br>
@@ -104,14 +105,6 @@
                         </td>
                         <td class="center-format">{{ li['week'] }}</td>
                         <td class="center-format">{{ li['room'] }}</td>
-                        <td class="center-format">
-                            <a type="button" class="btn btn-default" aria-label="Left Align"
-                               href="{{ url_for('main.student',courseId= li['id']) }}">
-                                <img src="../static/icomoon/115-users.svg" class="img-responsive"
-                                     alt="Responsive image">
-                                {#                                <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>#}
-                            </a>
-                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>

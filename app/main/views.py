@@ -41,12 +41,12 @@ def index():
 @main.route('/study', methods=['GET', 'POST'])
 @login_required
 def study():
-    # sql = "select ci.class_id, ci.class_name, ci.class_credit, ci.class_current_enroll_count," \
-    #       " ci.class_capacity, ci.class_start_week, ci.class_end_week, ci.class_room " \
-    #       "from  class_info ci " \
-    #       "join teach_record tr on ci.class_id = tr.class_id " \
-    #       "where tchr_id={!r}".format(current_user.id)
-    # rows = dal.SQLHelper.fetch_all(sql)
+    sql = "select ci.class_id, ci.class_name, ci.class_credit, " \
+          "ci.class_room, ci.class_start_week, class_end_week " \
+          "from class_info ci join enroll_record er " \
+          "on ci.class_id = er.class_id " \
+          "where stu_id={!r}".format(current_user.id)
+    rows = dal.SQLHelper.fetch_all(sql)
 
     # 课程列表
     courseLists = []
@@ -66,20 +66,32 @@ def study():
         [[], [], [], [], [], [], []]
     ]
 
-    # for row in rows:
-    #     course = {'id': row[0], 'name': row[1], 'credit': row[2], 'current': row[3], 'capacity': row[4],
-    #               'time': [], 'week': "{}-{}".format(row[5], row[6]), 'room': row[7]}
-    #     sql = "select class_time from class_info ci " \
-    #           "join time_record tr on ci.class_id = tr.class_id " \
-    #           "where ci.class_id = {!r};".format(row[0])
-    #     times = dal.SQLHelper.fetch_all(sql)
-    #     for time in times:
-    #         course['time'].append(
-    #             "星期{} {}-{}".format(week_list[time[0] // 6], 2 * (time[0] % 6) + 1, 2 * (time[0] % 6 + 1)))
-    #         courseTable[2 * (time[0] % 6)][time[0] // 6].append("{} [{}-{}]".format(row[1], row[5], row[6]))
-    #         courseTable[2 * (time[0] % 6) + 1][time[0] // 6].append("{} [{}-{}]".format(row[1], row[5], row[6]))
-    #     courseLists.append(course)
-    # print(courseTable)
+    for row in rows:
+        course = {'id': row[0], 'name': row[1], 'credit': row[2], 'room': row[3],
+                  'week': "{}-{}".format(row[4], row[5]), 'time': [], 'teacher': []}
+
+        # 上课时间
+        sql = "select class_time from class_info ci " \
+              "join time_record tr on ci.class_id = tr.class_id " \
+              "where ci.class_id = {!r};".format(row[0])
+        times = dal.SQLHelper.fetch_all(sql)
+        for time in times:
+            course['time'].append(
+                "星期{} {}-{}".format(week_list[time[0] // 6], 2 * (time[0] % 6) + 1, 2 * (time[0] % 6 + 1)))
+            courseTable[2 * (time[0] % 6)][time[0] // 6].append("{} {}-{}".format(row[1], row[4], row[5]))
+            courseTable[2 * (time[0] % 6) + 1][time[0] // 6].append("{} {}-{}".format(row[1], row[4], row[5]))
+
+        # 上课老师
+        sql = "select tchr_name from class_info ci " \
+              "join teach_record tr on ci.class_id = tr.class_id " \
+              "join teacher_list tl on tr.tchr_id = tl.tchr_id " \
+              "where ci.class_id={!r};".format(row[0])
+        teachers = dal.SQLHelper.fetch_all(sql)
+        for teacher in teachers:
+            course['teacher'].append(teacher[0])
+
+        courseLists.append(course)
+    print(courseTable)
     return render_template('study.html', courseLists=courseLists, courseTable=courseTable)
 
 
@@ -93,6 +105,7 @@ def select():
 
         flash('xxx课程选课成功')
         return redirect(url_for('main.select'))
+
     return render_template('select.html', courseLists=courseLists, courseTable=courseTable)
 
 
@@ -178,12 +191,13 @@ def teach():
 @login_required
 def courseInfo():
     form = SearchForm()
-
     # 删除课程
-    if len(request.args):
-        # TODO:数据库删除课程
-        print(request.args['courseId'])
-        flash('xxx课程删除成功')
+    if 'courseId' in request.args:
+        sql = "delete from class_info " \
+              "where class_id={!r}".format(request.args['courseId'])
+        dal.SQLHelper.modify(sql)
+        print(sql)
+        flash('课程删除成功')
         return redirect(url_for('main.courseInfo'))
 
     # 课程列表

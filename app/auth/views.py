@@ -1,4 +1,4 @@
-from flask import render_template, redirect, flash, url_for
+from flask import render_template, redirect, flash, url_for, session
 from flask_login import login_user, login_required, current_user, logout_user
 from . import auth
 from .forms import *
@@ -18,12 +18,18 @@ def login():
             login_user(model, form.remember_me.data)
             print('登陆成功')
             print(current_user.id)
-            print(current_user.name)# 登录成功之后可以用current_user来取该用户的其他属性，这些属性都是sql语句查来并赋值给对象的。
+            print(current_user.name)  # 登录成功之后可以用current_user来取该用户的其他属性，这些属性都是sql语句查来并赋值给对象的。
             return redirect(url_for('main.index'))
         else:
             print('登陆失败')
-            flash('Invalid id or password.')
-    return render_template('login.html', form=form)
+            session['error'] = 'Invalid id or password.'
+            return redirect(url_for('auth.login') + "#modal")
+            # flash('Invalid id or password.')
+    if 'error' in session:
+        print(session['error'])
+        return render_template('login.html', form=form, note=session['error'])
+    else:
+        return render_template('login.html', form=form)
 
 
 @login_manager.user_loader

@@ -40,14 +40,42 @@
                 <tbody>
                 {% for class in courseTable %}
                     <tr>
-                        <td>第{{ loop.index }}节</td>
-                        <td>{{ class[0] }}</td>
-                        <td>{{ class[1] }}</td>
-                        <td>{{ class[2] }}</td>
-                        <td>{{ class[3] }}</td>
-                        <td>{{ class[4] }}</td>
-                        <td>{{ class[5] }}</td>
-                        <td>{{ class[6] }}</td>
+                        <td class="center-format">第{{ loop.index }}节</td>
+                        <td class="center-format">
+                            {% for item in class[0] %}
+                                {{ item }}<br>
+                            {% endfor %}
+                        </td>
+                        <td class="center-format">
+                            {% for item in class[1] %}
+                                {{ item }}<br>
+                            {% endfor %}
+                        </td>
+                        <td class="center-format">
+                            {% for item in class[2] %}
+                                {{ item }}<br>
+                            {% endfor %}
+                        </td>
+                        <td class="center-format">
+                            {% for item in class[3] %}
+                                {{ item }}<br>
+                            {% endfor %}
+                        </td>
+                        <td class="center-format">
+                            {% for item in class[4] %}
+                                {{ item }}<br>
+                            {% endfor %}
+                        </td>
+                        <td class="center-format">
+                            {% for item in class[5] %}
+                                {{ item }}<br>
+                            {% endfor %}
+                        </td>
+                        <td class="center-format">
+                            {% for item in class[6] %}
+                                {{ item }}<br>
+                            {% endfor %}
+                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -68,6 +96,7 @@
                     <th class="center-format">已选人数</th>
                     <th class="center-format">最大容量</th>
                     <th class="center-format">上课时间</th>
+                    <th class="center-format">上课周数</th>
                     <th class="center-format">上课地点</th>
                     <th class="center-format">选课</th>
                 </tr>
@@ -78,17 +107,26 @@
                         <td class="center-format">{{ li['id'] }}</td>
                         <td class="center-format">{{ li['name'] }}</td>
                         <td class="center-format">{{ li['credit'] }}</td>
-                        <td class="center-format">{{ li['teacher'] }}</td>
+                        <td class="center-format">
+                            {% for teacher in li['teacher'] %}
+                                {{ teacher }}<br>
+                            {% endfor %}
+                        </td>
                         <td class="center-format">{{ li['current'] }}</td>
-                        <td class="center-format">{{ li['max'] }}</td>
-                        <td class="center-format">{{ li['time'] }}</td>
-                        <td class="center-format">{{ li['place'] }}</td>
+                        <td class="center-format">{{ li['capacity'] }}</td>
+                        <td class="center-format">
+                            {% for time in li['time'] %}
+                                {{ time }}<br>
+                            {% endfor %}
+                        </td>
+                        <td class="center-format">{{ li['week'] }}</td>
+                        <td class="center-format">{{ li['room'] }}</td>
                         <td class="center-format">
                             {#                            <button type="button" class="btn btn-link" onclick="selectCourse({{ li['id'] }})">选课#}
                             {#                            </button>#}
                             <div class="center-format">
                                 <button type="button" class="btn btn-default" aria-label="Left Align"
-                                        onclick="selectCourse({{ li['id'] }})">
+                                        onclick="selectCourse('{{ li['id'] }}')">
                                     <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
                                 </button>
                             </div>

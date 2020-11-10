@@ -99,12 +99,104 @@ def study():
 @main.route('/select', methods=['GET', 'POST'])
 @login_required
 def select():
-    if len(request.args):
-        # TODO:数据库添加课程
-        print(request.args['courseId'])
+    if 'courseId' in request.args:
+        courseId = request.args['courseId']
+
+        # 判断时间冲突
+        sql = "select ci.class_id,class_name " \
+              "from class_info ci " \
+              "join time_record tr on ci.class_id = tr.class_id " \
+              "join enroll_record er on ci.class_id = er.class_id " \
+              "where stu_id={!r} and class_time in ({}) " \
+              "and class_end_week >={!r} and class_start_week<={!r}".format(current_user.id,
+                                                                            ','.join(session[courseId]['time']),
+                                                                            session[courseId]['start'],
+                                                                            session[courseId]['end'])
+        row = dal.SQLHelper.fetch_one(sql)
+        if row is not None:
+            flash("与{}{}课程冲突".format(row[0], row[1]))
+            return redirect(url_for('main.select'))
+
+        # 添加课程
+        sql = "insert into enroll_record(stu_id, class_id) " \
+              "values ({!r},{!r})".format(current_user.id, courseId)
+        dal.SQLHelper.modify(sql)
+        print(sql)
 
         flash('xxx课程选课成功')
         return redirect(url_for('main.select'))
+
+    # courseLists begin
+
+    sql = "select ci.class_id,class_name,class_credit," \
+          "class_current_enroll_count,class_capacity,class_room," \
+          "class_start_week,class_end_week " \
+          "from class_info ci " \
+          "join grade_list gl on ci.class_id = gl.class_id " \
+          "join school_list sl on ci.class_id = sl.class_id " \
+          "join student_list on stu_grade=class_target_grade " \
+          "and stu_school=class_target_school " \
+          "where stu_id={!r};".format(current_user.id)
+    rows = dal.SQLHelper.fetch_all(sql)
+    # 课程列表
+    courseLists = []
+
+    for row in rows:
+        session[row[0]] = {'start': row[6], 'end': row[7], 'time': []}
+        course = {'id': row[0], 'name': row[1], 'credit': row[2], 'current': row[3], 'capacity': row[4],
+                  'room': row[5], 'week': "{}-{}".format(row[6], row[7]), 'time': [], 'teacher': []}
+
+        # 上课时间
+        sql = "select class_time from class_info ci " \
+              "join time_record tr on ci.class_id = tr.class_id " \
+              "where ci.class_id = {!r};".format(row[0])
+        times = dal.SQLHelper.fetch_all(sql)
+        for time in times:
+            session[row[0]]['time'].append('{0}'.format(time[0]))
+            course['time'].append(
+                "星期{} {}-{}".format(week_list[time[0] // 6], 2 * (time[0] % 6) + 1, 2 * (time[0] % 6 + 1)))
+
+        # 上课老师
+        sql = "select tchr_name from class_info ci " \
+              "join teach_record tr on ci.class_id = tr.class_id " \
+              "join teacher_list tl on tr.tchr_id = tl.tchr_id " \
+              "where ci.class_id={!r};".format(row[0])
+        teachers = dal.SQLHelper.fetch_all(sql)
+        for teacher in teachers:
+            course['teacher'].append(teacher[0])
+
+        courseLists.append(course)
+
+    # courseLists end
+
+    # courseTable begin
+
+    courseTable = [
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []]
+    ]
+
+    sql = "select class_time,class_name,class_start_week,class_end_week " \
+          "from class_info ci " \
+          "join enroll_record er on ci.class_id = er.class_id " \
+          "join time_record tr on ci.class_id = tr.class_id " \
+          "where stu_id={!r}".format(current_user.id)
+    rows = dal.SQLHelper.fetch_all(sql)
+
+    for row in rows:
+        courseTable[2 * (row[0] % 6)][row[0] // 6].append("{} {}-{}".format(row[1], row[2], row[3]))
+        courseTable[2 * (row[0] % 6) + 1][row[0] // 6].append("{} {}-{}".format(row[1], row[2], row[3]))
+    # courseTable end
 
     return render_template('select.html', courseLists=courseLists, courseTable=courseTable)
 
@@ -113,7 +205,7 @@ def select():
 @main.route('/quit', methods=['GET', 'POST'])
 @login_required
 def quit():
-    if len(request.args):
+    if 'courseId' in request.args:
         # TODO:数据库删除课程
         print(request.args['courseId'])
         flash('xxx课程退课成功')
@@ -135,7 +227,7 @@ def student():
               "join enroll_record er on sl.stu_id = er.stu_id " \
               "where class_id={!r}".format(session['courseId'])
         studentLists = dal.SQLHelper.fetch_all(sql)
-        print(studentLists)
+        # print(studentLists)
     return render_template('student.html', studentLists=studentLists)
 
 
@@ -181,7 +273,7 @@ def teach():
             courseTable[2 * (time[0] % 6)][time[0] // 6].append("{} [{}-{}]".format(row[1], row[5], row[6]))
             courseTable[2 * (time[0] % 6) + 1][time[0] // 6].append("{} [{}-{}]".format(row[1], row[5], row[6]))
         courseLists.append(course)
-    print(courseTable)
+    # print(courseTable)
 
     return render_template('teach.html', courseLists=courseLists, courseTable=courseTable)
 
@@ -196,7 +288,7 @@ def courseInfo():
         sql = "delete from class_info " \
               "where class_id={!r}".format(request.args['courseId'])
         dal.SQLHelper.modify(sql)
-        print(sql)
+        # print(sql)
         flash('课程删除成功')
         return redirect(url_for('main.courseInfo'))
 
@@ -204,7 +296,7 @@ def courseInfo():
     sql = "select class_id, class_name, class_credit, class_room, class_capacity, " \
           "class_start_week, class_end_week, class_current_enroll_count from class_info;"
     rows = dal.SQLHelper.fetch_all(sql)
-    print(rows)
+    # print(rows)
     courseLists = []
     for row in rows:
         course = {'id': row[0], 'name': row[1], 'credit': row[2], 'room': row[3], 'capacity': row[4],
@@ -221,8 +313,6 @@ def courseInfo():
               "join time_record tr on ci.class_id = tr.class_id " \
               "where ci.class_id = {!r};".format(row[0])
         times = dal.SQLHelper.fetch_all(sql)
-        print("result:")
-        print(times)
         for time in times:
             course['time'].append(
                 "星期{} {}-{}".format(week_list[time[0] // 6], 2 * (time[0] % 6) + 1, 2 * (time[0] % 6 + 1)))
@@ -259,7 +349,7 @@ def courseAdd():
                   "join time_record t2 on t1.class_id = t2.class_id " \
                   "where class_time = {!r} and class_room = {!r};".format(li, form.room.data)
             rows = dal.SQLHelper.fetch_all(sql)
-            print(rows)
+            # print(rows)
             if rows is not None:
                 for row in rows:
                     if form.end.data >= row[2] and form.start.data <= row[3]:
@@ -275,7 +365,7 @@ def courseAdd():
                       "join teacher_list t4 on t2.tchr_id = t4.tchr_id " \
                       "where t2.tchr_id = {!r} and class_time = {!r};".format(tli, li)
                 rows = dal.SQLHelper.fetch_all(sql)
-                print(rows)
+                # print(rows)
                 if rows is not None:
                     for row in rows:
                         if form.end.data >= row[3] and form.start.data <= row[4]:
@@ -336,7 +426,7 @@ def courseEdit():
                   "join time_record t2 on t1.class_id = t2.class_id " \
                   "where class_time = {!r} and class_room = {!r};".format(li, form.room.data)
             rows = dal.SQLHelper.fetch_all(sql)
-            print(rows)
+            # print(rows)
             if rows is not None:
                 for row in rows:
                     if row[0] == session['courseId']:
@@ -354,7 +444,7 @@ def courseEdit():
                       "join teacher_list t4 on t2.tchr_id = t4.tchr_id " \
                       "where t2.tchr_id = {!r} and class_time = {!r};".format(tli, li)
                 rows = dal.SQLHelper.fetch_all(sql)
-                print(rows)
+                # print(rows)
                 if rows is not None:
                     for row in rows:
                         if row[1] == session['courseId']:
@@ -486,8 +576,8 @@ def teacherInfo():
     if 'teacherId' in request.args:
         sql = "delete from user_login_info where usr_id={0!r};".format(request.args['teacherId'])
         dal.SQLHelper.modify(sql)
-        print(sql)
-        print(request.args['teacherId'])
+        # print(sql)
+        # print(request.args['teacherId'])
         flash('老师删除成功')
         return redirect(url_for('main.teacherInfo'))
     sql = "select t1.usr_id,t2.tchr_name,t2.tchr_school,t2.tchr_title,t2.tchr_mail,t1.usr_pwd  " \

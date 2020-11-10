@@ -102,6 +102,8 @@ def select():
     if 'courseId' in request.args:
         courseId = request.args['courseId']
 
+        # TODO:判断容量
+
         # 判断时间冲突
         sql = "select ci.class_id,class_name " \
               "from class_info ci " \
@@ -136,7 +138,11 @@ def select():
           "join school_list sl on ci.class_id = sl.class_id " \
           "join student_list on stu_grade=class_target_grade " \
           "and stu_school=class_target_school " \
-          "where stu_id={!r};".format(current_user.id)
+          "where stu_id={0!r} " \
+          "and ci.class_id not in" \
+          " (select class_id " \
+          "from enroll_record " \
+          "where stu_id={0!r})".format(current_user.id)
     rows = dal.SQLHelper.fetch_all(sql)
     # 课程列表
     courseLists = []
@@ -210,6 +216,9 @@ def quit():
         print(request.args['courseId'])
         flash('xxx课程退课成功')
         return redirect(url_for('main.quit'))
+
+    # TODO：课程列表和课程表
+
     return render_template('quit.html', courseLists=courseLists, courseTable=courseTable)
 
 

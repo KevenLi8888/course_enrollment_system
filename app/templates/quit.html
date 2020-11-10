@@ -40,14 +40,42 @@
                 <tbody>
                 {% for class in courseTable %}
                     <tr>
-                        <td vclass="center-format">第{{ loop.index }}节</td>
-                        <td vclass="center-format">{{ class[0] }}</td>
-                        <td vclass="center-format">{{ class[1] }}</td>
-                        <td vclass="center-format">{{ class[2] }}</td>
-                        <td vclass="center-format">{{ class[3] }}</td>
-                        <td vclass="center-format">{{ class[4] }}</td>
-                        <td vclass="center-format">{{ class[5] }}</td>
-                        <td vclass="center-format">{{ class[6] }}</td>
+                        <td class="center-format">第{{ loop.index }}节</td>
+                        <td class="center-format">
+                            {% for item in class[0] %}
+                                {{ item }}<br>
+                            {% endfor %}
+                        </td>
+                        <td class="center-format">
+                            {% for item in class[1] %}
+                                {{ item }}<br>
+                            {% endfor %}
+                        </td>
+                        <td class="center-format">
+                            {% for item in class[2] %}
+                                {{ item }}<br>
+                            {% endfor %}
+                        </td>
+                        <td class="center-format">
+                            {% for item in class[3] %}
+                                {{ item }}<br>
+                            {% endfor %}
+                        </td>
+                        <td class="center-format">
+                            {% for item in class[4] %}
+                                {{ item }}<br>
+                            {% endfor %}
+                        </td>
+                        <td class="center-format">
+                            {% for item in class[5] %}
+                                {{ item }}<br>
+                            {% endfor %}
+                        </td>
+                        <td class="center-format">
+                            {% for item in class[6] %}
+                                {{ item }}<br>
+                            {% endfor %}
+                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -66,6 +94,7 @@
                     <th class="center-format">学分</th>
                     <th class="center-format">老师</th>
                     <th class="center-format">上课时间</th>
+                    <th class="center-format">上课周数</th>
                     <th class="center-format">上课地点</th>
                     <th class="center-format">退课</th>
                 </tr>
@@ -73,17 +102,26 @@
                 <tbody>
                 {% for li in courseLists %}
                     <tr>
-                        <td class="center-format" >{{ li['id'] }}</td>
-                        <td class="center-format" >{{ li['name'] }}</td>
-                        <td class="center-format" >{{ li['credit'] }}</td>
-                        <td class="center-format" >{{ li['teacher'] }}</td>
-                        <td class="center-format" >{{ li['time'] }}</td>
-                        <td class="center-format" >{{ li['place'] }}</td>
-                        <td class="center-format" >
+                        <td class="center-format">{{ li['id'] }}</td>
+                        <td class="center-format">{{ li['name'] }}</td>
+                        <td class="center-format">{{ li['credit'] }}</td>
+                        <td class="center-format">
+                            {% for teacher in li['teacher'] %}
+                                {{ teacher }}<br>
+                            {% endfor %}
+                        </td>
+                        <td class="center-format">
+                            {% for time in li['time'] %}
+                                {{ time }}<br>
+                            {% endfor %}
+                        </td>
+                        <td class="center-format">{{ li['week'] }}</td>
+                        <td class="center-format">{{ li['room'] }}</td>
+                        <td class="center-format">
                             {#                            <button type="button" class="btn btn-link" onclick="quitCourse({{ li['id'] }})">退课#}
                             {#                            </button>#}
                             <button type="button" class="btn btn-default" aria-label="Left Align"
-                                    onclick="quitCourse({{ li['id'] }})">
+                                    onclick="quitCourse('{{ li['id'] }}')">
                                 <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                             </button>
                         </td>

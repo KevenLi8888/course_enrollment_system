@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}登录{% endblock %}
+
+{% block page_content %}
+    {{ super() }}
+    <div class="page-header row">
+        {#        <h1>{{ current_user.name }}的信息</h1>#}
+        <img class="img-rounded profile-thumbnail img-responsive col-md-2 " src="../static/icomoon/119-user-tie.svg">
+        <div class="profile-header col-md-10">
+            <h1>{{ current_user.name }}</h1>
+            <br>
+            <p>{{ current_user.id }}</p>
+            {% if current_user.type==2 %}
+                <p>{{ user['grade'] }}</p>
+            {% endif %}
+            {% if current_user.type==1 %}}
+                <p>{{ user['title'] }}</p>
+            {% endif %}
+            <p>{{ user['school'] }}</p>
+            <p><a href="mailto:967@qq.com">{{ user['email'] }}</a></p>
+            <br>
+            <p style="float: left;margin: 5px"><a class="btn btn-info" href='#'>编辑资料</a></p>
+            <p style="float: left;margin: 5px"><a class="btn btn-danger" href='#'>修改密码</a></p>
+
+        </div>
+    </div>
+
+{% endblock %}

@@ -37,6 +37,13 @@ def index():
     return render_template('home.html')
 
 
+# 个人页面
+@main.route('/infoPage', methods=['GET', 'POST'])
+def infoPage():
+    user = {}
+    return render_template('infoPage.html', user=user)
+
+
 # 学生课程
 @main.route('/study', methods=['GET', 'POST'])
 @login_required
@@ -102,7 +109,10 @@ def select():
     if 'courseId' in request.args:
         courseId = request.args['courseId']
 
-        # TODO:判断容量
+        # 判断容量
+        if session[courseId]['current'] == session[courseId]['capacity']:
+            flash('课程已经满了')
+            return redirect(url_for('main.select'))
 
         # 判断时间冲突
         sql = "select ci.class_id,class_name " \
@@ -122,6 +132,14 @@ def select():
         # 添加课程
         sql = "insert into enroll_record(stu_id, class_id) " \
               "values ({!r},{!r})".format(current_user.id, courseId)
+        dal.SQLHelper.modify(sql)
+        print(sql)
+
+        # 更新课程容量
+        session[courseId]['current'] = session[courseId]['current'] + 1
+        sql = "update class_info " \
+              "set class_current_enroll_count ={!r} " \
+              "where class_id={!r};".format(session[courseId]['current'], courseId)
         dal.SQLHelper.modify(sql)
         print(sql)
 
@@ -148,7 +166,7 @@ def select():
     courseLists = []
 
     for row in rows:
-        session[row[0]] = {'start': row[6], 'end': row[7], 'time': []}
+        session[row[0]] = {'start': row[6], 'end': row[7], 'time': [], 'current': row[3], 'capacity': row[4]}
         course = {'id': row[0], 'name': row[1], 'credit': row[2], 'current': row[3], 'capacity': row[4],
                   'room': row[5], 'week': "{}-{}".format(row[6], row[7]), 'time': [], 'teacher': []}
 
@@ -724,26 +742,17 @@ def studentEdit():
         form.email.data = rows[4]
     return render_template('studentEdit.html', form=form)
 
+
 # 修改密码
-# @main.route('/passwordEdit', methods=['GET', 'POST'])
-# def passwordEdit():
-#     form = PasswordForm()
-#     if 'studentId' in request.args:
-#         session['type'] = 'student'
-#         session['id'] = request.args['studentId']
-#     elif 'teacherId' in request.args:
-#         session['type'] = 'teacher'
-#         session['id'] = request.args['teacherId']
-#         return redirect(url_for('main.passwordEdit'))
-#     if form.validate_on_submit():
-#         # TODO:提交数据库
-#         flash('修改成功')
-#         if session['type'] == 'student':
-#             print('std')
-#             print(form.password.data)
-#             return redirect(url_for('main.studentInfo'))
-#         elif session['type'] == 'teacher':
-#             print('tec')
-#             print(form.password.data)
-#             return redirect(url_for('main.teacherInfo'))
-#     return render_template('passwordEdit.html', form=form)
+@main.route('/passwordEdit', methods=['GET', 'POST'])
+def passwordEdit():
+    form = PasswordForm()
+    if form.validate_on_submit():
+        if form.old.data != current_user.password:
+            flash('密码错误')
+        else:
+            # TODO:修改数据库密码
+            # TODO：修改current_user.password
+            flash('修改成功')
+            return redirect(url_for('main.index'))
+    return render_template('passwordEdit.html', form=form)

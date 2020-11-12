@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import *
 from wtforms.validators import *
+from flask_login import login_required, current_user
 
 schoolLists = [
     ('信息与通信工程学院', '信息与通信工程学院'),
@@ -124,6 +125,7 @@ class StudentEditForm(StudentForm):
 # 密码表单
 class PasswordForm(FlaskForm):
     # TODO:进一步的验证函数
+    old = PasswordField('旧的密码', validators=[DataRequired()])
     password = PasswordField('新的密码', validators=[
         DataRequired(), EqualTo('password2', message='Passwords must match.')])
     password2 = PasswordField('确认密码', validators=[DataRequired()])

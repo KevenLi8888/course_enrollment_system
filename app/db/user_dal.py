@@ -26,13 +26,14 @@ class User_Dal:
     @classmethod
     def load_user_byid(cls, id):
         print('load_user_byid')
-        sql = "select usr_id,usr_type  from user_login_info where usr_id='%s';" % id
+        sql = "select usr_id,usr_type,usr_pwd  from user_login_info where usr_id='%s';" % id
         model = user_model.User_mod()  # 实例化一个对象，将查询结果逐一添加给对象的属性
         rows = user_dal.User_Dal.query(sql)
         if rows:
             # result = {'isAuth': True}
             model.id = rows[0]
             model.type = rows[1]
+            model.password = rows[2]
         if model.type == 0:
             model.name = 'admin'
         elif model.type == 1:

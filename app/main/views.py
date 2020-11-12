@@ -40,7 +40,7 @@ def index():
 # 个人页面
 @main.route('/infoPage', methods=['GET', 'POST'])
 def infoPage():
-    user = {}
+    user = {'grade': '2018级', 'title': '教授', 'school': '计算机科学与工程学院', 'email': '5454549866@qq.com'}
     return render_template('infoPage.html', user=user)
 
 

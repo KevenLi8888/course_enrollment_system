@@ -1,14 +1,30 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-{% block title %}登录{% endblock %}
+{% block title %}个人信息{% endblock %}
 
 {% block page_content %}
     {{ super() }}
-    <div class="page-header row">
-        {#        <h1>{{ current_user.name }}的信息</h1>#}
-        <img class="img-rounded profile-thumbnail img-responsive col-md-2 " src="../static/icomoon/119-user-tie.svg">
-        <div class="profile-header col-md-10">
+    <div class="page-header">
+        <h1>{{ current_user.name }}的信息</h1>
+    </div>
+    <div class="row" style="vertical-align: middle">
+        <div class="col-md-4" style="vertical-align: middle">
+            <img class="img-rounded center-format img-responsive col-md-12 "
+                 src="../static/icomoon/119-user-tie.svg">
+        </div>
+        <div class=" col-md-8" style="vertical-align: middle">
+            {#            <h1>{{ current_user.name }}</h1>#}
+            {#            <dl>#}
+            {#                <dt class="word">学号</dt>#}
+            {#                <dd class="word">{{ current_user.id }}</dd>#}
+            {#                <dt class="word">年级</dt>#}
+            {#                <dd class="word">{{ user['grade'] }}</dd>#}
+            {#                <dt class="word">学院</dt>#}
+            {#                <dd class="word">{{ user['school'] }}</dd>#}
+            {#                <dt class="word">邮箱</dt>#}
+            {#                <dd class="word"><a href="mailto:967@qq.com">{{ user['email'] }}</a></dd>#}
+            {#            </dl>#}
             <h1>{{ current_user.name }}</h1>
             <br>
             <p>{{ current_user.id }}</p>
@@ -21,10 +37,10 @@
             <p>{{ user['school'] }}</p>
             <p><a href="mailto:967@qq.com">{{ user['email'] }}</a></p>
             <br>
-            <p style="float: left;margin: 5px"><a class="btn btn-info" href='#'>编辑资料</a></p>
-            <p style="float: left;margin: 5px"><a class="btn btn-danger" href='#'>修改密码</a></p>
-
+            <p style="float: left;margin: 5px"><a class="btn black-btn" href='#'>编辑资料</a></p>
+            <p style="float: left;margin: 5px"><a class="btn btn-danger"
+                                                  href='{{ url_for('main.passwordEdit') }}'>修改密码</a>
+            </p>
         </div>
     </div>
-
 {% endblock %}

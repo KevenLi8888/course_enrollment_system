@@ -4,21 +4,23 @@
 
 {% block head %}
     {{ super() }}
+
+    <!--jquery-->
+    <script src="../static/js/jquery.min.js"></script>
+
+    <!--remodal-->
     <link rel="stylesheet" href="../static/css/remodal-default-theme.css">
     <link rel="stylesheet" href="../static/css/remodal.css">
+    <script src="../static/js/remodal.js"></script>
+
+    <!--bootstrap-table-->
     <link rel="stylesheet" href="../static/css/bootstrap-table.min.css">
     <script src="../static/js/bootstrap-table.min.js"></script>
-    <script src="../static/js/jquery.min.js"></script>
-    <script src="../static/js/remodal.js"></script>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet"
-          href="../static/css/bootstrap-select.min.css">
+    <script src="../static/js/bootstrap-table-zh-CN.min.js"></script>
 
-    <!-- Latest compiled and minified JavaScript -->
+    <!-- bootstrap-select -->
+    <link rel="stylesheet" href="../static/css/bootstrap-select.min.css">
     <script src="../static/js/bootstrap-select.min.js"></script>
-
-    <!-- (Optional) Latest compiled and minified JavaScript translation files -->
-    {#    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/i18n/defaults-*.min.js"></script>#}
 
     <link rel="shortcut icon" href="{{ url_for('static', filename='UESTC-logo.png') }}" type="image/x-icon">
     <link rel="icon" href="{{ url_for('static', filename='UESTC-logo.png') }}" type="image/x-icon">
@@ -51,6 +53,10 @@
         .profile-header {
             min-height: 260px;
             margin-left: 280px;
+        }
+
+        .word {
+            margin: 10px 20px 10px 5px;
         }
 
     </style>
@@ -150,16 +156,21 @@
             </div>
         {% endfor %}
         {% block page_content %}
-            <div class="remodal" data-remodal-id="modal" style="width: 20%">
+            <div class="remodal" data-remodal-id="modal" style="width: 25%">
                 <button data-remodal-action="close" class="remodal-close"></button>
+                <h3>选课系统</h3>
+                <hr>
                 <p>
                     {% if note %}
                         {{ note }}
                     {% endif %}
-
                 </p>
                 <br>
-                <button data-remodal-action="confirm" class="btn btn-default">OK</button>
+                {#                <button data-remodal-action="cancel" class="remodal-cancel">Cancel</button>#}
+                <button data-remodal-action="confirm" class="remodal-confirm black-btn">确定</button>
+
+                {#                <br>#}
+                {#                <button data-remodal-action="confirm" class="btn btn-default">确定</button>#}
             </div>
         {% endblock %}
     </div>

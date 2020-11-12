@@ -6,6 +6,32 @@ from .. import login_manager
 from ..db import user_dal
 
 
+# @auth.route('/login', methods=['GET', 'POST'])
+# def login():
+#     form = LoginForm()
+#     if form.validate_on_submit():
+#         id = form.id.data
+#         password = form.password.data
+#         result = user_dal.User_Dal.login_auth(id, password)
+#         model = result[1]
+#         if result[0]['isAuth']:
+#             login_user(model, form.remember_me.data)
+#             print('登陆成功')
+#             print(current_user.id)
+#             print(current_user.name)  # 登录成功之后可以用current_user来取该用户的其他属性，这些属性都是sql语句查来并赋值给对象的。
+#             return redirect(url_for('main.index'))
+#         else:
+#             print('登陆失败')
+#             session['error'] = '帐号或密码错误，请重新输入！'
+#             form.password.errors = '帐号或密码错误，请重新输入！'
+#             return redirect(url_for('auth.login') + "#modal")
+#             # flash('Invalid id or password.')
+#     if 'error' in session:
+#         print(session['error'])
+#         return render_template('login.html', form=form, note=session['error'])
+#     else:
+#         return render_template('login.html', form=form)
+
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -22,14 +48,9 @@ def login():
             return redirect(url_for('main.index'))
         else:
             print('登陆失败')
-            session['error'] = 'Invalid id or password.'
-            return redirect(url_for('auth.login') + "#modal")
-            # flash('Invalid id or password.')
-    if 'error' in session:
-        print(session['error'])
-        return render_template('login.html', form=form, note=session['error'])
-    else:
-        return render_template('login.html', form=form)
+            form.password.errors.append('帐号或者密码错误!')
+            flash('Invalid id or password.')
+    return render_template('login.html', form=form)
 
 
 @login_manager.user_loader

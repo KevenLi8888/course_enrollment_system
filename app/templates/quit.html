@@ -86,31 +86,17 @@
                 <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
                 <span>课表</span>
             </div>
-            <table id="table"
-                   class="table table-hover table-responsive"
-                   data-toggle="table"
-                   data-search="true"
-                   data-search-align="left"
-                   data-search-on-enter-key="false"
-                   data-show-search-button="true"
-                   data-pagination="true"
-                   data-page-list="[5,10,15,20,25,50,100]"
-                   data-show-columns="true"
-                   data-show-search-clear-button="true"
-                   data-show-columns-toggle-all="true"
-                   data-show-columns-search="true"
-                   data-show-refresh="true"
-                   data-show-fullscreen="true"
-            >
+            <table class="table table-hover table table-striped" style="margin-top: 20px;text-align: center">
                 <thead>
                 <tr class="active">
-                    <th class="center-format" data-sortable="true">课程序号</th>
-                    <th class="center-format" data-sortable="true">课程名称</th>
-                    <th class="center-format" data-sortable="true">学分</th>
-                    <th class="center-format" data-sortable="true">老师</th>
-                    <th class="center-format" data-sortable="true">上课时间</th>
-                    <th class="center-format" data-sortable="true">上课周数</th>
-                    <th class="center-format" data-sortable="true">上课地点</th>
+                    <th class="center-format">课程序号</th>
+                    <th class="center-format">课程名称</th>
+                    <th class="center-format">学分</th>
+                    <th class="center-format">老师</th>
+                    <th class="center-format">上课人数</th>
+                    <th class="center-format">上课时间</th>
+                    <th class="center-format">上课周数</th>
+                    <th class="center-format">上课地点</th>
                     <th class="center-format">退课</th>
                 </tr>
                 </thead>
@@ -125,6 +111,7 @@
                                 {{ teacher }}<br>
                             {% endfor %}
                         </td>
+                        <td class="center-format">{{ li['current'] }}</td>
                         <td class="center-format">
                             {% for time in li['time'] %}
                                 {{ time }}<br>

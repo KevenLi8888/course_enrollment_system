@@ -19,50 +19,54 @@
         <h1>学生信息</h1>
     </div>
     <div>
-        <div class="row" style="margin-bottom:20px ">
-            <div class="col-lg-1 col-md-2 col-sm-3 col-xs-12" style="margin-bottom: 20px">
-                <a type="button" class="btn btn-default" aria-label="Add" href="{{ url_for('main.studentAdd') }}">
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                    <span>添加学生</span>
-                </a>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-6" style="float:right">
-                <form method="post" class="form-inline">
-                    <div class="form-group">
-                        {{ form.search(class="form-control",placeholder="请输入学号") }}
-                    </div>
-                    {{ form.submit(type="submit",class="btn black-btn") }}
-
-                </form>
-            </div>
+        <div id="toolbar">
+            <a type="button" class="btn btn-default" href="{{ url_for('main.studentAdd') }}">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            </a>
         </div>
         <div>
-            <div style="border-bottom: 1px solid grey">
+            <div style="border-bottom: 1px solid grey;margin-bottom: 5px">
                 <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
                 <span>学生列表</span>
             </div>
-            <table class="table table-hover table-striped table-responsive center-format" style="margin-top: 20px">
+            <table id="table"
+                   class="table table-hover table-responsive"
+                   data-toggle="table"
+                   data-search="true"
+                   data-search-align="left"
+                   data-search-on-enter-key="false"
+                   data-show-search-button="true"
+                   data-pagination="true"
+                   data-page-list="[5,10,15,20,25,50,100]"
+                   data-show-columns="true"
+                   data-show-search-clear-button="true"
+                   data-show-columns-toggle-all="true"
+                   data-show-columns-search="true"
+                   data-show-refresh="true"
+                   data-show-fullscreen="true"
+                   data-toolbar="#toolbar"
+            >
                 <thead>
                 <tr class="active">
-                    <th class="center-format">学号</th>
-                    <th class="center-format">姓名</th>
-                    <th class="center-format">学院</th>
-                    <th class="center-format">年级</th>
-                    <th class="center-format">邮箱</th>
+                    <th class="center-format" data-sortable="true">学号</th>
+                    <th class="center-format" data-sortable="true">姓名</th>
+                    <th class="center-format" data-sortable="true">学院</th>
+                    <th class="center-format" data-sortable="true">年级</th>
+                    <th class="center-format" data-sortable="true">邮箱</th>
                     <th class="center-format">操作</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for li in studentLists %}
                     <tr>
-                        <td class="center-format" >{{ li[0] }}</td>
-                        <td class="center-format" >{{ li[1] }}</td>
-                        <td class="center-format" >{{ li[2] }}</td>
-                        <td class="center-format" >{{ li[3] }}</td>
-                        <td class="center-format" >
+                        <td class="center-format">{{ li[0] }}</td>
+                        <td class="center-format">{{ li[1] }}</td>
+                        <td class="center-format">{{ li[2] }}</td>
+                        <td class="center-format">{{ li[3] }}</td>
+                        <td class="center-format">
                             <a href="mailto:{{ li['email'] }}">{{ li[4] }}</a>
                         </td>
-                        <td class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
+                        <td class=" center-format">
                             <div class="btn-group" role="group" aria-label="...">
                                 <a type="button" class="btn btn-default" aria-label="edit"
                                    href="{{ url_for('main.studentEdit',studentId= li[0]) }}">
@@ -84,4 +88,11 @@
 {% endblock %}
 {% block scripts %}
     {{ super() }}
+    <script>
+        $('#table').bootstrapTable({
+            toolbar: "#toolbar", //设置自定义工具栏容器ID，也可以是容器样式类名.toolbar
+            columns: columns,
+            data: data
+        });
+    </script>
 {% endblock %}

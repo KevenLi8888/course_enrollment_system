@@ -75,16 +75,29 @@
                 <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
                 <span>课表</span>
             </div>
-            <table class="table table-hover table table-striped" style="margin-top: 20px;text-align: center">
+            <table class="table table-hover table-striped"
+                   data-toggle="table"
+                   data-search="true"
+                   data-search-align="left"
+                   data-search-on-enter-key="false"
+                   data-show-search-button="true"
+                   data-pagination="true"
+                   data-show-columns="true"
+                   data-show-search-clear-button="true"
+                   data-show-columns-toggle-all="true"
+                   data-show-columns-search="true"
+                   data-show-refresh="true"
+                   data-show-fullscreen="true"
+                   >
                 <thead>
                 <tr class="active">
-                    <th class="center-format">课程序号</th>
-                    <th class="center-format">课程名称</th>
-                    <th class="center-format">学分</th>
-                    <th class="center-format">老师</th>
-                    <th class="center-format">上课时间</th>
-                    <th class="center-format">上课周数</th>
-                    <th class="center-format">上课地点</th>
+                    <th class="center-format" data-sortable="true">课程序号</th>
+                    <th class="center-format" data-sortable="true">课程名称</th>
+                    <th class="center-format" data-sortable="true">学分</th>
+                    <th class="center-format" data-sortable="true">老师</th>
+                    <th class="center-format" data-sortable="true">上课时间</th>
+                    <th class="center-format" data-sortable="true">上课周数</th>
+                    <th class="center-format" data-sortable="true">上课地点</th>
                 </tr>
                 </thead>
                 <tbody>

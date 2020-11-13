@@ -6,6 +6,8 @@
     {{ super() }}
     <link rel="shortcut icon" href="{{ url_for('static', filename='UESTC-logo.png') }}" type="image/x-icon">
     <link rel="icon" href="{{ url_for('static', filename='UESTC-logo.png') }}" type="image/x-icon">
+    <!--我的样式表-->
+    <link rel="stylesheet" type="text/css" href="../static/css/style.css"/>
     <style>
         .black-btn {
             background-color: black;
@@ -28,18 +30,36 @@
             margin-top: 10px;
         }
 
-        .profile-thumbnail {
-            position: absolute;
-        }
-
-        .profile-header {
-            min-height: 260px;
-            margin-left: 280px;
-        }
-
         .word {
             margin: 10px 20px 10px 5px;
         }
+
+        div.title {
+            border-bottom: 1px solid grey !important;
+            margin-top: 5px;
+            margin-bottom: 10px !important;
+        }
+
+        div.foot {
+            margin-top: 100px;
+            height: 40px;
+            background-color: black;
+            color: lightgrey;
+            text-align: center;
+            line-height: 40px;
+        }
+
+        .photo {
+            min-block-size: 200px;
+            max-block-size: 400px;
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        .margin-element {
+            margin: 1px 5px 1px 5px;
+        }
+
 
     </style>
 {% endblock %}
@@ -160,4 +180,12 @@
 
 {% block scripts %}
     {{ super() }}
+{% endblock %}
+
+{% block footer %}
+    {#    <footer class="container-fluid" >#}
+    {#        <div class="row foot">#}
+    {#            电子科技大学 软件工程项目 选课系统#}
+    {#        </div>#}
+    {#    </footer>#}
 {% endblock %}

@@ -15,6 +15,7 @@ studentLists = [{'id': 2018022, 'name': 'keven', 'school': 'cs', 'grade': 2018, 
 #                 {'id': 2018024, 'name': 'keven', 'school': 'cs', 'title': 'teach', 'email': '@email'},
 #                 {'id': 2018025, 'name': 'keven', 'school': 'cs', 'title': 'teach', 'email': '@email'}]
 courseTable = [
+    [[11], [], [], [], [], [], []],
     [[], [], [], [], [], [], []],
     [[], [], [], [], [], [], []],
     [[], [], [], [], [], [], []],
@@ -25,8 +26,7 @@ courseTable = [
     [[], [], [], [], [], [], []],
     [[], [], [], [], [], [], []],
     [[], [], [], [], [], [], []],
-    [[], [], [], [], [], [], []],
-    [[], [], [], [], [], [], []]
+    [[111], [], [], [], [], [], []]
 ]
 week_list = ['一', '二', '三', '四', '五', '六', '日']
 
@@ -34,7 +34,34 @@ week_list = ['一', '二', '三', '四', '五', '六', '日']
 # 主页
 @main.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('home.html')
+    courseTable = [
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []],
+        [[], [], [], [], [], [], []]
+    ]
+
+    sql = "select class_time,class_name " \
+          "from class_info ci " \
+          "join enroll_record er on ci.class_id = er.class_id " \
+          "join time_record tr on ci.class_id = tr.class_id " \
+          "where stu_id={!r}".format(current_user.id)
+    rows = dal.SQLHelper.fetch_all(sql)
+
+    for row in rows:
+        courseTable[2 * (row[0] % 6)][row[0] // 6].append("{}".format(row[1]))
+        courseTable[2 * (row[0] % 6) + 1][row[0] // 6].append("{}".format(row[1]))
+
+    user = {'grade': '2018级', 'title': '教授', 'school': '计算机科学与工程学院', 'email': '5454549866@qq.com'}
+    return render_template('home.html', courseTable=courseTable,user=user)
 
 
 # 个人页面

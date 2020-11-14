@@ -689,6 +689,11 @@ def teacherInfo():
             return redirect(url_for('main.teacherInfo') + "#modal")
         else:
             # TODO:修改数据库密码
+            sql = "update user_login_info " \
+                  "set usr_pwd={!r} " \
+                  "where usr_id={!r};".format(form.password.data, form.id.data)
+            dal.SQLHelper.modify(sql)
+            flash("修改成功", 'alert-info')
             print(form.id.data)
 
     elif form.is_submitted():
@@ -783,7 +788,12 @@ def studentInfo():
             return redirect(url_for('main.studentInfo') + "#modal")
         else:
             # TODO:修改数据库密码
+            sql = "update user_login_info " \
+                  "set usr_pwd={!r} " \
+                  "where usr_id={!r};".format(form.password.data, form.id.data)
+            dal.SQLHelper.modify(sql)
             print(form.id.data)
+            flash("修改成功",'alert-info')
 
     elif form.is_submitted():
         print(form.id.data)
@@ -866,7 +876,12 @@ def passwordEdit():
             form.old.errors.append('密码错误')
         else:
             # TODO:修改数据库密码
+            sql = "update user_login_info " \
+                  "set usr_pwd={!r} " \
+                  "where usr_id={!r};".format(form.password.data,current_user.id)
+            dal.SQLHelper.modify(sql)
             # TODO：修改current_user.password
+            current_user.password=form.password.data
             flash('修改成功', 'alert-info')
             return redirect(url_for('main.index'))
     return render_template('passwordEdit.html', form=form)

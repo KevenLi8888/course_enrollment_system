@@ -116,7 +116,7 @@ def select():
 
         # 判断容量
         if session[courseId]['current'] == session[courseId]['capacity']:
-            flash('课程已经满了')
+            flash('课程已经满了', 'alert-warning')
             return redirect(url_for('main.select'))
 
         # 判断时间冲突
@@ -131,7 +131,7 @@ def select():
                                                                             session[courseId]['end'])
         row = dal.SQLHelper.fetch_one(sql)
         if row is not None:
-            flash("与{}{}课程冲突".format(row[0], row[1]))
+            flash("与{}{}课程冲突".format(row[0], row[1]), 'alert-warning')
             return redirect(url_for('main.select'))
 
         # 添加课程
@@ -148,7 +148,7 @@ def select():
         dal.SQLHelper.modify(sql)
         print(sql)
 
-        flash('xxx课程选课成功')
+        flash('xxx课程选课成功', 'alert-success')
         return redirect(url_for('main.select'))
 
     # courseLists begin
@@ -300,7 +300,7 @@ def quit():
               "set class_current_enroll_count=class_current_enroll_count+1 " \
               "where class_id={!r}".format(request.args['courseId'])
         dal.SQLHelper.modify(sql)
-        flash('xxx课程退课成功')
+        flash('xxx课程退课成功', 'alert-warning')
         return redirect(url_for('main.quit'))
     return render_template('quit.html', courseLists=courseLists, courseTable=courseTable)
 
@@ -381,7 +381,7 @@ def courseInfo():
               "where class_id={!r}".format(request.args['courseId'])
         dal.SQLHelper.modify(sql)
         # print(sql)
-        flash('课程删除成功')
+        flash('课程删除成功', 'alert-warning')
         return redirect(url_for('main.courseInfo'))
 
     # 课程列表
@@ -424,14 +424,14 @@ def courseAdd():
 
         # 判断周数非法
         if form.start.data > form.end.data:
-            flash('课程开始周数不能大于课程结束周数，请重新填写！')
+            form.start.errors.append('课程开始周数不能大于课程结束周数，请重新填写！')
             return render_template('courseAdd.html', form=form)
 
         # 判断课程序号冲突与
         sql = "select class_id from class_info where class_id={!r};".format(form.id.data)
         rows = dal.SQLHelper.fetch_one(sql)
         if rows is not None:
-            flash('课程序号已经存在，请重新填写！')
+            form.id.errors.append('课程序号已经存在，请重新填写！')
             return render_template('courseAdd.html', form=form)
 
         for li in form.time.data:
@@ -445,7 +445,7 @@ def courseAdd():
             if rows is not None:
                 for row in rows:
                     if form.end.data >= row[2] and form.start.data <= row[3]:
-                        flash("与课程{}{}教室冲突".format(row[0], row[1]))
+                        form.room.errors.append("与课程{}{}教室冲突".format(row[0], row[1]))
                         return render_template('courseAdd.html', form=form)
 
             # 判断老师时间冲突
@@ -461,7 +461,7 @@ def courseAdd():
                 if rows is not None:
                     for row in rows:
                         if form.end.data >= row[3] and form.start.data <= row[4]:
-                            flash("与{}老师课程{}{}时间冲突".format(row[0], row[1], row[2]))
+                            form.teacher.errors.append("与{}老师课程{}{}时间冲突".format(row[0], row[1], row[2]))
                             return render_template('courseAdd.html', form=form)
 
         # 添加到数据库
@@ -491,7 +491,7 @@ def courseAdd():
             sql = "insert into grade_list(class_id, class_target_grade)" \
                   "values ({!r},{!r});".format(form.id.data, li)
             dal.SQLHelper.modify(sql)
-        flash('添加成功')
+        flash('添加成功', 'alert-success')
         return redirect(url_for('main.courseInfo'))
     return render_template('courseAdd.html', form=form)
 
@@ -508,7 +508,7 @@ def courseEdit():
         form.id.data = session['courseId']
         # 判断周数非法
         if form.start.data > form.end.data:
-            flash('课程开始周数不能大于课程结束周数，请重新填写！')
+            form.week.errors.append('课程开始周数不能大于课程结束周数，请重新填写！')
             return render_template('courseEdit.html', form=form)
 
         for li in form.time.data:
@@ -524,7 +524,7 @@ def courseEdit():
                     if row[0] == session['courseId']:
                         continue
                     if form.end.data >= row[2] and form.start.data <= row[3]:
-                        flash("与课程{}{}教室冲突".format(row[0], row[1]))
+                        form.room.errors.append("与课程{}{}教室冲突".format(row[0], row[1]))
                         return render_template('courseEdit.html', form=form)
 
             # 判断老师时间冲突
@@ -542,7 +542,7 @@ def courseEdit():
                         if row[1] == session['courseId']:
                             continue
                         if form.end.data >= row[3] and form.start.data <= row[4]:
-                            flash("与{}老师课程{}{}时间冲突".format(row[0], row[1], row[2]))
+                            form.teacher.errors.append("与{}老师课程{}{}时间冲突".format(row[0], row[1], row[2]))
                             return render_template('courseEdit.html', form=form)
 
         # 更新数据库
@@ -597,7 +597,7 @@ def courseEdit():
                 sql = "insert into grade_list(class_id, class_target_grade)" \
                       "values ({!r},{!r});".format(session['courseId'], li)
                 dal.SQLHelper.modify(sql)
-        flash('修改成功')
+        flash('修改成功', 'alert-info')
         return redirect(url_for('main.courseInfo'))
 
     # 重定向
@@ -670,7 +670,7 @@ def teacherInfo():
         dal.SQLHelper.modify(sql)
         # print(sql)
         # print(request.args['teacherId'])
-        flash('老师删除成功')
+        flash('老师删除成功', 'alert-warning')
         return redirect(url_for('main.teacherInfo'))
     if form.validate_on_submit():
         if form.admin.data != current_user.password:
@@ -707,7 +707,7 @@ def teacherAdd():
         sql = "select usr_id from user_login_info where usr_id={!r};".format(form.id.data)
         rows = dal.SQLHelper.fetch_one(sql)
         if rows is not None:
-            flash('工号已经存在，请重新填写！')
+            form.id.errors.append('工号已经存在，请重新填写！')
         else:
             sql = "insert into user_login_info(usr_id, usr_pwd, usr_type) values ({!r},{!r},{!r});".format(
                 form.id.data, form.id.data, 1)
@@ -716,7 +716,7 @@ def teacherAdd():
                   "{!r},{!r},{!r},{!r});".format(form.id.data, form.name.data, form.school.data, form.title.data,
                                                  form.email.data)
             dal.SQLHelper.modify(sql)
-            flash('添加成功')
+            flash('添加成功', 'alert-success')
             return redirect(url_for('main.teacherInfo'))
     return render_template('teacherAdd.html', form=form)
 
@@ -734,7 +734,7 @@ def teacherEdit():
                                            session['teacherId'])
         print(form.school.data, form.title.data, form.email.data, session['teacherId'])
         dal.SQLHelper.modify(sql)
-        flash('修改成功')
+        flash('修改成功', 'alert-info')
         return redirect(url_for('main.teacherInfo'))
     if 'teacherId' in request.args:
         session['teacherId'] = request.args['teacherId']
@@ -763,7 +763,7 @@ def studentInfo():
         dal.SQLHelper.modify(sql)
         print(sql)
         print(request.args['studentId'])
-        flash('学生删除成功')
+        flash('学生删除成功', 'alert-warning')
         return redirect(url_for('main.studentInfo'))
 
     if form.validate_on_submit():
@@ -802,7 +802,7 @@ def studentAdd():
         sql = "select usr_id from user_login_info where usr_id={!r};".format(form.id.data)
         rows = dal.SQLHelper.fetch_one(sql)
         if rows is not None:
-            flash('学号已经存在，请重新填写！')
+            form.id.errors.append('学号已经存在，请重新填写！')
         else:
             sql = "insert into user_login_info(usr_id, usr_pwd, usr_type) values ({!r},{!r},{!r});".format(
                 form.id.data, form.id.data, 2)
@@ -811,7 +811,7 @@ def studentAdd():
                   "{!r},{!r},{!r},{!r});".format(form.id.data, form.name.data, form.school.data, form.grade.data,
                                                  form.email.data)
             dal.SQLHelper.modify(sql)
-            flash('添加成功')
+            flash('添加成功', 'alert-success')
             return redirect(url_for('main.studentInfo'))
     return render_template('studentAdd.html', form=form)
 
@@ -829,7 +829,7 @@ def studentEdit():
                                           session['studentId'])
         print(form.school.data, form.grade.data, form.email.data, session['studentId'])
         dal.SQLHelper.modify(sql)
-        flash('修改成功')
+        flash('修改成功', 'alert-info')
         return redirect(url_for('main.studentInfo'))
     if 'studentId' in request.args:
         session['studentId'] = request.args['studentId']
@@ -854,11 +854,11 @@ def passwordEdit():
     form = PasswordForm()
     if form.validate_on_submit():
         if form.old.data != current_user.password:
-            flash('密码错误')
+            form.old.errors.append('密码错误')
         else:
             # TODO:修改数据库密码
             # TODO：修改current_user.password
-            flash('修改成功')
+            flash('修改成功', 'alert-info')
             return redirect(url_for('main.index'))
     return render_template('passwordEdit.html', form=form)
 
@@ -866,5 +866,5 @@ def passwordEdit():
 # 课程页面
 @main.route('/course', methods=['GET', 'POST'])
 def course():
-    list=[]
-    return render_template('course.html',list=list)
+    list = []
+    return render_template('course.html', list=list)

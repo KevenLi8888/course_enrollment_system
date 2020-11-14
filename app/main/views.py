@@ -61,7 +61,7 @@ def index():
             courseTable[2 * (row[0] % 6) + 1][row[0] // 6].append("{}".format(row[1]))
 
         user = {'grade': '2018级', 'title': '教授', 'school': '计算机科学与工程学院', 'email': '5454549866@qq.com'}
-        return render_template('home.html', courseTable=courseTable,user=user)
+        return render_template('home.html', courseTable=courseTable, user=user)
     return render_template('home.html')
 
 
@@ -294,12 +294,11 @@ def quit():
                   'room': row[5], 'week': "{}-{}".format(row[6], row[7]), 'time': [], 'teacher': []}
 
         sql = "select class_time from class_info ci " \
-          "join time_record tr on ci.class_id = tr.class_id " \
-          "where ci.class_id = {!r};".format(row[0])
+              "join time_record tr on ci.class_id = tr.class_id " \
+              "where ci.class_id = {!r};".format(row[0])
         times = dal.SQLHelper.fetch_all(sql)
 
         for time in times:
-
             course['time'].append(
                 "星期{} {}-{}".format(week_list[time[0] // 6], 2 * (time[0] % 6) + 1, 2 * (time[0] % 6 + 1)))
             courseTable[2 * (time[0] % 6)][time[0] // 6].append("{} {}-{}".format(row[1], row[6], row[7]))
@@ -318,18 +317,15 @@ def quit():
 
     if 'courseId' in request.args:
         sql = "delete from enroll_record " \
-              "where class_id={!r} and stu_id={!r}".format(request.args['courseId'],current_user.id)
+              "where class_id={!r} and stu_id={!r}".format(request.args['courseId'], current_user.id)
         dal.SQLHelper.modify(sql)
-        sql="update class_info " \
-            "set class_current_enroll_count=class_current_enroll_count+1 " \
-            "where class_id={!r}".format(request.args['courseId'])
+        sql = "update class_info " \
+              "set class_current_enroll_count=class_current_enroll_count+1 " \
+              "where class_id={!r}".format(request.args['courseId'])
         dal.SQLHelper.modify(sql)
         flash('xxx课程退课成功')
         return redirect(url_for('main.quit'))
     return render_template('quit.html', courseLists=courseLists, courseTable=courseTable)
-
-
-
 
 
 # 学生花名册
@@ -691,7 +687,7 @@ def courseEdit():
 @main.route('/teacherInfo', methods=['GET', 'POST'])
 @login_required
 def teacherInfo():
-    form = SearchForm()
+    form = AdminPasswordForm()
     if 'teacherId' in request.args:
         sql = "delete from user_login_info where usr_id={0!r};".format(request.args['teacherId'])
         dal.SQLHelper.modify(sql)
@@ -699,11 +695,30 @@ def teacherInfo():
         # print(request.args['teacherId'])
         flash('老师删除成功')
         return redirect(url_for('main.teacherInfo'))
+    if form.validate_on_submit():
+        if form.admin.data != current_user.password:
+            print(current_user.password)
+            print(form.password.data)
+            session['message'] = "管理员密码错误！"
+            return redirect(url_for('main.teacherInfo') + "#modal")
+        else:
+            # TODO:修改数据库密码
+            print(form.id.data)
+
+    elif form.is_submitted():
+        print(form.id.data)
+        print(form.password.data)
+        session['message'] = list(form.errors.values())[0][0]
+        return redirect(url_for('main.teacherInfo') + "#modal")
+
     sql = "select t1.usr_id,t2.tchr_name,t2.tchr_school,t2.tchr_title,t2.tchr_mail,t1.usr_pwd  " \
           "from user_login_info t1 " \
           "join teacher_list t2 on t1.usr_id=t2.tchr_id;"
     teacherLists = dal.SQLHelper.fetch_all(sql)
-    return render_template('teacherInfo.html', teacherLists=teacherLists, form=form)
+    if 'message' in session:
+        return render_template('teacherInfo.html', teacherLists=teacherLists, form=form, message=session['message'])
+    else:
+        return render_template('teacherInfo.html', teacherLists=teacherLists, form=form)
 
 
 # 添加老师
@@ -765,7 +780,7 @@ def teacherEdit():
 @main.route('/studentInfo', methods=['GET', 'POST'])
 @login_required
 def studentInfo():
-    form = SearchForm()
+    form = AdminPasswordForm()
     if 'studentId' in request.args:
         sql = "delete from user_login_info where usr_id={0!r};".format(request.args['studentId'])
         dal.SQLHelper.modify(sql)
@@ -773,11 +788,32 @@ def studentInfo():
         print(request.args['studentId'])
         flash('学生删除成功')
         return redirect(url_for('main.studentInfo'))
+
+    if form.validate_on_submit():
+        if form.admin.data != current_user.password:
+            print(current_user.password)
+            print(form.password.data)
+            session['message'] = "管理员密码错误！"
+            return redirect(url_for('main.studentInfo') + "#modal")
+        else:
+            # TODO:修改数据库密码
+            print(form.id.data)
+
+    elif form.is_submitted():
+        print(form.id.data)
+        print(form.password.data)
+        session['message'] = list(form.errors.values())[0][0]
+        return redirect(url_for('main.studentInfo') + "#modal")
+
     sql = "select t1.usr_id,t2.stu_name,t2.stu_school,t2.stu_grade,t2.stu_mail,t1.usr_pwd  " \
           "from user_login_info t1 " \
           "join student_list t2 on t1.usr_id=t2.stu_id;"
     studentLists = dal.SQLHelper.fetch_all(sql)
-    return render_template('studentInfo.html', studentLists=studentLists, form=form)
+
+    if 'message' in session:
+        return render_template('studentInfo.html', studentLists=studentLists, form=form, message=session['message'])
+    else:
+        return render_template('studentInfo.html', studentLists=studentLists, form=form)
 
 
 # 添加学生

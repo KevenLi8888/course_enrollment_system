@@ -132,6 +132,17 @@ class PasswordForm(FlaskForm):
     submit = SubmitField('修改')
 
 
+# 管理员修改密码表单
+class AdminPasswordForm(FlaskForm):
+    # TODO:进一步的验证函数
+    id = HiddenField('ID', validators=[DataRequired()])
+    admin = PasswordField('管理员密码', validators=[DataRequired()])
+    password = PasswordField('新的密码', validators=[
+        DataRequired(), EqualTo('password2', message='Passwords must match.')])
+    password2 = PasswordField('确认密码', validators=[DataRequired()])
+    submit = SubmitField('修改')
+
+
 # 搜索表单
 class SearchForm(FlaskForm):
     # TODO:进一步的验证函数

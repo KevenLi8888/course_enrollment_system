@@ -508,7 +508,7 @@ def courseEdit():
         form.id.data = session['courseId']
         # 判断周数非法
         if form.start.data > form.end.data:
-            form.week.errors.append('课程开始周数不能大于课程结束周数，请重新填写！')
+            form.start.errors.append('课程开始周数不能大于课程结束周数，请重新填写！')
             return render_template('courseEdit.html', form=form)
 
         for li in form.time.data:

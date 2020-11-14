@@ -5,29 +5,6 @@ from . import main
 from .forms import *
 from ..db import dal
 
-courseLists = []
-studentLists = [{'id': 2018022, 'name': 'keven', 'school': 'cs', 'grade': 2018, 'email': '@email'},
-                {'id': 2018023, 'name': 'keven', 'school': 'cs', 'grade': 2018, 'email': '@email'},
-                {'id': 2018024, 'name': 'keven', 'school': 'cs', 'grade': 2018, 'email': '@email'},
-                {'id': 2018025, 'name': 'keven', 'school': 'cs', 'grade': 2018, 'email': '@email'}]
-# teacherLists = [{'id': 2018022, 'name': 'keven', 'school': 'cs', 'title': 'teach', 'email': '@email'},
-#                 {'id': 2018023, 'name': 'keven', 'school': 'cs', 'title': 'teach', 'email': '@email'},
-#                 {'id': 2018024, 'name': 'keven', 'school': 'cs', 'title': 'teach', 'email': '@email'},
-#                 {'id': 2018025, 'name': 'keven', 'school': 'cs', 'title': 'teach', 'email': '@email'}]
-courseTable = [
-    [[11], [], [], [], [], [], []],
-    [[], [], [], [], [], [], []],
-    [[], [], [], [], [], [], []],
-    [[], [], [], [], [], [], []],
-    [[], [], [], [], [], [], []],
-    [[], [], [], [], [], [], []],
-    [[], [], [], [], [], [], []],
-    [[], [], [], [], [], [], []],
-    [[], [], [], [], [], [], []],
-    [[], [], [], [], [], [], []],
-    [[], [], [], [], [], [], []],
-    [[111], [], [], [], [], [], []]
-]
 week_list = ['一', '二', '三', '四', '五', '六', '日']
 
 
@@ -884,3 +861,10 @@ def passwordEdit():
             flash('修改成功')
             return redirect(url_for('main.index'))
     return render_template('passwordEdit.html', form=form)
+
+
+# 课程页面
+@main.route('/course', methods=['GET', 'POST'])
+def course():
+    list=[]
+    return render_template('course.html',list=list)

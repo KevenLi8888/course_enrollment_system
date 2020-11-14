@@ -89,6 +89,10 @@
                                         onclick="quitCourse({{ li['id'] }})">
                                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                                 </button>
+                                <a type="button" class="btn btn-default" aria-label="edit"
+                                   href="{{ url_for('main.course',courseId= li['id']) }}">
+                                    <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                                </a>
                             </div>
                         </td>
                     </tr>

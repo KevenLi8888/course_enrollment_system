@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}课程信息{% endblock %}
+
+{% block page_content %}
+    <div class="page-header">
+        <h1>计算机组成原理</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <dl class="list">
+                <dt>课程序号</dt>
+                <dd>{{ list['id'] }}</dd>
+                <dt>学分</dt>
+                <dd>{{ list['credit'] }}</dd>
+                <dt>教室</dt>
+                <dd>{{ list['room'] }}</dd>
+                <dt>课程容量</dt>
+                <dd>{{ list['capacity'] }}</dd>
+                <dt>上课人数</dt>
+                <dd>{{ list['current'] }}</dd>
+                <dt>上课年级</dt>
+                <dd>{{ list['grade'] }}</dd>
+
+            </dl>
+        </div>
+        <div class="col-md-4">
+            <dl class="list">
+                <dt>上课学院</dt>
+                <dd>{{ list['school'] }}</dd>
+                <dt>上课老师</dt>
+                <dd>{{ list['teacher'] }}</dd>
+                <dt>上课时间</dt>
+                <dd>{{ list['time'] }}</dd>
+                <dt>上课周数</dt>
+                <dd>{{ list['week'] }}</dd>
+            </dl>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

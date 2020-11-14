@@ -45,7 +45,16 @@ def index():
 # 个人页面
 @main.route('/infoPage', methods=['GET', 'POST'])
 def infoPage():
-    user = {'grade': '2018级', 'title': '教授', 'school': '计算机科学与工程学院', 'email': '5454549866@qq.com'}
+    if current_user.type == 0:  # 管理员
+        user = {'school': '计算机科学与工学院', 'email': '5454549866@qq.com'}
+        return render_template('infoPage.html', user=user)
+    elif current_user.type == 1:  # 老师
+        user = {'title': '教授', 'school': '计算机科学与工学院', 'email': '5454549866@qq.com'}
+        return render_template('infoPage.html', user=user)
+    elif current_user.type == 2:  # 学生
+        user = {'grade': '2018级', 'school': '计算机科学与工学院', 'email': '5454549866@qq.com'}
+        return render_template('infoPage.html', user=user)
+    user = {'grade': '', 'title': '', 'school': '', 'email': ''}
     return render_template('infoPage.html', user=user)
 
 

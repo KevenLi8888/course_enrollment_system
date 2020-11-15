@@ -80,21 +80,29 @@
                     <span>个人信息</span>
                 </div>
                 <div class="row center-format margin-element">
-                    <img class="img-circle center-format img-responsive photo"
-                         src="../static/example.jpg" alt="">
+                    {% if user['avatar'] == None %}
+                        <img class="img-rounded center-format img-responsive  photo "
+                             src="../static/default.png" alt="">
+                    {% else %}
+                        <img class="img-rounded center-format img-responsive  photo "
+                             src="data:;base64,{{ user['avatar'] }}" alt="">
+                    {% endif %}
                 </div>
                 <div class="row margin-element">
                     <h1>{{ current_user.name }}</h1>
                     <br>
                     <p>{{ current_user.id }}</p>
+                    <!--学生-->
                     {% if current_user.type==2 %}
-                        <p>{{ user['grade'] }}</p>
+                        <p>{{ user['grade'] }}级</p>
                     {% endif %}
-                    {% if current_user.type==1 %}}
+                    <!--老师-->
+                    {% if current_user.type==1 %}
                         <p>{{ user['title'] }}</p>
                     {% endif %}
+
                     <p>{{ user['school'] }}</p>
-                    <p><a href="mailto:967@qq.com">{{ user['email'] }}</a></p>
+                    <p><a href="mailto:{{ user['email'] }}">{{ user['email'] }}</a></p>
                     <br>
                 </div>
             </div>

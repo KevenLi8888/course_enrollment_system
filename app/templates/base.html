@@ -74,10 +74,16 @@
         .info p {
             line-height: 2;
         }
+
+        .nav {
+            -webkit-border-radius: 0;
+            -moz-border-radius: 0;
+            border-radius: 0;
+        }
     </style>
 {% endblock %}
 {% block navbar %}
-    <div class="navbar navbar-inverse " role="navigation">
+    <div class="navbar navbar-inverse nav " role="navigation">
         <div class="container-fluid">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -93,38 +99,47 @@
                     <li class="active"><a href="{{ url_for('main.index') }}">
                         <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
                     </a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                           aria-expanded="false">学生系统 <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="{{ url_for('main.study') }}">我的课程</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="{{ url_for('main.select') }}">选课</a></li>
-                            <li><a href="{{ url_for('main.quit') }}">退课</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="#">选课记录</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                           aria-expanded="false">教师系统 <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="{{ url_for('main.teach') }}">课程</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="#">其他</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                           aria-expanded="false">管理系统 <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="{{ url_for('main.courseInfo') }}">课程信息</a></li>
-                            <li><a href="{{ url_for('main.teacherInfo') }}">教师信息</a></li>
-                            <li><a href="{{ url_for('main.studentInfo') }}">学生信息</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="#">其他</a></li>
-                        </ul>
-                    </li>
+                    {% if current_user.type==2 %}
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                               aria-haspopup="true"
+                               aria-expanded="false">学生系统 <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{{ url_for('main.study') }}">我的课程</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="{{ url_for('main.select') }}">选课</a></li>
+                                <li><a href="{{ url_for('main.quit') }}">退课</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li role="presentation" class="disabled"><a href="#">其他</a></li>
+                            </ul>
+                        </li>
+                    {% endif %}
+                    {% if current_user.type==1 %}
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                               aria-haspopup="true"
+                               aria-expanded="false">教师系统 <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{{ url_for('main.teach') }}">课程</a></li>
+                                <li role="separator" class="divider"></li>
+                                 <li role="presentation" class="disabled"><a href="#">其他</a></li>
+                            </ul>
+                        </li>
+                    {% endif %}
+                    {% if current_user.type==0 %}
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                               aria-haspopup="true"
+                               aria-expanded="false">管理系统 <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{{ url_for('main.courseInfo') }}">课程信息</a></li>
+                                <li><a href="{{ url_for('main.teacherInfo') }}">教师信息</a></li>
+                                <li><a href="{{ url_for('main.studentInfo') }}">学生信息</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li role="presentation" class="disabled"><a href="#">其他</a></li>
+                            </ul>
+                        </li>
+                    {% endif %}
                     <li><a href="https://www.uestc.edu.cn/">学校主页</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
@@ -142,14 +157,6 @@
                                 <li><a href="{{ url_for('auth.logout') }}">退出</a></li>
                             </ul>
                         </li>
-                        {#                        <li>#}
-                        {#                            <a href="#">#}
-                        {#                                <span class="glyphicon glyphicon-user" aria-hidden="true"></span></a>#}
-                        {#                        </li>#}
-                        {#                        <li>#}
-                        {#                            <a href="{{ url_for('auth.logout') }}">#}
-                        {#                                <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span></a>#}
-                        {#                        </li>#}
                     {% else %}
                         <li>
                             <a href="{{ url_for('auth.login') }}">

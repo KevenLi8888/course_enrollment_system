@@ -27,7 +27,47 @@ def index():
         [[], [], [], [], [], [], []],
         [[], [], [], [], [], [], []]
     ]
-    if current_user.is_authenticated:
+    # 管理员
+    if current_user.is_authenticated and current_user.type == 0:
+        sql = "select adm_school, adm_mail, adm_avatar " \
+              "from admin_list " \
+              "where adm_id={!r}".format(current_user.id)
+        row = dal.SQLHelper.fetch_one(sql)
+        if row[2] is None:
+            image = None
+        else:
+            image = str(base64.b64encode(row[2]))[2:-1]
+        user = {'school': row[0], 'email': row[1], 'avatar': image}
+
+        return render_template('home.html', courseTable=courseTable, user=user)
+
+    # 教师
+    if current_user.is_authenticated and current_user.type == 1:
+
+        sql = "select class_time,class_name " \
+              "from class_info ci " \
+              "join teach_record ter on ci.class_id = ter.class_id " \
+              "join time_record tr on ci.class_id = tr.class_id " \
+              "where tchr_id={!r}".format(current_user.id)
+        rows = dal.SQLHelper.fetch_all(sql)
+
+        for row in rows:
+            courseTable[2 * (row[0] % 6)][row[0] // 6].append("{}".format(row[1]))
+            courseTable[2 * (row[0] % 6) + 1][row[0] // 6].append("{}".format(row[1]))
+
+        sql = "select tchr_school, tchr_title, tchr_mail, tchr_avatar " \
+              "from teacher_list " \
+              "where tchr_id={!r}".format(current_user.id)
+        row = dal.SQLHelper.fetch_one(sql)
+        if row[3] is None:
+            image = None
+        else:
+            image = str(base64.b64encode(row[3]))[2:-1]
+        user = {'school': row[0], 'title': row[1], 'email': row[2], 'avatar': image}
+        return render_template('home.html', courseTable=courseTable, user=user)
+
+    # 学生
+    if current_user.is_authenticated and current_user.type == 2:
         sql = "select class_time,class_name " \
               "from class_info ci " \
               "join enroll_record er on ci.class_id = er.class_id " \
@@ -39,7 +79,15 @@ def index():
             courseTable[2 * (row[0] % 6)][row[0] // 6].append("{}".format(row[1]))
             courseTable[2 * (row[0] % 6) + 1][row[0] // 6].append("{}".format(row[1]))
 
-        user = {'grade': '2018级', 'title': '教授', 'school': '计算机科学与工程学院', 'email': '5454549866@qq.com'}
+        sql = "select stu_school,stu_grade,stu_mail,stu_avatar " \
+              "from student_list " \
+              "where stu_id={!r}".format(current_user.id)
+        row = dal.SQLHelper.fetch_one(sql)
+        if row[3] is None:
+            image = None
+        else:
+            image = str(base64.b64encode(row[3]))[2:-1]
+        user = {'school': row[0], 'grade': row[1], 'email': row[2], 'avatar': image}
         return render_template('home.html', courseTable=courseTable, user=user)
     return render_template('home.html')
 

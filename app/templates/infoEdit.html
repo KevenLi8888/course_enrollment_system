@@ -1,28 +1,71 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-{% block title %}编辑教师信息{% endblock %}
+{% block title %}编辑个人信息{% endblock %}
 
 {% block page_content %}
     <div class="page-header">
-        <h1>编辑教师信息</h1>
+        <h1>编辑个人信息</h1>
     </div>
     <div>
-        <form class="col-md-4" method="POST">
-            {{ wtf.form_field(form.id,id="disabledInput",disabled="disabled") }}
-            {{ wtf.form_field(form.name,id="disabledInput",disabled="disabled") }}
-            {{ wtf.form_field(form.school) }}
-            {{ wtf.form_field(form.title) }}
-            {{ wtf.form_field(form.email) }}
-            {{ form.csrf_token }}
-            <div>
-                <div style="float: right;margin: 5px">
-                    {{ form.submit(class="btn black-btn") }}
+        <!--管理员-->
+        {% if current_user.type==0 %}
+            <form class="col-md-4" method="POST" enctype="multipart/form-data">
+                {{ wtf.form_field(form.avatar) }}
+                {{ wtf.form_field(form.id,id="disabledInput",disabled="disabled") }}
+                {{ wtf.form_field(form.name,id="disabledInput",disabled="disabled") }}
+                {{ wtf.form_field(form.school,id="disabledInput",disabled="disabled") }}
+                {{ wtf.form_field(form.email) }}
+                {{ form.csrf_token }}
+                <div>
+                    <div style="float: right;margin: 5px">
+                        {{ form.submit(class="btn black-btn") }}
+                    </div>
+                    <div class="btn-group" role="group" style="float:right;margin: 5px">
+                        <a type="button" class="btn btn-default" href="{{ url_for('main.teacherInfo') }}">取消</a>
+                    </div>
                 </div>
-                <div class="btn-group" role="group" style="float:right;margin: 5px">
-                    <a type="button" class="btn btn-default" href="{{ url_for('main.teacherInfo') }}">取消</a>
+            </form>
+        {% endif %}
+        <!--老师-->
+        {% if current_user.type==1 %}
+            <form class="col-md-4" method="POST" enctype="multipart/form-data">
+                {{ wtf.form_field(form.avatar) }}
+                {{ wtf.form_field(form.id,id="disabledInput",disabled="disabled") }}
+                {{ wtf.form_field(form.name,id="disabledInput",disabled="disabled") }}
+                {{ wtf.form_field(form.school,id="disabledInput",disabled="disabled") }}
+                {{ wtf.form_field(form.title,id="disabledInput",disabled="disabled") }}
+                {{ wtf.form_field(form.email) }}
+                {{ form.csrf_token }}
+                <div>
+                    <div style="float: right;margin: 5px">
+                        {{ form.submit(class="btn black-btn") }}
+                    </div>
+                    <div class="btn-group" role="group" style="float:right;margin: 5px">
+                        <a type="button" class="btn btn-default" href="{{ url_for('main.teacherInfo') }}">取消</a>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        {% endif %}
+        <!--学生-->
+        {% if current_user.type==2 %}
+            <form class="col-md-4" method="POST" enctype="multipart/form-data">
+                {{ wtf.form_field(form.avatar) }}
+                {{ wtf.form_field(form.id,id="disabledInput",disabled="disabled") }}
+                {{ wtf.form_field(form.name,id="disabledInput",disabled="disabled") }}
+                {{ wtf.form_field(form.school,id="disabledInput",disabled="disabled") }}
+                {{ wtf.form_field(form.grade,id="disabledInput",disabled="disabled") }}
+                {{ wtf.form_field(form.email) }}
+                {{ form.csrf_token }}
+                <div>
+                    <div style="float: right;margin: 5px">
+                        {{ form.submit(class="btn black-btn") }}
+                    </div>
+                    <div class="btn-group" role="group" style="float:right;margin: 5px">
+                        <a type="button" class="btn btn-default" href="{{ url_for('main.teacherInfo') }}">取消</a>
+                    </div>
+                </div>
+            </form>
+        {% endif %}
     </div>
 {% endblock %}

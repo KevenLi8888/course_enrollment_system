@@ -100,6 +100,18 @@ class TeacherEditForm(TeacherForm):
     name = StringField('姓名')
 
 
+# 老师个人信息表单
+class TeacherInfoForm(FlaskForm):
+    avatar = FileField('头像')
+    id = StringField('工号')
+    name = StringField('姓名')
+    school = StringField('学院')
+    title = StringField('职称')
+    email = StringField('邮箱', validators=[DataRequired(), Length(1, 64),
+                                          Email()])
+    submit = SubmitField('确定')
+
+
 # 学生表单
 class StudentForm(FlaskForm):
     # TODO:进一步的验证函数
@@ -120,6 +132,18 @@ class StudentForm(FlaskForm):
 class StudentEditForm(StudentForm):
     id = StringField('学号')
     name = StringField('姓名')
+
+
+# 学生个人信息表单
+class StudentInfoForm(FlaskForm):
+    avatar = FileField('头像')
+    id = StringField('学号')
+    name = StringField('姓名')
+    school = StringField('学院')
+    grade = StringField('年级')
+    email = StringField('邮箱', validators=[DataRequired(), Length(1, 64),
+                                          Email()])
+    submit = SubmitField('确定')
 
 
 # 密码表单
@@ -148,3 +172,14 @@ class SearchForm(FlaskForm):
     # TODO:进一步的验证函数
     search = StringField('搜索', validators=[DataRequired()])
     submit = SubmitField('查找')
+
+
+# 管理员个人信息表单
+class AdminInfoForm(FlaskForm):
+    avatar = FileField('头像')
+    id = StringField('ID')
+    name = StringField('姓名')
+    school = StringField('学院')
+    email = StringField('邮箱', validators=[DataRequired(), Length(1, 64),
+                                          Email()])
+    submit = SubmitField('确定')

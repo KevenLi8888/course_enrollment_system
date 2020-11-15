@@ -86,7 +86,22 @@
                 <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
                 <span>课表</span>
             </div>
-            <table class="table table-hover table table-striped" style="margin-top: 20px;text-align: center">
+            <table id="table"
+                   class="table table-hover table-responsive"
+                   data-toggle="table"
+                   data-search="true"
+                   data-search-align="left"
+                   data-search-on-enter-key="false"
+                   data-show-search-button="true"
+                   data-pagination="true"
+                   data-page-list="[5,10,15,20,25,50,100]"
+                   data-show-columns="true"
+                   data-show-search-clear-button="true"
+                   data-show-columns-toggle-all="true"
+                   data-show-columns-search="true"
+                   data-show-refresh="true"
+                   data-show-fullscreen="true"
+            >
                 <thead>
                 <tr class="active">
                     <th class="center-format">课程序号</th>

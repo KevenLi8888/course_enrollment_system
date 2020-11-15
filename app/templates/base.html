@@ -70,6 +70,10 @@
         .list {
             padding: 0 30px 0 20px;
         }
+
+        .info p {
+            line-height: 2;
+        }
     </style>
 {% endblock %}
 {% block navbar %}
@@ -172,12 +176,12 @@
                 </div>
             {% endif %}
         {% endwith %}
-{#        {% for message in get_flashed_messages() %}#}
-{#            <div class="alert alert-warning">#}
-{#                <button type="button" class="close" data-dismiss="alert">&times;</button>#}
-{#                {{ message }}#}
-{#            </div>#}
-{#        {% endfor %}#}
+        {#        {% for message in get_flashed_messages() %}#}
+        {#            <div class="alert alert-warning">#}
+        {#                <button type="button" class="close" data-dismiss="alert">&times;</button>#}
+        {#                {{ message }}#}
+        {#            </div>#}
+        {#        {% endfor %}#}
         <!--remodal-->
         <div class="remodal" data-remodal-id="modal" style="width: 25%">
             <button data-remodal-action="close" class="remodal-close"></button>

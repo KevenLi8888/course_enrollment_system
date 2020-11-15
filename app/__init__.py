@@ -8,7 +8,11 @@ bootstrap = Bootstrap()
 moment = Moment()
 
 login_manager = LoginManager()
+# 登陆认证的处理视图
 login_manager.login_view = 'auth.login'
+# 登陆提示信息
+login_manager.login_message = '你还未登录哦！'
+login_manager.login_message_category = 'alert-warning'
 
 
 def create_app(config_name):

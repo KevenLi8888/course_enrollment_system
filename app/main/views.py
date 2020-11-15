@@ -1,3 +1,5 @@
+import base64
+import pymysql
 from flask import render_template, redirect, flash, url_for, request, session
 from flask_login import login_required, current_user
 import operator
@@ -46,16 +48,141 @@ def index():
 @main.route('/infoPage', methods=['GET', 'POST'])
 def infoPage():
     if current_user.type == 0:  # 管理员
-        user = {'school': '计算机科学与工学院', 'email': '5454549866@qq.com'}
+        sql = "select adm_school, adm_mail, adm_avatar " \
+              "from admin_list " \
+              "where adm_id={!r}".format(current_user.id)
+        row = dal.SQLHelper.fetch_one(sql)
+        if row[2] is None:
+            image = None
+        else:
+            image = str(base64.b64encode(row[2]))[2:-1]
+        user = {'school': row[0], 'email': row[1], 'avatar': image}
         return render_template('infoPage.html', user=user)
     elif current_user.type == 1:  # 老师
-        user = {'title': '教授', 'school': '计算机科学与工学院', 'email': '5454549866@qq.com'}
+        sql = "select tchr_school, tchr_title, tchr_mail, tchr_avatar " \
+              "from teacher_list " \
+              "where tchr_id={!r}".format(current_user.id)
+        row = dal.SQLHelper.fetch_one(sql)
+        if row[3] is None:
+            image = None
+        else:
+            image = str(base64.b64encode(row[3]))[2:-1]
+        user = {'school': row[0], 'title': row[1], 'email': row[2], 'avatar': image}
         return render_template('infoPage.html', user=user)
     elif current_user.type == 2:  # 学生
-        user = {'grade': '2018级', 'school': '计算机科学与工学院', 'email': '5454549866@qq.com'}
+        sql = "select stu_school,stu_grade,stu_mail,stu_avatar " \
+              "from student_list " \
+              "where stu_id={!r}".format(current_user.id)
+        row = dal.SQLHelper.fetch_one(sql)
+        if row[3] is None:
+            image = None
+        else:
+            image = str(base64.b64encode(row[3]))[2:-1]
+        user = {'school': row[0], 'grade': row[1], 'email': row[2], 'avatar': image}
         return render_template('infoPage.html', user=user)
-    user = {'grade': '', 'title': '', 'school': '', 'email': ''}
-    return render_template('infoPage.html', user=user)
+
+
+# 个人页面编辑
+@main.route('/infoEdit', methods=['GET', 'POST'])
+def infoEdit():
+    if current_user.type == 0:  # 管理员
+        form = AdminInfoForm()
+        if form.validate_on_submit():
+            # 默认数据
+            form.id.data = current_user.id
+            form.name.data = current_user.name
+            form.school.data = session['school']
+
+            imageBin = form.avatar.data.read()
+            if imageBin is b'':
+                sql = "update admin_list " \
+                      "set adm_mail=%s " \
+                      "where adm_id=%s"
+                dal.SQLHelper.modify(sql, (form.email.data, current_user.id))
+            else:
+                image = imageBin
+                sql = "update admin_list " \
+                      "set adm_avatar=%s,adm_mail=%s " \
+                      "where adm_id=%s"
+                dal.SQLHelper.modify(sql, (pymysql.Binary(image), form.email.data, current_user.id))
+            flash('修改成功', 'alert-info')
+            return redirect(url_for('main.infoPage'))
+        sql = "select adm_school, adm_mail, adm_avatar " \
+              "from admin_list " \
+              "where adm_id={!r}".format(current_user.id)
+        row = dal.SQLHelper.fetch_one(sql)
+        form.id.data = current_user.id
+        form.name.data = current_user.name
+        session['school'] = form.school.data = row[0]
+        form.email.data = row[1]
+        return render_template('infoEdit.html', form=form)
+    elif current_user.type == 1:  # 老师
+        form = TeacherInfoForm()
+        if form.validate_on_submit():
+            # 默认数据
+            form.id.data = current_user.id
+            form.name.data = current_user.name
+            form.school.data = session['school']
+            form.title.data = session['title']
+
+            imageBin = form.avatar.data.read()
+            if imageBin is b'':
+                sql = "update teacher_list " \
+                      "set tchr_mail=%s " \
+                      "where tchr_id=%s"
+                dal.SQLHelper.modify(sql, (form.email.data, current_user.id))
+            else:
+                image = imageBin
+                sql = "update teacher_list " \
+                      "set tchr_avatar=%s,tchr_mail=%s " \
+                      "where tchr_id=%s"
+                dal.SQLHelper.modify(sql, (pymysql.Binary(image), form.email.data, current_user.id))
+            flash('修改成功', 'alert-info')
+            return redirect(url_for('main.infoPage'))
+        sql = "select tchr_school, tchr_title, tchr_mail, tchr_avatar " \
+              "from teacher_list " \
+              "where tchr_id={!r}".format(current_user.id)
+        row = dal.SQLHelper.fetch_one(sql)
+        form.id.data = current_user.id
+        form.name.data = current_user.name
+        session['school'] = form.school.data = row[0]
+        session['title'] = form.title.data = row[1]
+        form.email.data = row[2]
+        return render_template('infoEdit.html', form=form)
+    elif current_user.type == 2:  # 学生
+        form = StudentInfoForm()
+        if form.validate_on_submit():
+            # 默认数据
+            form.id.data = current_user.id
+            form.name.data = current_user.name
+            form.school = session['school']
+            form.grade = session['grade']
+
+            imageBin = form.avatar.data.read()
+            if imageBin is b'':
+                sql = "update student_list " \
+                      "set stu_mail=%s " \
+                      "where stu_id=%s"
+                dal.SQLHelper.modify(sql, (form.email.data, current_user.id))
+            else:
+                image = imageBin
+                sql = "update student_list " \
+                      "set stu_avatar=%s,stu_mail=%s " \
+                      "where stu_id=%s"
+                dal.SQLHelper.modify(sql, (pymysql.Binary(image), form.email.data, current_user.id))
+
+            flash('修改成功', 'alert-info')
+            return redirect(url_for('main.infoPage'))
+        sql = "select stu_school,stu_grade,stu_mail,stu_avatar " \
+              "from student_list " \
+              "where stu_id={!r}".format(current_user.id)
+        row = dal.SQLHelper.fetch_one(sql)
+        form.id.data = current_user.id
+        form.name.data = current_user.name
+        session['school'] = form.school.data = row[0]
+        session['grade'] = form.grade.data = row[1]
+        form.email.data = row[2]
+        return render_template('infoEdit.html', form=form)
 
 
 # 学生课程

@@ -1028,8 +1028,8 @@ def course():
         print(sql)
         print(row)
         list = {'id': row[0], 'credit': row[1], 'room': row[2], 'capacity': row[3],
-                  'current': row[4], 'grade': [], 'school': [], 'teacher': [], 'time': [],
-                  'week': "{}-{}".format(row[5], row[6])}
+                'current': row[4], 'grade': [], 'school': [], 'teacher': [], 'time': [],
+                'week': "{}-{}".format(row[5], row[6])}
         print(list)
         sql = "select tchr_name from class_info ci " \
               "join teach_record tr on ci.class_id = tr.class_id " \
@@ -1039,9 +1039,9 @@ def course():
         for teacher in teachers:
             list['teacher'].append(teacher[0])
 
-        sql="select class_target_school " \
-            "from school_list where class_id={!r}".format(row[0])
-        schools=dal.SQLHelper.fetch_all(sql)
+        sql = "select class_target_school " \
+              "from school_list where class_id={!r}".format(row[0])
+        schools = dal.SQLHelper.fetch_all(sql)
         for school in schools:
             list['school'].append(school[0])
 
@@ -1058,6 +1058,4 @@ def course():
         for time in times:
             list['time'].append(
                 "星期{} {}-{}".format(week_list[time[0] // 6], 2 * (time[0] % 6) + 1, 2 * (time[0] % 6 + 1)))
-        print("lalalalallllllllllllllllllllllllllllllllllllllllll")
-        print(list)
     return render_template('course.html', list=list)

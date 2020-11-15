@@ -21,53 +21,37 @@
                 <dt>上课人数</dt>
                 <dd>{{ list['current'] }}</dd>
                 <dt>上课年级</dt>
-                <dd>{{ list['grade'] }}</dd>
+                <dd>
+                    {% for grade in list['grade'] %}
+                        {{ grade }}<br>
+                    {% endfor %}
+                </dd>
+                <dt>上课时间</dt>
+                <dd>
+                    {% for time in list['time'] %}
+                        {{ time }}<br>
+                    {% endfor %}
+                </dd>
+                <dt>上课周数</dt>
+                <dd>{{ list['week'] }}</dd>
 
             </dl>
         </div>
         <div class="col-md-4">
             <dl class="list">
-                <dt>上课学院</dt>
-                <dd>{{ list['school'] }}</dd>
                 <dt>上课老师</dt>
                 <dd>
                     {% for teacher in list['teacher'] %}
                         {{ teacher }}<br>
                     {% endfor %}
                 </dd>
-                <dt>上课时间</dt>
+                <dt>上课学院</dt>
                 <dd>
-                    {% for ti in list['time'] %}
-                        {{ ti }}<br>
+                    {% for school in list['school'] %}
+                        {{ school }}<br>
                     {% endfor %}
                 </dd>
-                <dt>上课周数</dt>
-                <dd>{{ list['week'] }}</dd>
             </dl>
         </div>
     </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 {% endblock %}

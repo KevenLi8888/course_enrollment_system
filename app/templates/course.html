@@ -30,9 +30,17 @@
                 <dt>上课学院</dt>
                 <dd>{{ list['school'] }}</dd>
                 <dt>上课老师</dt>
-                <dd>{{ list['teacher'] }}</dd>
+                <dd>
+                    {% for teacher in list['teacher'] %}
+                        {{ teacher }}<br>
+                    {% endfor %}
+                </dd>
                 <dt>上课时间</dt>
-                <dd>{{ list['time'] }}</dd>
+                <dd>
+                    {% for ti in list['time'] %}
+                        {{ ti }}<br>
+                    {% endfor %}
+                </dd>
                 <dt>上课周数</dt>
                 <dd>{{ list['week'] }}</dd>
             </dl>

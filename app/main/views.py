@@ -793,7 +793,7 @@ def studentInfo():
                   "where usr_id={!r};".format(form.password.data, form.id.data)
             dal.SQLHelper.modify(sql)
             print(form.id.data)
-            flash("修改成功",'alert-info')
+            flash("修改成功", 'alert-info')
 
     elif form.is_submitted():
         print(form.id.data)
@@ -878,10 +878,10 @@ def passwordEdit():
             # TODO:修改数据库密码
             sql = "update user_login_info " \
                   "set usr_pwd={!r} " \
-                  "where usr_id={!r};".format(form.password.data,current_user.id)
+                  "where usr_id={!r};".format(form.password.data, current_user.id)
             dal.SQLHelper.modify(sql)
             # TODO：修改current_user.password
-            current_user.password=form.password.data
+            current_user.password = form.password.data
             flash('修改成功', 'alert-info')
             return redirect(url_for('main.index'))
     return render_template('passwordEdit.html', form=form)
@@ -890,5 +890,47 @@ def passwordEdit():
 # 课程页面
 @main.route('/course', methods=['GET', 'POST'])
 def course():
-    list = []
+    list = {}
+    if 'courseId' in request.args:
+        sql = "select distinct class_info.class_id, class_credit, class_room, class_capacity, " \
+              "class_current_enroll_count," \
+              "class_start_week,class_end_week " \
+              "from class_info " \
+              "where class_info.class_id={!r}".format(request.args['courseId'])
+        row = dal.SQLHelper.fetch_one(sql)
+        print(sql)
+        print(row)
+        list = {'id': row[0], 'credit': row[1], 'room': row[2], 'capacity': row[3],
+                  'current': row[4], 'grade': [], 'school': [], 'teacher': [], 'time': [],
+                  'week': "{}-{}".format(row[5], row[6])}
+        print(list)
+        sql = "select tchr_name from class_info ci " \
+              "join teach_record tr on ci.class_id = tr.class_id " \
+              "join teacher_list tl on tr.tchr_id = tl.tchr_id " \
+              "where ci.class_id={!r};".format(row[0])
+        teachers = dal.SQLHelper.fetch_all(sql)
+        for teacher in teachers:
+            list['teacher'].append(teacher[0])
+
+        sql="select class_target_school " \
+            "from school_list where class_id={!r}".format(row[0])
+        schools=dal.SQLHelper.fetch_all(sql)
+        for school in schools:
+            list['school'].append(school[0])
+
+        sql = "select class_target_grade " \
+              "from grade_list where class_id={!r}".format(row[0])
+        grades = dal.SQLHelper.fetch_all(sql)
+        for grade in grades:
+            list['grade'].append(grade[0])
+
+        sql = "select class_time from class_info ci " \
+              "join time_record tr on ci.class_id = tr.class_id " \
+              "where ci.class_id= {!r};".format(row[0])
+        times = dal.SQLHelper.fetch_all(sql)
+        for time in times:
+            list['time'].append(
+                "星期{} {}-{}".format(week_list[time[0] // 6], 2 * (time[0] % 6) + 1, 2 * (time[0] % 6 + 1)))
+        print("lalalalallllllllllllllllllllllllllllllllllllllllll")
+        print(list)
     return render_template('course.html', list=list)

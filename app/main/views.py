@@ -274,8 +274,10 @@ def study():
         for time in times:
             course['time'].append(
                 "星期{} {}-{}".format(week_list[time[0] // 6], 2 * (time[0] % 6) + 1, 2 * (time[0] % 6 + 1)))
-            courseTable[2 * (time[0] % 6)][time[0] // 6].append("{} {}-{}".format(row[1], row[4], row[5]))
-            courseTable[2 * (time[0] % 6) + 1][time[0] // 6].append("{} {}-{}".format(row[1], row[4], row[5]))
+            courseTable[2 * (time[0] % 6)][time[0] // 6].append(
+                "{}<br>({}-{},{})".format(row[1], row[4], row[5], row[3]))
+            courseTable[2 * (time[0] % 6) + 1][time[0] // 6].append(
+                "{}<br>({}-{},{})".format(row[1], row[4], row[5], row[3]))
 
         # 上课老师
         sql = "select tchr_name from class_info ci " \

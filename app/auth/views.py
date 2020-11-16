@@ -1,4 +1,4 @@
-from flask import render_template, redirect, flash, url_for, session
+from flask import render_template, redirect, flash, url_for, session, request
 from flask_login import login_user, login_required, current_user, logout_user
 from . import auth
 from .forms import *
@@ -16,11 +16,10 @@ def login():
         model = result[1]
         if result[0]['isAuth']:
             login_user(model, form.remember_me.data)
-            print('登陆成功')
-            print(current_user.id)
-            print(current_user.name)
-            print(current_user.password)
-            return redirect(url_for('main.index'))
+            next = request.args.get('next')
+            if next is None or not next.startswith('/'):
+                next = url_for('main.index')
+            return redirect(next)
         else:
             print('登陆失败')
             session['message'] = '帐号或密码错误，请重新输入！'
@@ -32,27 +31,6 @@ def login():
         return render_template('login.html', form=form, message=session['message'])
     else:
         return render_template('login.html', form=form)
-
-
-# @auth.route('/login', methods=['GET', 'POST'])
-# def login():
-#     form = LoginForm()
-#     if form.validate_on_submit():
-#         id = form.id.data
-#         password = form.password.data
-#         result = user_dal.User_Dal.login_auth(id, password)
-#         model = result[1]
-#         if result[0]['isAuth']:
-#             login_user(model, form.remember_me.data)
-#             print('登陆成功')
-#             print(current_user.id)
-#             print(current_user.name)  # 登录成功之后可以用current_user来取该用户的其他属性，这些属性都是sql语句查来并赋值给对象的。
-#             return redirect(url_for('main.index'))
-#         else:
-#             print('登陆失败')
-#             form.password.errors.append('帐号或者密码错误!')
-#             flash('Invalid id or password.')
-#     return render_template('login.html', form=form)
 
 
 @login_manager.user_loader

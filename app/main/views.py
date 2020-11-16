@@ -1,6 +1,7 @@
 import base64
 import pymysql
 from flask import render_template, redirect, flash, url_for, request, session
+from functools import wraps
 from flask_login import login_required, current_user
 import operator
 from . import main
@@ -8,6 +9,42 @@ from .forms import *
 from ..db import dal
 
 week_list = ['一', '二', '三', '四', '五', '六', '日']
+
+
+# 教师装饰器
+def teacher_required(func):
+    @wraps(func)
+    def wrapTeacher(*args, **kwargs):
+        if current_user.type != 1:
+            flash('你没有访问权限,请登录教师帐号！', 'alert-danger')
+            return redirect(url_for('main.index'))
+        return func(*args, **kwargs)
+
+    return wrapTeacher
+
+
+# 学生装饰器
+def student_required(func):
+    @wraps(func)
+    def wrapStudent(*args, **kwargs):
+        if current_user.type != 2:
+            flash('你没有访问权限,请登录学生帐号！', 'alert-danger')
+            return redirect(url_for('main.index'))
+        return func(*args, **kwargs)
+
+    return wrapStudent
+
+
+# 管理员装饰器
+def admin_required(func):
+    @wraps(func)
+    def wrapAdmin(*args, **kwargs):
+        if current_user.type != 0:
+            flash('你没有访问权限,请登录管理员帐号！', 'alert-danger')
+            return redirect(url_for('main.index'))
+        return func(*args, **kwargs)
+
+    return wrapAdmin
 
 
 # 主页
@@ -94,6 +131,7 @@ def index():
 
 # 个人页面
 @main.route('/infoPage', methods=['GET', 'POST'])
+@login_required
 def infoPage():
     if current_user.type == 0:  # 管理员
         sql = "select adm_school, adm_mail, adm_avatar " \
@@ -132,6 +170,7 @@ def infoPage():
 
 # 个人页面编辑
 @main.route('/infoEdit', methods=['GET', 'POST'])
+@login_required
 def infoEdit():
     if current_user.type == 0:  # 管理员
         form = AdminInfoForm()
@@ -236,6 +275,7 @@ def infoEdit():
 # 学生课程
 @main.route('/study', methods=['GET', 'POST'])
 @login_required
+@student_required
 def study():
     sql = "select ci.class_id, ci.class_name, ci.class_credit, " \
           "ci.class_room, ci.class_start_week, class_end_week " \
@@ -296,13 +336,14 @@ def study():
 # 选课
 @main.route('/select', methods=['GET', 'POST'])
 @login_required
+@student_required
 def select():
     if 'courseId' in request.args:
         courseId = request.args['courseId']
 
         # 判断容量
         if session[courseId]['current'] == session[courseId]['capacity']:
-            flash('课程已经满了', 'alert-warning')
+            flash('课程已经满了', 'alert-danger')
             return redirect(url_for('main.select'))
 
         # 判断时间冲突
@@ -419,6 +460,7 @@ def select():
 # 退课
 @main.route('/quit', methods=['GET', 'POST'])
 @login_required
+@student_required
 def quit():
     sql = "select ci.class_id,class_name,class_credit," \
           "class_current_enroll_count,class_capacity,class_room," \
@@ -496,6 +538,7 @@ def quit():
 # 学生花名册
 @main.route('/student', methods=['GET', 'POST'])
 @login_required
+@teacher_required
 def student():
     studentLists = []
     if 'courseId' in request.args:
@@ -514,6 +557,7 @@ def student():
 # 老师课程
 @main.route('/teach', methods=['GET', 'POST'])
 @login_required
+@teacher_required
 def teach():
     sql = "select ci.class_id, ci.class_name, ci.class_credit, ci.class_current_enroll_count," \
           " ci.class_capacity, ci.class_start_week, ci.class_end_week, ci.class_room " \
@@ -563,6 +607,7 @@ def teach():
 # 课程信息
 @main.route('/courseInfo', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def courseInfo():
     form = SearchForm()
     # 删除课程
@@ -605,6 +650,7 @@ def courseInfo():
 # 添加课程
 @main.route('/courseAdd', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def courseAdd():
     form = CourseForm()
     sql = "select tchr_id,tchr_name from teacher_list;"
@@ -689,6 +735,7 @@ def courseAdd():
 # 编辑课程
 @main.route('/courseEdit', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def courseEdit():
     form = CourseEditForm()
     sql = "select tchr_id,tchr_name from teacher_list;"
@@ -861,6 +908,7 @@ def courseEdit():
 # 教师信息
 @main.route('/teacherInfo', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def teacherInfo():
     form = AdminPasswordForm()
     if 'teacherId' in request.args:
@@ -904,6 +952,7 @@ def teacherInfo():
 # 添加老师
 @main.route('/teacherAdd', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def teacherAdd():
     form = TeacherForm()
     if form.validate_on_submit():
@@ -927,6 +976,7 @@ def teacherAdd():
 # 编辑教师
 @main.route('/teacherEdit', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def teacherEdit():
     form = TeacherEditForm()
     if form.validate_on_submit():
@@ -959,6 +1009,7 @@ def teacherEdit():
 # 学生信息
 @main.route('/studentInfo', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def studentInfo():
     form = AdminPasswordForm()
     if 'studentId' in request.args:
@@ -1004,6 +1055,7 @@ def studentInfo():
 # 添加学生
 @main.route('/studentAdd', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def studentAdd():
     form = StudentForm()
     if form.validate_on_submit():
@@ -1027,6 +1079,7 @@ def studentAdd():
 # 编辑学生
 @main.route('/studentEdit', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def studentEdit():
     form = StudentEditForm()
     if form.validate_on_submit():
@@ -1058,26 +1111,35 @@ def studentEdit():
 
 # 修改密码
 @main.route('/passwordEdit', methods=['GET', 'POST'])
+@login_required
 def passwordEdit():
     form = PasswordForm()
     if form.validate_on_submit():
         if form.old.data != current_user.password:
             form.old.errors.append('密码错误')
         else:
-            # TODO:修改数据库密码
+            # 修改数据库密码
             sql = "update user_login_info " \
                   "set usr_pwd={!r} " \
                   "where usr_id={!r};".format(form.password.data, current_user.id)
             dal.SQLHelper.modify(sql)
-            # TODO：修改current_user.password
+            # 修改current_user.password
             current_user.password = form.password.data
             flash('修改成功', 'alert-info')
-            return redirect(url_for('main.index'))
+
+            back = request.args.get('back')
+            if back is None or not back.startswith('/'):
+                back = url_for('main.index')
+            return redirect(back)
+
+            # return redirect(url_for('main.index'))
     return render_template('passwordEdit.html', form=form)
 
 
 # 课程页面
 @main.route('/course', methods=['GET', 'POST'])
+@login_required
+@admin_required
 def course():
     list = {}
     if 'courseId' in request.args:

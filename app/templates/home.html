@@ -34,11 +34,16 @@
                             <tr>
                                 <td class="center-format active">第{{ loop.index }}节</td>
                                 {% for class in classList %}
-                                    <td class="center-format" style="padding: 0">
-                                        {% for item in class %}
-                                            {{ item|safe }}<br>
-                                        {% endfor %}
-                                    </td>
+                                    {% if class %}
+                                        <td class="center-format table-highlight" style="font-size: 13px">
+                                            {% for item in class %}
+                                                {{ item|safe }}<br>
+                                            {% endfor %}
+                                        </td>
+                                    {% else %}
+                                        <td class="center-format">
+                                        </td>
+                                    {% endif %}
                                 {% endfor %}
                             </tr>
                         {% endfor %}

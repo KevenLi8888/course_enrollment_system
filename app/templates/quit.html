@@ -20,69 +20,48 @@
     <div>
         {#        选课时间表#}
         <div>
-            <div style="border-bottom: 1px solid grey">
+            <div class="title">
                 <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
                 <span>时间表</span>
             </div>
-            <table class="table table-bordered table-striped" style="margin-top: 20px;text-align: center">
-                <thead>
-                <tr class="active">
-                    <th></th>
-                    <th class="center-format">星期一</th>
-                    <th class="center-format">星期二</th>
-                    <th class="center-format">星期三</th>
-                    <th class="center-format">星期四</th>
-                    <th class="center-format">星期五</th>
-                    <th class="center-format">星期六</th>
-                    <th class="center-format">星期日</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for class in courseTable %}
-                    <tr>
-                        <td class="center-format">第{{ loop.index }}节</td>
-                        <td class="center-format">
-                            {% for item in class[0] %}
-                                {{ item }}<br>
-                            {% endfor %}
-                        </td>
-                        <td class="center-format">
-                            {% for item in class[1] %}
-                                {{ item }}<br>
-                            {% endfor %}
-                        </td>
-                        <td class="center-format">
-                            {% for item in class[2] %}
-                                {{ item }}<br>
-                            {% endfor %}
-                        </td>
-                        <td class="center-format">
-                            {% for item in class[3] %}
-                                {{ item }}<br>
-                            {% endfor %}
-                        </td>
-                        <td class="center-format">
-                            {% for item in class[4] %}
-                                {{ item }}<br>
-                            {% endfor %}
-                        </td>
-                        <td class="center-format">
-                            {% for item in class[5] %}
-                                {{ item }}<br>
-                            {% endfor %}
-                        </td>
-                        <td class="center-format">
-                            {% for item in class[6] %}
-                                {{ item }}<br>
-                            {% endfor %}
-                        </td>
+            <div class="table-responsive">
+                <table id="table" class="table table-bordered">
+                    <thead>
+                    <tr class="active">
+                        <th class="center-format" style="width: 9%"></th>
+                        <th class="center-format" style="width: 13%">星期一</th>
+                        <th class="center-format" style="width: 13%">星期二</th>
+                        <th class="center-format" style="width: 13%">星期三</th>
+                        <th class="center-format" style="width: 13%">星期四</th>
+                        <th class="center-format" style="width: 13%">星期五</th>
+                        <th class="center-format" style="width: 13%">星期六</th>
+                        <th class="center-format" style="width: 13%">星期日</th>
                     </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    {% for classList in courseTable %}
+                        <tr>
+                            <td class="center-format active">第{{ loop.index }}节</td>
+                            {% for class in classList %}
+                                {% if class %}
+                                    <td class="center-format table-highlight">
+                                        {% for item in class %}
+                                            {{ item|safe }}<br>
+                                        {% endfor %}
+                                    </td>
+                                {% else %}
+                                    <td class="center-format">
+                                    </td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
         <div>
-            <div style="border-bottom: 1px solid grey">
+            <div class="title">
                 <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
                 <span>课表</span>
             </div>

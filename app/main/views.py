@@ -401,7 +401,7 @@ def select():
         [[], [], [], [], [], [], []]
     ]
 
-    sql = "select class_time,class_name,class_start_week,class_end_week " \
+    sql = "select class_time,class_name,class_start_week,class_end_week,class_room " \
           "from class_info ci " \
           "join enroll_record er on ci.class_id = er.class_id " \
           "join time_record tr on ci.class_id = tr.class_id " \
@@ -409,8 +409,8 @@ def select():
     rows = dal.SQLHelper.fetch_all(sql)
 
     for row in rows:
-        courseTable[2 * (row[0] % 6)][row[0] // 6].append("{} {}-{}".format(row[1], row[2], row[3]))
-        courseTable[2 * (row[0] % 6) + 1][row[0] // 6].append("{} {}-{}".format(row[1], row[2], row[3]))
+        courseTable[2 * (row[0] % 6)][row[0] // 6].append("{}<br>({}-{},{})".format(row[1], row[2], row[3], row[4]))
+        courseTable[2 * (row[0] % 6) + 1][row[0] // 6].append("{}<br>({}-{},{})".format(row[1], row[2], row[3], row[4]))
     # courseTable end
 
     return render_template('select.html', courseLists=courseLists, courseTable=courseTable)
@@ -464,8 +464,10 @@ def quit():
         for time in times:
             course['time'].append(
                 "星期{} {}-{}".format(week_list[time[0] // 6], 2 * (time[0] % 6) + 1, 2 * (time[0] % 6 + 1)))
-            courseTable[2 * (time[0] % 6)][time[0] // 6].append("{} {}-{}".format(row[1], row[6], row[7]))
-            courseTable[2 * (time[0] % 6) + 1][time[0] // 6].append("{} {}-{}".format(row[1], row[6], row[7]))
+            courseTable[2 * (time[0] % 6)][time[0] // 6].append(
+                "{}<br>({}-{},{})".format(row[1], row[6], row[7], row[5]))
+            courseTable[2 * (time[0] % 6) + 1][time[0] // 6].append(
+                "{}<br>({}-{},{})".format(row[1], row[6], row[7], row[5]))
 
         # 上课老师
         sql = "select tchr_name from class_info ci " \
@@ -548,8 +550,10 @@ def teach():
         for time in times:
             course['time'].append(
                 "星期{} {}-{}".format(week_list[time[0] // 6], 2 * (time[0] % 6) + 1, 2 * (time[0] % 6 + 1)))
-            courseTable[2 * (time[0] % 6)][time[0] // 6].append("{} [{}-{}]".format(row[1], row[5], row[6]))
-            courseTable[2 * (time[0] % 6) + 1][time[0] // 6].append("{} [{}-{}]".format(row[1], row[5], row[6]))
+            courseTable[2 * (time[0] % 6)][time[0] // 6].append(
+                "{}<br>({}-{},{})".format(row[1], row[5], row[6], row[7]))
+            courseTable[2 * (time[0] % 6) + 1][time[0] // 6].append(
+                "{}<br>({}-{},{})".format(row[1], row[5], row[6], row[7]))
         courseLists.append(course)
     # print(courseTable)
 
@@ -621,19 +625,6 @@ def courseAdd():
             return render_template('courseAdd.html', form=form)
 
         for li in form.time.data:
-            # 判断教室冲突
-            sql = "select t1.class_id, class_name,class_start_week,class_end_week " \
-                  "from class_info t1 " \
-                  "join time_record t2 on t1.class_id = t2.class_id " \
-                  "where class_time = {!r} and class_room = {!r};".format(li, form.room.data)
-            rows = dal.SQLHelper.fetch_all(sql)
-            # print(rows)
-            if rows is not None:
-                for row in rows:
-                    if form.end.data >= row[2] and form.start.data <= row[3]:
-                        form.room.errors.append("与课程{}{}教室冲突".format(row[0], row[1]))
-                        return render_template('courseAdd.html', form=form)
-
             # 判断老师时间冲突
             for tli in form.teacher.data:
                 sql = "select t4.tchr_name,t1.class_id, class_name,class_start_week,class_end_week " \
@@ -649,6 +640,19 @@ def courseAdd():
                         if form.end.data >= row[3] and form.start.data <= row[4]:
                             form.teacher.errors.append("与{}老师课程{}{}时间冲突".format(row[0], row[1], row[2]))
                             return render_template('courseAdd.html', form=form)
+
+            # 判断教室冲突
+            sql = "select t1.class_id, class_name,class_start_week,class_end_week " \
+                  "from class_info t1 " \
+                  "join time_record t2 on t1.class_id = t2.class_id " \
+                  "where class_time = {!r} and class_room = {!r};".format(li, form.room.data)
+            rows = dal.SQLHelper.fetch_all(sql)
+            # print(rows)
+            if rows is not None:
+                for row in rows:
+                    if form.end.data >= row[2] and form.start.data <= row[3]:
+                        form.room.errors.append("与课程{}{}教室冲突".format(row[0], row[1]))
+                        return render_template('courseAdd.html', form=form)
 
         # 添加到数据库
         sql = "insert into class_info(class_id, class_name, class_credit, class_room, " \
@@ -698,21 +702,6 @@ def courseEdit():
             return render_template('courseEdit.html', form=form)
 
         for li in form.time.data:
-            # 判断教室冲突
-            sql = "select t1.class_id, class_name,class_start_week,class_end_week " \
-                  "from class_info t1 " \
-                  "join time_record t2 on t1.class_id = t2.class_id " \
-                  "where class_time = {!r} and class_room = {!r};".format(li, form.room.data)
-            rows = dal.SQLHelper.fetch_all(sql)
-            # print(rows)
-            if rows is not None:
-                for row in rows:
-                    if row[0] == session['courseId']:
-                        continue
-                    if form.end.data >= row[2] and form.start.data <= row[3]:
-                        form.room.errors.append("与课程{}{}教室冲突".format(row[0], row[1]))
-                        return render_template('courseEdit.html', form=form)
-
             # 判断老师时间冲突
             for tli in form.teacher.data:
                 sql = "select t4.tchr_name,t1.class_id, class_name,class_start_week,class_end_week " \
@@ -731,6 +720,20 @@ def courseEdit():
                             form.teacher.errors.append("与{}老师课程{}{}时间冲突".format(row[0], row[1], row[2]))
                             return render_template('courseEdit.html', form=form)
 
+            # 判断教室冲突
+            sql = "select t1.class_id, class_name,class_start_week,class_end_week " \
+                  "from class_info t1 " \
+                  "join time_record t2 on t1.class_id = t2.class_id " \
+                  "where class_time = {!r} and class_room = {!r};".format(li, form.room.data)
+            rows = dal.SQLHelper.fetch_all(sql)
+            # print(rows)
+            if rows is not None:
+                for row in rows:
+                    if row[0] == session['courseId']:
+                        continue
+                    if form.end.data >= row[2] and form.start.data <= row[3]:
+                        form.room.errors.append("与课程{}{}教室冲突".format(row[0], row[1]))
+                        return render_template('courseEdit.html', form=form)
         # 更新数据库
         sql = "update class_info " \
               "set class_name={!r},class_credit={!r},class_room={!r}," \

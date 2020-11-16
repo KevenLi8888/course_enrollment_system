@@ -7,32 +7,50 @@
         <h1>花名册</h1>
     </div>
     <div>
-        <div class="btn-group" role="group" aria-label="..." style="margin-bottom: 20px">
-            <a type="button" class="btn btn-default" href="{{ url_for('main.teach') }}">返回课程表</a>
+        <div id="toolbar">
+            <a type="button" class="btn btn-default" href="{{ url_for('main.teach') }}">
+                <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+            </a>
         </div>
         <div>
-            <div style="border-bottom: 1px solid grey">
+            <div class="title">
                 <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
                 <span>学生列表</span>
             </div>
-            <table class="table table-hover table table-striped" style="margin-top: 20px;text-align: center">
+            <table id="table"
+                   class="table table-hover table-responsive"
+                   data-toggle="table"
+                   data-search="true"
+                   data-search-align="left"
+                   data-search-on-enter-key="false"
+                   data-show-search-button="true"
+                   data-pagination="true"
+                   data-page-list="[5,10,15,20,25,50,100]"
+                   data-show-columns="true"
+                   data-show-search-clear-button="true"
+                   data-show-columns-toggle-all="true"
+                   data-show-columns-search="true"
+                   data-show-refresh="true"
+                   data-show-fullscreen="true"
+                   data-toolbar="#toolbar"
+            >
                 <thead>
                 <tr class="active">
-                    <th style="text-align: center">学号</th>
-                    <th style="text-align: center">姓名</th>
-                    <th style="text-align: center">学院</th>
-                    <th style="text-align: center">年级</th>
-                    <th style="text-align: center">邮箱</th>
+                    <th class="center-format">学号</th>
+                    <th class="center-format">姓名</th>
+                    <th class="center-format">学院</th>
+                    <th class="center-format">年级</th>
+                    <th class="center-format">邮箱</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for li in studentLists %}
                     <tr>
-                        <td>{{ li[0] }}</td>
-                        <td>{{ li[1] }}</td>
-                        <td>{{ li[2] }}</td>
-                        <td>{{ li[3] }}</td>
-                        <td>
+                        <td class="center-format">{{ li[0] }}</td>
+                        <td class="center-format">{{ li[1] }}</td>
+                        <td class="center-format">{{ li[2] }}</td>
+                        <td class="center-format">{{ li[3] }}</td>
+                        <td class="center-format">
                             <a href="mailto:{{ li['email'] }}">{{ li[4] }}</a>
                         </td>
 
@@ -45,4 +63,11 @@
 {% endblock %}
 {% block scripts %}
     {{ super() }}
+    <script>
+        $('#table').bootstrapTable({
+            toolbar: "#toolbar", //设置自定义工具栏容器ID，也可以是容器样式类名.toolbar
+            columns: columns,
+            data: data
+        });
+    </script>
 {% endblock %}

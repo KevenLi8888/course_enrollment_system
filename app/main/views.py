@@ -530,7 +530,7 @@ def quit():
               "where class_id={!r} and stu_id={!r}".format(courseId, current_user.id)
         dal.SQLHelper.modify(sql)
         sql = "update class_info " \
-              "set class_current_enroll_count=class_current_enroll_count+1 " \
+              "set class_current_enroll_count=class_current_enroll_count-1 " \
               "where class_id={!r}".format(courseId)
         dal.SQLHelper.modify(sql)
         flash('课程（{}·{}）退课成功'.format(courseId, session[courseId]['name']), 'alert-warning')
@@ -841,8 +841,13 @@ def courseEdit():
         # 更新学生选课
         if not (operator.eq(session['time'], form.time.data)
                 and operator.eq(session['start'], form.start.data)
-                and operator.eq(session['end'], form.end.data)):
+                and operator.eq(session['end'], form.end.data)
+                and session['capacity'] <= form.capacity.data):
             sql = "delete  from enroll_record " \
+                  "where class_id={!r}".format(session['courseId'])
+            dal.SQLHelper.modify(sql)
+            sql = "update class_info " \
+                  "set class_current_enroll_count=0 " \
                   "where class_id={!r}".format(session['courseId'])
             dal.SQLHelper.modify(sql)
 
@@ -865,7 +870,7 @@ def courseEdit():
         form.name.data = rows[0]
         form.credit.data = rows[1]
         form.room.data = rows[2]
-        form.capacity.data = rows[3]
+        session['capacity'] = form.capacity.data = rows[3]
         session['start'] = form.start.data = rows[4]
         session['end'] = form.end.data = rows[5]
         session['teacher'] = form.teacher.data = []
@@ -922,6 +927,7 @@ def teacherInfo():
         sql = "delete from user_login_info where usr_id={0!r};".format(teacherId)
         dal.SQLHelper.modify(sql)
         flash('老师({}·{})删除成功'.format(teacherId, row[0]), 'alert-warning')
+
         return redirect(url_for('main.teacherInfo'))
     if form.validate_on_submit():
         if form.admin.data != current_user.password:
@@ -1021,12 +1027,20 @@ def studentInfo():
     form = AdminPasswordForm()
     if 'studentId' in request.args:
         studentId = request.args['studentId']
+
+        # 更新数据库课程容量
+        sql = "select class_id from enroll_record where stu_id={!r}".format(studentId)
+        rows = dal.SQLHelper.fetch_all(sql)
+        for row in rows:
+            sql = "update class_info " \
+                  "set class_current_enroll_count=class_current_enroll_count-1 " \
+                  "where class_id={!r}".format(row[0])
+            dal.SQLHelper.modify(sql)
+
         sql = "select stu_name from student_list where stu_id={!r};".format(studentId)
         row = dal.SQLHelper.fetch_one(sql)
         sql = "delete from user_login_info where usr_id={0!r};".format(studentId)
         dal.SQLHelper.modify(sql)
-        print(sql)
-        print(request.args['studentId'])
         flash('学生（{}·{}）删除成功'.format(studentId, row[0]), 'alert-warning')
         return redirect(url_for('main.studentInfo'))
 

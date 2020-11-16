@@ -47,13 +47,13 @@ timeLists = [
 # 课程表单
 class CourseForm(FlaskForm):
     # TODO:进一步的验证函数
-    id = StringField('课程序号', validators=[DataRequired()])
-    name = StringField('课程名称', validators=[DataRequired()])
+    id = StringField('课程序号', validators=[DataRequired(), Length(1, 10, message="课程序号最长10个字段")])
+    name = StringField('课程名称', validators=[DataRequired(), Length(1, 10, message="课程名称最长10个字段")])
     credit = IntegerField('学分', validators=[DataRequired(), number_range(1, 10, '请输入正确的学分数，范围为1~10')])
-    teacher = SelectMultipleField('老师',
+    teacher = SelectMultipleField('上课教师',
                                   choices=[], validators=[DataRequired()],
                                   render_kw={'data-live-search': "true", 'data-max-options': '4', 'data-size': '5'})
-    capacity = IntegerField('容量', validators=[DataRequired(), number_range(1, 120, '请输入正确的容量数，范围为1~120')])
+    capacity = IntegerField('课程容量', validators=[DataRequired(), number_range(1, 120, '请输入正确的容量数，范围为1~120')])
     time = SelectMultipleField('上课时间', coerce=int,
                                choices=timeLists, validators=[DataRequired()],
                                render_kw={'data-live-search': "true", 'data-max-options': '3', 'data-size': '5'})
@@ -68,21 +68,23 @@ class CourseForm(FlaskForm):
     school = SelectMultipleField('上课学院',
                                  choices=schoolLists, validators=[DataRequired()],
                                  render_kw={'data-live-search': "true", 'data-actions-box': 'true', 'data-size': '5'})
-    submit = SubmitField('确定')
+    submit = SubmitField('确定', render_kw={'onclick': " return confirm('你确定添加课程吗？');"})
+
+    # 课程修改
 
 
-# 课程修改
 class CourseEditForm(CourseForm):
     id = StringField('课程序号')
+    submit = SubmitField('确定', render_kw={'onclick': " return confirm('你确定修改课程信息吗？');"})
 
 
 # 教师表单
 class TeacherForm(FlaskForm):
     id = StringField('工号', validators=[
-        DataRequired(), Length(1, 20),
+        DataRequired(), Length(1, 10, message="工号最长10个字段"),
         Regexp('^[0-9]*$', 0,
-               'Id must have only numbers.')])
-    name = StringField('姓名', validators=[DataRequired(), Length(1, 10)])
+               '工号只能由数字构成')])
+    name = StringField('姓名', validators=[DataRequired(), Length(1, 10, message="姓名最长10个字段")])
     school = SelectField('学院',
                          choices=schoolLists, validators=[DataRequired()],
                          render_kw={'data-live-search': "true"})
@@ -91,13 +93,14 @@ class TeacherForm(FlaskForm):
                         render_kw={'data-live-search': "true"})
     email = StringField('邮箱', validators=[DataRequired(), Length(1, 64),
                                           Email()])
-    submit = SubmitField('确定')
+    submit = SubmitField('确定', render_kw={'onclick': " return confirm('你确定添加教师吗？');"})
 
 
 # 教师修改表单
 class TeacherEditForm(TeacherForm):
     id = StringField('工号')
     name = StringField('姓名')
+    submit = SubmitField('确定', render_kw={'onclick': " return confirm('你确定修改教师信息吗？');"})
 
 
 # 老师个人信息表单
@@ -109,14 +112,17 @@ class TeacherInfoForm(FlaskForm):
     title = StringField('职称')
     email = StringField('邮箱', validators=[DataRequired(), Length(1, 64),
                                           Email()])
-    submit = SubmitField('确定')
+    submit = SubmitField('确定', render_kw={'onclick': " return confirm('你确定修改吗？');"})
 
 
 # 学生表单
 class StudentForm(FlaskForm):
     # TODO:进一步的验证函数
-    id = StringField('学号', validators=[DataRequired()])
-    name = StringField('姓名', validators=[DataRequired()])
+    id = StringField('学号', validators=[
+        DataRequired(), Length(1, 10, message="学号最长10个字段"),
+        Regexp('^[0-9]*$', 0,
+               '学号只能由数字构成')])
+    name = StringField('姓名', validators=[DataRequired(), Length(1, 10, message="姓名最长10个字段")])
     school = SelectField('学院',
                          choices=schoolLists, validators=[DataRequired()],
                          render_kw={'data-live-search': "true"})
@@ -125,13 +131,14 @@ class StudentForm(FlaskForm):
                         render_kw={'data-live-search': "true"})
     email = StringField('邮箱', validators=[DataRequired(), Length(1, 64),
                                           Email()])
-    submit = SubmitField('确定')
+    submit = SubmitField('确定', render_kw={'onclick': " return confirm('你确定添加学生吗？');"})
 
 
 # 学生修改表单
 class StudentEditForm(StudentForm):
     id = StringField('学号')
     name = StringField('姓名')
+    submit = SubmitField('确定', render_kw={'onclick': " return confirm('你确定修改学生信息吗？');"})
 
 
 # 学生个人信息表单
@@ -143,7 +150,7 @@ class StudentInfoForm(FlaskForm):
     grade = StringField('年级')
     email = StringField('邮箱', validators=[DataRequired(), Length(1, 64),
                                           Email()])
-    submit = SubmitField('确定')
+    submit = SubmitField('确定', render_kw={'onclick': " return confirm('你确定修改吗？');"})
 
 
 # 密码表单
@@ -153,7 +160,7 @@ class PasswordForm(FlaskForm):
     password = PasswordField('新的密码', validators=[
         DataRequired(), EqualTo('password2', message='Passwords must match.')])
     password2 = PasswordField('确认密码', validators=[DataRequired()])
-    submit = SubmitField('修改')
+    submit = SubmitField('修改', render_kw={'onclick': " return confirm('你确定修改吗？');"})
 
 
 # 管理员修改密码表单
@@ -162,16 +169,9 @@ class AdminPasswordForm(FlaskForm):
     id = HiddenField('ID', validators=[DataRequired()])
     admin = PasswordField('管理员密码', validators=[DataRequired()])
     password = PasswordField('新的密码', validators=[
-        DataRequired(), EqualTo('password2', message='Passwords must match.')])
+        DataRequired(), EqualTo('password2', message='两次密码不一致，请重新输入')])
     password2 = PasswordField('确认密码', validators=[DataRequired()])
-    submit = SubmitField('修改')
-
-
-# 搜索表单
-class SearchForm(FlaskForm):
-    # TODO:进一步的验证函数
-    search = StringField('搜索', validators=[DataRequired()])
-    submit = SubmitField('查找')
+    submit = SubmitField('修改', render_kw={'onclick': " return confirm('你确定修改吗？');"})
 
 
 # 管理员个人信息表单
@@ -182,4 +182,4 @@ class AdminInfoForm(FlaskForm):
     school = StringField('学院')
     email = StringField('邮箱', validators=[DataRequired(), Length(1, 64),
                                           Email()])
-    submit = SubmitField('确定')
+    submit = SubmitField('确定', render_kw={'onclick': " return confirm('你确定修改吗？');"})

@@ -48,5 +48,5 @@ def load_user(id):
 def logout():
     # TODO：退出用户
     logout_user()
-    flash('You have been logged out.', 'alert-warning')
+    flash('你已经登出选课系统', 'alert-warning')
     return redirect(url_for('auth.login'))

@@ -47,16 +47,16 @@
             >
                 <thead>
                 <tr class="active">
-                    <th class="center-format" data-sortable="true">课程序号</th>
-                    <th class="center-format" data-sortable="true">课程名称</th>
-                    <th class="center-format" data-sortable="true">学分</th>
-                    <th class="center-format" data-sortable="true">老师</th>
-                    <th class="center-format" data-sortable="true">上课人数</th>
-                    <th class="center-format" data-sortable="true">课程容量</th>
-                    <th class="center-format" data-sortable="true">上课时间</th>
-                    <th class="center-format" data-sortable="true">上课周数</th>
-                    <th class="center-format" data-sortable="true">上课地点</th>
-                    <th class="center-format">操作</th>
+                    <th class="center-format active" data-sortable="true">课程序号</th>
+                    <th class="center-format active" data-sortable="true">课程名称</th>
+                    <th class="center-format active" data-sortable="true">学分</th>
+                    <th class="center-format active" data-sortable="true">老师</th>
+                    <th class="center-format active" data-sortable="true">上课人数</th>
+                    <th class="center-format active" data-sortable="true">课程容量</th>
+                    <th class="center-format active" data-sortable="true">上课时间</th>
+                    <th class="center-format active" data-sortable="true">上课周数</th>
+                    <th class="center-format active" data-sortable="true">上课地点</th>
+                    <th class="center-format active">操作</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -86,7 +86,7 @@
                                     <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                                 </a>
                                 <button type="button" class="btn btn-default" aria-label="delete"
-                                        onclick="quitCourse({{ li['id'] }})">
+                                        onclick="quitCourse('{{ li['id'] }}')">
                                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                                 </button>
                                 <a type="button" class="btn btn-default" aria-label="edit"

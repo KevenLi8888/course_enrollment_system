@@ -34,10 +34,11 @@
             <p>{{ user['school'] }}</p>
             <p><a href="mailto:{{ user['email'] }}">{{ user['email'] }}</a></p>
             <br>
-            <p style="float: left;margin: 5px"><a class="btn black-btn" href='{{ url_for('main.infoEdit') }}'>编辑资料</a>
+            <p style="float: left;margin: 5px">
+                <a class="btn black-btn" href='{{ url_for('main.infoEdit') }}'>编辑资料</a>
             </p>
-            <p style="float: left;margin: 5px"><a class="btn btn-danger"
-                                                  href='{{ url_for('main.passwordEdit') }}'>修改密码</a>
+            <p style="float: left;margin: 5px">
+                <a class="btn btn-danger" href='{{ url_for('main.passwordEdit') }}'>修改密码</a>
             </p>
         </div>
     </div>

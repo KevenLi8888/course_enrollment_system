@@ -52,12 +52,12 @@
             >
                 <thead>
                 <tr class="active">
-                    <th class="center-format" data-sortable="true">工号</th>
-                    <th class="center-format" data-sortable="true">姓名</th>
-                    <th class="center-format" data-sortable="true">学院</th>
-                    <th class="center-format" data-sortable="true">职称</th>
-                    <th class="center-format" data-sortable="true">邮箱</th>
-                    <th class="center-format">操作</th>
+                    <th class="center-format active" data-sortable="true">工号</th>
+                    <th class="center-format active" data-sortable="true">姓名</th>
+                    <th class="center-format active" data-sortable="true">学院</th>
+                    <th class="center-format active" data-sortable="true">职称</th>
+                    <th class="center-format active" data-sortable="true">邮箱</th>
+                    <th class="center-format active">操作</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -77,7 +77,7 @@
                                     <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                                 </a>
                                 <button type="button" class="btn btn-default" aria-label="delete"
-                                        onclick="quitTeacher({{ li[0] }})">
+                                        onclick="quitTeacher('{{ li[0] }}')">
                                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                                 </button>
                                 {#                                <button type="button" class="btn btn-default" aria-label="password"#}

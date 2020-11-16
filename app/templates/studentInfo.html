@@ -53,12 +53,12 @@
             >
                 <thead>
                 <tr class="active">
-                    <th class="center-format" data-sortable="true">学号</th>
-                    <th class="center-format" data-sortable="true">姓名</th>
-                    <th class="center-format" data-sortable="true">学院</th>
-                    <th class="center-format" data-sortable="true">年级</th>
-                    <th class="center-format" data-sortable="true">邮箱</th>
-                    <th class="center-format">操作</th>
+                    <th class="center-format active" data-sortable="true">学号</th>
+                    <th class="center-format active" data-sortable="true">姓名</th>
+                    <th class="center-format active" data-sortable="true">学院</th>
+                    <th class="center-format active" data-sortable="true">年级</th>
+                    <th class="center-format active" data-sortable="true">邮箱</th>
+                    <th class="center-format active">操作</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -78,7 +78,7 @@
                                     <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                                 </a>
                                 <button type="button" class="btn btn-default" aria-label="delete"
-                                        onclick="quitStudent({{ li[0] }})">
+                                        onclick="quitStudent('{{ li[0] }}')">
                                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                                 </button>
                                 <!-- Button trigger modal -->

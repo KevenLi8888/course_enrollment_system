@@ -497,7 +497,7 @@ def quit():
 @main.route('/student', methods=['GET', 'POST'])
 @login_required
 def student():
-    studentLists = [];
+    studentLists = []
     if 'courseId' in request.args:
         session['courseId'] = request.args['courseId']
         return redirect(url_for('main.student'))
@@ -786,6 +786,15 @@ def courseEdit():
                 sql = "insert into grade_list(class_id, class_target_grade)" \
                       "values ({!r},{!r});".format(session['courseId'], li)
                 dal.SQLHelper.modify(sql)
+
+        # 更新学生选课
+        if not (operator.eq(session['time'], form.time.data)
+                and operator.eq(session['start'], form.start.data)
+                and operator.eq(session['end'], form.end.data)):
+            sql = "delete  from enroll_record " \
+                  "where class_id={!r}".format(session['courseId'])
+            dal.SQLHelper.modify(sql)
+
         flash('修改成功', 'alert-info')
         return redirect(url_for('main.courseInfo'))
 
@@ -806,8 +815,8 @@ def courseEdit():
         form.credit.data = rows[1]
         form.room.data = rows[2]
         form.capacity.data = rows[3]
-        form.start.data = rows[4]
-        form.end.data = rows[5]
+        session['start'] = form.start.data = rows[4]
+        session['end'] = form.end.data = rows[5]
         session['teacher'] = form.teacher.data = []
         session['time'] = form.time.data = []
         session['grade'] = form.grade.data = []
@@ -1078,12 +1087,9 @@ def course():
               "from class_info " \
               "where class_info.class_id={!r}".format(request.args['courseId'])
         row = dal.SQLHelper.fetch_one(sql)
-        print(sql)
-        print(row)
         list = {'id': row[0], 'credit': row[1], 'room': row[2], 'capacity': row[3],
                 'current': row[4], 'grade': [], 'school': [], 'teacher': [], 'time': [],
                 'week': "{}-{}".format(row[5], row[6])}
-        print(list)
         sql = "select tchr_name from class_info ci " \
               "join teach_record tr on ci.class_id = tr.class_id " \
               "join teacher_list tl on tr.tchr_id = tl.tchr_id " \

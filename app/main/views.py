@@ -924,6 +924,14 @@ def teacherInfo():
         teacherId = request.args['teacherId']
         sql = "select tchr_name from teacher_list where tchr_id={!r};".format(teacherId)
         row = dal.SQLHelper.fetch_one(sql)
+
+        # 删除老师对应的课程
+        sql = "select class_id from teach_record where tchr_id={!r};".format(teacherId)
+        rows = dal.SQLHelper.fetch_all(sql)
+        for row in rows:
+            sql = "delete from class_info where class_id={!r};".format(row[0])
+            dal.SQLHelper.modify(sql)
+
         sql = "delete from user_login_info where usr_id={0!r};".format(teacherId)
         dal.SQLHelper.modify(sql)
         flash('老师({}·{})删除成功'.format(teacherId, row[0]), 'alert-warning')
